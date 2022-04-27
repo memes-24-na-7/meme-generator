@@ -1,4 +1,4 @@
-var Jimp = require("jimp");
+const Jimp = require("jimp");
 
 function writeOnImage(imageFile, resultFile, x, y, maxWidth, maxHeight, text) {
   Jimp
@@ -18,5 +18,6 @@ function writeOnImage(imageFile, resultFile, x, y, maxWidth, maxHeight, text) {
     });
 }
 
-let fileName = __dirname + '\\..\\images\\Doggies.jpg';
-writeOnImage(fileName, 'p.jpg', 20, 80, 140, 100, 'Nice');
+module.exports = {
+  writeOnImage
+};
