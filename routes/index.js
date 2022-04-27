@@ -5,7 +5,7 @@ const { writeOnImage } = require('../editor/editingImages.js');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   let fileName = __dirname + '\\..\\images\\Doggies.jpg';
-  writeOnImage(fileName, 'p.jpg', 20, 80, 140, 100, 'Nice');
+  writeOnImage(fileName, 'p.jpg', 20, 80, 140, 100, 'фыф Ыхажеффффjhjфф');
   res.render('index', { title: 'Express' });
 });
 
