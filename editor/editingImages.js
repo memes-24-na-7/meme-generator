@@ -5,7 +5,7 @@ function writeOnImage(imageFile, resultFile, x, y, maxWidth, maxHeight, text) {
     .read(imageFile)
     .then(function (image) {
       loadedImage = image;
-      return Jimp.loadFont('editor\\fonts\\Flyer-Shadow.fnt');
+      return Jimp.loadFont('editor\\fonts\\Roboto-Bold-Outline.fnt');
     })
     .then(function (font){
       loadedImage
