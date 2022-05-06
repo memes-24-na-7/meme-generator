@@ -3,15 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>MEOW</title>
-    <link rel='stylesheet' href="stylesheets/style.css">
-    <script src="scripts/1.js"></script>
+    <link rel='stylesheet' href="../public/stylesheets/style.css">
+    <script src="../public/scripts/1.js"></script>
+    <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
     <button onclick="generate_pressed()" id='generate_b' class='first_state'> generate </button>
     <button onclick="back_pressed()" id='back_b' class='second_state'> back </button>
-    <button onclick="download_pressed()" id='download_b' class='second_state'> download </button>
+    <button onclick="downloadResult()" id='download_b' class='second_state'> download </button>
 
-    <img src="images/unknown_1.png" alt="mem image" id='mem_image' class='first_state'>
-    <img src="images/logo.png" alt="text image" id='dragable_text' draggable='true'>
+    <img src="../public/images/unknown_1.png" alt="mem image" id='mem_image' class='first_state'>
+    <img src="../public/images/logo.png" alt="text image" id='dragable_text' draggable='true'>
+
+    <script>
+      function downloadResult(){
+        let newDiv = connectParts();
+        newDiv.style.top = '1000';
+        document.body.appendChild(newDiv);
+        html2canvas(newDiv).then(function(canvas) {
+          var a = document.createElement('a');
+          a.href = canvas.toDataURL("image/jpeg", 0.9).replace("image/jpeg", "image/octet-stream");
+          a.download = 'your_meme.jpg';
+          a.click();
+        });
+        newDiv.remove();
+      }
+    </script>
 </body>
 </html>
