@@ -1,13 +1,26 @@
-// import {writeOnImage} from "./editingImages";
-// import html2canvas from './html2canvas.js';
-
-
-var generate_pressed = function () {
+let generate_pressed = function () {
+    launchEditor('../public/images/Doggies.jpg');
+}
+let uploadMeme = function (file) {
+    if (!file) {
+        return;
+    }
+    let type = file.type.split('/')[0];
+    if (type !== 'image') {
+        alert(`Please, upload an image file, ${type} is not an image.`);
+        return;
+    }
+    let reader = new FileReader();
+    reader.onloadend = () => launchEditor(reader.result);
+    reader.readAsDataURL(file);
+}
+let launchEditor = function(imageSrc) {
     document.getElementById('download_b').style.display = 'block';
     document.getElementById('back_b').style.display = 'block';
     document.getElementById('generate_b').style.display = 'none';
+    document.getElementById('upload-button').style.display = 'none';
     document.getElementById('mem_image').style.display = 'block';
-    draw_image();
+    draw_image(imageSrc);
 
     var text = document.getElementById('dragable_text');
     text.style.display = 'block';
@@ -35,20 +48,11 @@ var generate_pressed = function () {
         return false;
     };
 }
-var draw_image = function () {
+var draw_image = function (imageSrc) {
     kartinochka = document.getElementById('mem_image');
-    kartinochka.src = '../public/images/Doggies.jpg';
+    kartinochka.src = imageSrc;
     document.body.appendChild(kartinochka);
 }
-// var download_pressed = function () {
-//     kartinochka = document.getElementById('mem_image');
-//
-//     let canvas = document.getElementById('meme');
-//     let link = document.createElement("a");
-//     link.setAttribute("href", kartinochka.src);
-//     link.setAttribute("download", `${Date.now()}`);
-//     link.click();
-// }
 var back_pressed = function () {
     document.getElementById('download_b').style.display = 'none';
     document.getElementById('back_b').style.display = 'none';
