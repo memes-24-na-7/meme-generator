@@ -64,20 +64,17 @@ var connectParts = function () {
     let originalMemePic = document.getElementById('mem_image');
     let memePic = document.createElement('img');
     memePic.src = originalMemePic.src;
-    memePic.style.top = '0';
-    memePic.style.left = '0';
-    memePic.style.zIndex = '0';
     meme.appendChild(memePic);
 
-    let textPic = document.createElement('img');
     let originalTextPic = document.getElementById('dragable_text');
+    let textPic = document.createElement('img');
     textPic.src = originalTextPic.getAttribute('src');
     textPic.style.position = 'absolute';
-    console.log(originalTextPic.style.top);
-
-    textPic.style.top = '0';
-    textPic.style.left = '0';
+    let memeMargin = (document.body.clientWidth - originalMemePic.clientWidth) / 2;
+    textPic.style.top = String(originalTextPic.offsetTop - 100) + 'px';
+    textPic.style.left = String(originalTextPic.offsetLeft - memeMargin) + 'px';
     textPic.style.zIndex = 1;
+
     meme.appendChild(textPic);
     return meme;
 }
