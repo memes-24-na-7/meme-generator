@@ -6,8 +6,9 @@ a {
   color: #00B7FF;
 }
 
-button {
+button, .button-like {
   align-items: center;
+  text-align: center;
   justify-content: center;
   width: 150px;
   height: 100px;
@@ -20,6 +21,10 @@ button {
   color: #014941;
   font-weight: 1200;
   position: fixed;
+}
+
+#upload {
+  visibility: hidden;
 }
 
 @keyframes anim-button {
@@ -62,6 +67,8 @@ button {
   /*display: none;*/
   margin-left: auto;
   margin-right: auto;
+  max-height: 1000px;
+  max-width: 90%;
   padding-top: 100px;
 }
 
