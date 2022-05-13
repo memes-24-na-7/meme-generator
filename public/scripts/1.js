@@ -62,13 +62,14 @@ var back_pressed = function () {
 }
 var connectParts = function () {
     let meme = document.createElement('div');
-    meme.style.display = 'inline-block';
-    meme.style.position = 'relative';
+    meme.style.position = 'absolute';
 
     let originalMemePic = document.getElementById('mem_image');
     let memePic = document.createElement('img');
     memePic.src = originalMemePic.src;
     meme.appendChild(memePic);
+    memePic.width = originalMemePic.width;
+    memePic.height = originalMemePic.height;
 
     let originalTextPic = document.getElementById('dragable_text');
     let textPic = document.createElement('img');
@@ -77,7 +78,6 @@ var connectParts = function () {
     let memeMargin = (document.body.clientWidth - originalMemePic.clientWidth) / 2;
     textPic.style.top = String(originalTextPic.offsetTop - 100) + 'px';
     textPic.style.left = String(originalTextPic.offsetLeft - memeMargin) + 'px';
-    textPic.style.zIndex = 1;
 
     meme.appendChild(textPic);
     return meme;
