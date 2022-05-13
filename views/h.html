@@ -2,23 +2,31 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>MEOW</title>
+    <title>Memes</title>
     <link rel='stylesheet' href="../public/stylesheets/style.css">
     <script src="../public/scripts/1.js"></script>
     <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
-    <label id="upload-button" class="button-like" class='first_state'>
-        <input type="file" id="upload" accept="image/*" onchange="uploadMeme(this.files[0])">
+    <button onclick="generatePressed()" id='generate_b' class='first_state'> generate </button>
+    <label id="upload_b" class="button-like" class='first_state'>
+        <input id="upload_b_button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
         upload pic
     </label>
-    <button onclick="generate_pressed()" id='generate_b' class='first_state'> random pic </button>
 
-    <button onclick="back_pressed()" id='back_b' class='second_state'> back </button>
+    <div id="div_for_images" class="div_for_images second_state">
+        <img src="../public/images/Doggies.jpg" alt="mem image" id='mem_image' class='second_state'>
+        <div id="draggable" class="draggable">
+            <div id="dragger" class="dragger">
+                <img src="../public/images/logo.png" alt="text image" id="text_image" class="text_img">
+            </div>
+        </div>
+    </div>
+
+    <div id="div_for_text_editing" class="div_for_text_editing second_state"></div>
+
+    <button onclick="backPressed()" id='back_b' class='second_state'> back </button>
     <button onclick="downloadResult()" id='download_b' class='second_state'> download </button>
-
-    <img src="../public/images/unknown_1.png" alt="mem image" id='mem_image' class='first_state'>
-    <img src="../public/images/logo.png" alt="text image" id='dragable_text' draggable='true'>
 
     <script>
       function downloadResult(){
