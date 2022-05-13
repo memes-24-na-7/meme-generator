@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>MEOW</title>
+    <link rel="stylesheet" href="../public/stylesheets/light.min.css">
     <link rel='stylesheet' href="../public/stylesheets/style.css">
     <script src="../public/scripts/1.js"></script>
     <script src="../public/scripts/html2canvas.js"></script>
@@ -11,6 +12,32 @@
     <button onclick="generate_pressed()" id='generate_b' class='first_state'> generate </button>
     <button onclick="back_pressed()" id='back_b' class='second_state'> back </button>
     <button onclick="downloadResult()" id='download_b' class='second_state'> download </button>
+
+    <div id="app" style="display: none">
+        <h1>Create Images from Text</h1>
+        <form>
+            <label>Enter text:
+                <input type="text" id="text-input">
+            </label>
+            <label>Font:
+                <select id="font-select">
+                    <option>Tahoma</option>
+                    <option>Great Vibes</option>
+                    <option>Georgia</option>
+                    <option>EB Garamond</option>
+                    <option>Jost</option>
+                    <option>Pattaya</option>
+                    <option>Playfair Display</option>
+                    <option>Roboto</option>
+                </select>
+            </label>
+            <button type="button" id="generate-btn">Generate</button>
+        </form>
+<!--        <div id="image-wrapper">-->
+<!--            <canvas id="canvas" width="300" height="150"></canvas>-->
+<!--        </div>-->
+    </div>
+    <script src="../routes/index_very_bad.js"></script>
 
     <img src="../public/images/unknown_1.png" alt="mem image" id='mem_image' class='first_state'>
     <img src="../public/images/logo.png" alt="text image" id='dragable_text' draggable='true'>

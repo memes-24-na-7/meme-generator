@@ -3,6 +3,7 @@
 
 
 var generate_pressed = function () {
+    document.getElementById('app').style.display = 'block';
     document.getElementById('download_b').style.display = 'block';
     document.getElementById('back_b').style.display = 'block';
     document.getElementById('generate_b').style.display = 'none';
