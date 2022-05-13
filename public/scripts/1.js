@@ -21,12 +21,13 @@ var launchEditor = function (imgSrc) {
     document.getElementById('div_for_images').style.display = 'block';
     document.getElementById('mem_image').style.display = 'block';
     document.getElementById('mem_image').src = imgSrc;
-    document.getElementById('div_for_text_editing').style.display = 'block';
+    document.getElementById('app').style.display = 'block';
     document.getElementById('download_b').style.display = 'block';
     document.getElementById('back_b').style.display = 'block';
     draggable = document.getElementById('draggable');
     draggable.style.top = '-360px';
     draggable.style.left = '0px';
+    console.log(document.getElementById('text_image'))
 }
 
 var backPressed = function () {
@@ -34,6 +35,7 @@ var backPressed = function () {
     document.getElementById('div_for_text_editing').style.display = 'none';
     document.getElementById('download_b').style.display = 'none';
     document.getElementById('back_b').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
     document.getElementById('generate_b').style.display = 'block';
     document.getElementById('upload_b').style.display = 'block';
 }

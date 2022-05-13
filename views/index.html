@@ -23,11 +23,32 @@
         </div>
     </div>
 
-    <div id="div_for_text_editing" class="div_for_text_editing second_state"></div>
+    <div id="app" class="div_for_text_editing second_state" style="display: none">
+        <h1>Create Images from Text</h1>
+        <form>
+            <label>Enter text:
+                <input type="text" id="text-input">
+            </label>
+            <label>Font:
+                <select id="font-select">
+                    <option>Tahoma</option>
+                    <option>Great Vibes</option>
+                    <option>Georgia</option>
+                    <option>EB Garamond</option>
+                    <option>Jost</option>
+                    <option>Pattaya</option>
+                    <option>Playfair Display</option>
+                    <option>Roboto</option>
+                </select>
+            </label>
+            <button type="button" id="generate-btn">Generate</button>
+        </form>
+    </div>
 
     <button onclick="backPressed()" id='back_b' class='second_state'> back </button>
     <button onclick="downloadResult()" id='download_b' class='second_state'> download </button>
 
+    <script src="../public/scripts/index_very_bad.js"></script>
     <script>
       function downloadResult(){
         let toSave = connectParts();
