@@ -1,7 +1,13 @@
 /*#region Обработка нажатия кнопок*/
-var generatePressed = function () {
-    launchEditor('../public/images/Doggies.jpg');
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
 }
+
+let generatePressed = function () {
+    let number = getRandomInt(7) + 1;
+    launchEditor(`../public/images/${number}.png`);
+}
+
 let uploadMeme = function (file) {
     if (!file) {
         return;
@@ -15,9 +21,18 @@ let uploadMeme = function (file) {
     reader.onloadend = () => launchEditor(reader.result);
     reader.readAsDataURL(file);
 }
+
+function myFunction(imgs) {
+    let modal = document.getElementById('myModal');
+    modal.style.display = "none";
+    launchEditor(imgs.src);
+}
+
 var launchEditor = function (imgSrc) {
     document.getElementById('generate_b').style.display = 'none';
     document.getElementById('upload_b').style.display = 'none';
+    // add gallery_b
+    document.getElementById('gallery_b').style.display = 'none';
     document.getElementById('div_for_images').style.display = 'block';
     document.getElementById('mem_image').style.display = 'block';
     document.getElementById('mem_image').src = imgSrc;
@@ -38,6 +53,8 @@ var backPressed = function () {
     document.getElementById('app').style.display = 'none';
     document.getElementById('generate_b').style.display = 'block';
     document.getElementById('upload_b').style.display = 'block';
+    // add gallery_b
+    document.getElementById('gallery_b').style.display = 'block';
 }
 /*#endregion*/
 

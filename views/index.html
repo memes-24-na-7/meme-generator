@@ -14,8 +14,62 @@
         upload pic
     </label>
 
-    <div id="div_for_images" class="div_for_images second_state">
-        <img src="../public/images/Doggies.jpg" alt="mem image" id='mem_image' class='second_state'>
+
+    <button id="gallery_b">gallery</button>
+    <div id="myModal" class="modal" style="display: none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">×</span>
+                <h2>Выберите изображение</h2>
+            </div>
+            <div class="modal-body" style="overflow:auto;">
+                <div class="image">
+                    <img src='../public/images/1.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image" >
+                    <img src='../public/images/2.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/3.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/4.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/5.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/6.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/7.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+        <img id="expandedImg" style="width:100%">
+        <div id="imgtext"></div>
+    </div>
+    <script>
+        let modal = document.getElementById('myModal');
+        document.getElementById("gallery_b").onclick = function() {
+            modal.style.display = "block";
+        }; // button
+        (document.getElementsByClassName("close")[0]).onclick = function() {
+            modal.style.display = "none";
+        }; // span
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+    <div id="div_for_images" class="div_for_images second_state" style="overflow:hidden;">
+        <img src="../public/images/Doggies.jpg" alt="mem image" id='mem_image'
+             class='second_state' style='height: 100%; width: 100%; object-fit: contain'>
         <div id="draggable" class="draggable">
             <div id="dragger" class="dragger">
                 <img src="../public/images/logo.png" alt="text image" id="text_image" class="text_img">
