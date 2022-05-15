@@ -1,5 +1,7 @@
 /*#region Обработка нажатия кнопок*/
+let imageType = '';
 var generatePressed = function () {
+    imageType = 'image/jpeg';
     launchEditor('../public/images/Doggies.jpg');
 }
 let uploadMeme = function (file) {
@@ -11,59 +13,64 @@ let uploadMeme = function (file) {
         alert(`Please, upload an image file, ${type} is not an image.`);
         return;
     }
+
+    imageType = file.type;
     let reader = new FileReader();
     reader.onloadend = () => launchEditor(reader.result);
     reader.readAsDataURL(file);
 }
-var launchEditor = function (imgSrc) {
-    document.getElementById('generate_b').style.display = 'none';
-    document.getElementById('upload_b').style.display = 'none';
-    document.getElementById('div_for_images').style.display = 'block';
-    document.getElementById('mem_image').style.display = 'block';
-    document.getElementById('mem_image').src = imgSrc;
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('download_b').style.display = 'block';
-    document.getElementById('back_b').style.display = 'block';
-    draggable = document.getElementById('draggable');
-    draggable.style.top = '-360px';
-    draggable.style.left = '0px';
-    console.log(document.getElementById('text_image'))
+let getImageType = function () {
+    return imageType;
 }
+let resizeEditorWindows = function (width, height) {
+    let memeImage = document.getElementById('mem_image');
+    memeImage.style.width = width;
+    memeImage.style.height = height;
+    document.getElementById('div_for_images').style.height = height;
+    document.querySelectorAll('.editor-block').forEach(function (elem) {
+        elem.style.width = width;
+    });
+    let draggable = document.getElementById('draggable');
+    draggable.style.top = '-' + height;
+    draggable.style.left = '0px';
+}
+let adaptImgSize = function() {
+    let memeWidth = this.width;
+    let memeHeight = this.height;
+    let maxWidth = document.body.clientWidth * 0.9;
+    if (memeWidth > maxWidth) {
+        memeHeight = maxWidth * memeHeight / memeWidth;
+        memeWidth = maxWidth;
+    }
+    let maxHeight = document.body.clientHeight * 0.65;
+    if (memeHeight > maxHeight) {
+        memeWidth = maxHeight * memeWidth / memeHeight;
+        memeHeight = maxHeight;
+    }
+    resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
+}
+let launchEditor = function (imgSrc) {
+    let img = new Image();
+    img.src = imgSrc;
+    document.getElementById('mem_image').src = imgSrc;
+    img.onload = adaptImgSize;
 
-var backPressed = function () {
-    document.getElementById('div_for_images').style.display = 'none';
-    document.getElementById('div_for_text_editing').style.display = 'none';
-    document.getElementById('download_b').style.display = 'none';
-    document.getElementById('back_b').style.display = 'none';
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('generate_b').style.display = 'block';
-    document.getElementById('upload_b').style.display = 'block';
+    document.querySelectorAll('.second_state').forEach(function (elem) {
+        elem.style.display = 'block';
+    });
+    document.querySelectorAll('.first_state').forEach(function (elem) {
+        elem.style.display = 'none';
+    });
+}
+let backPressed = function () {
+    document.querySelectorAll('.second_state').forEach(function (elem) {
+        elem.style.display = 'none';
+    });
+    document.querySelectorAll('.first_state').forEach(function (elem) {
+        elem.style.display = 'block';
+    });
 }
 /*#endregion*/
-
-var connectParts = function () {
-    let meme = document.createElement('div');
-    meme.style.position = 'absolute';
-
-    let originalMemePic = document.getElementById('mem_image');
-    let memePic = document.createElement('img');
-    memePic.src = originalMemePic.src;
-    meme.appendChild(memePic);
-    memePic.width = originalMemePic.width;
-    memePic.height = originalMemePic.height;
-
-    let originalTextPic = document.getElementById('text_image');
-    let textPic = document.createElement('img');
-    textPic.src = originalTextPic.getAttribute('src');
-    textPic.style.position = 'absolute';
-    let memeMargin = (document.body.clientWidth - originalMemePic.clientWidth) / 2;
-    textPic.style.top = String(originalTextPic.offsetTop - 100) + 'px';
-    textPic.style.left = String(originalTextPic.offsetLeft - memeMargin) + 'px';
-
-    meme.appendChild(textPic);
-    return meme;
-}
-
 
 /*#region Для передвижения и изменения размера контейнера текста*/
 var x, y, target = null;

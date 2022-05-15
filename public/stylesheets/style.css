@@ -17,7 +17,7 @@ button, .button-like {
   font: italic small-caps bold 20px cursive;
   color: #014941;
   font-weight: 1200;
-  position: fixed;
+  position: absolute;
 }
 
 #upload_b_button {
@@ -100,9 +100,6 @@ button, .button-like {
 
 .div_for_images {
   margin-top: 15px;
-  display: none;
-  height: 360px;
-  width: 640px;
   border: 5px solid #0cb2a1;
   margin-left: auto;
   margin-right: auto;
@@ -111,11 +108,19 @@ button, .button-like {
 
 #app {
   margin-top: 15px;
-  margin-left: auto;
-  margin-right: auto;
   display: none;
   height: 200px;
   width: 640px;
   background-color: #43e1d7;
   border: 5px solid #0cb2a1;
+}
+
+.editor-block {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#meme-container {
+  width: inherit;
+  height: inherit;
 }

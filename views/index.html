@@ -8,22 +8,24 @@
     <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
-    <button onclick="generatePressed()" id='generate_b' class='first_state'> generate </button>
-    <label id="upload_b" class="button-like" class='first_state'>
+    <button onclick="generatePressed()" id="generate_b" class="first_state"> generate </button>
+    <label id="upload_b" class="button-like first_state">
         <input id="upload_b_button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
         upload pic
     </label>
 
-    <div id="div_for_images" class="div_for_images second_state">
-        <img src="../public/images/Doggies.jpg" alt="mem image" id='mem_image' class='second_state'>
-        <div id="draggable" class="draggable">
-            <div id="dragger" class="dragger">
-                <img src="../public/images/logo.png" alt="text image" id="text_image" class="text_img">
+    <div id="div_for_images" class="div_for_images editor-block second_state">
+        <div id="meme-container">
+            <img alt="mem image" id='mem_image'>
+            <div id="draggable" class="draggable">
+                <div id="dragger" class="dragger">
+                    <img src="../public/images/logo.png" alt="text image" id="text_image" class="text_img">
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="app" class="div_for_text_editing second_state" style="display: none">
+    <div id="app" class="div_for_text_editing editor-block second_state" style="display: none">
         <h1>Create Images from Text</h1>
         <form>
             <label>Enter text:
@@ -51,16 +53,14 @@
     <script src="../public/scripts/index_very_bad.js"></script>
     <script>
       function downloadResult(){
-        let toSave = connectParts();
-        document.body.appendChild(toSave);
-
-        html2canvas(toSave).then(function(canvas) {
+        html2canvas(document.getElementById('meme-container')).then(function(canvas) {
           let a = document.createElement('a');
-          a.href = canvas.toDataURL("image/jpeg", 0.9).replace("image/jpeg", "image/octet-stream");
-          a.download = 'your_meme.jpg';
+          let imageType = getImageType();
+          console.log(imageType);
+          a.href = canvas.toDataURL(imageType, 0.9).replace(imageType, "image/octet-stream");
+          a.download = 'your_meme.' + imageType.split('/')[1];
           a.click();
         });
-        document.body.removeChild(toSave);
       }
     </script>
 </body>
