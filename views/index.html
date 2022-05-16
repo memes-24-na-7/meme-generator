@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div id="app" class="div_for_text_editing second_state" style="display: none">
+    <div id="app" class="div_for_text_editing second_state">
         <h1>Create Images from Text</h1>
         <form>
             <label>Enter text:
@@ -40,6 +40,9 @@
                     <option>Playfair Display</option>
                     <option>Roboto</option>
                 </select>
+            </label>
+            <label>Size:
+                <input type="number" id="size-input" value="100">
             </label>
             <button type="button" id="generate-btn">Generate</button>
         </form>

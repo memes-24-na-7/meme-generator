@@ -27,28 +27,20 @@ async function generateImage() {
     const text = document.getElementById("text-input").value;
     const font = document.getElementById("font-select").selectedOptions[0]
         .textContent;
-    const imageWrapper = document.getElementById("image-wrapper");
+    const size = document.getElementById("size-input").value;
     if (!text) {
         return;
     }
-    const imageBlob = await textToBitmap(text, font);
+    const imageBlob = await textToBitmap(text, font, size);
     const imageUrl = URL.createObjectURL(imageBlob);
-    // const image = new Image();
     const image = document.getElementById('text_image');
     image.src = imageUrl;
-    requestAnimationFrame(() => {
-        const currentHeight = image.getBoundingClientRect().height;
-        image.style.height = `${currentHeight}px`;
-    }, 0);
 }
 
-function textToBitmap(text, font) {
-    const FONT_SIZE = 100;
-    const VERTICAL_EXTRA_SPACE = 1;
-    const HORIZONTAL_EXTRA_SPACE = 1;
+function textToBitmap(text, font, size) {
     const canvas = window.document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    ctx.font = `${FONT_SIZE * dpr}px "${font}"`;
+    ctx.font = `${size * dpr}px "${font}"`;
     const {
         actualBoundingBoxLeft,
         actualBoundingBoxRight,
@@ -58,16 +50,28 @@ function textToBitmap(text, font) {
         actualBoundingBoxDescent,
         width
     } = ctx.measureText(text);
-    console.log(ctx.measureText(text));
     canvas.height = Math.max(
         Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
-        (Math.abs(fontBoundingBoxAscent) || 0) + (Math.abs(fontBoundingBoxDescent) || 0)
-    ) * VERTICAL_EXTRA_SPACE;
+        ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
 
-    canvas.width = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight) *
-        HORIZONTAL_EXTRA_SPACE;
+    canvas.width = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight);
 
-    ctx.font = `${FONT_SIZE * dpr}px "${font}"`;
+    let dfi = document.getElementById("div_for_images").getBoundingClientRect();
+    if (dfi.width < canvas.width) {
+        let dsk = dfi.width / canvas.width;
+        console.log(dsk)
+        size *= dsk;
+        canvas.height *= dsk;
+        canvas.width *= dsk;
+    }
+    if (dfi.height < canvas.height) {
+        let dsk = dfi.height / canvas.height;
+        size *= dsk;
+        canvas.height *= dsk;
+        canvas.width *= dsk;
+    }
+
+    ctx.font = `${size * dpr}px "${font}"`;
     ctx.textBaseline = "top";
     ctx.fillText(text, 0, 0);
     return new Promise((resolve) => {
