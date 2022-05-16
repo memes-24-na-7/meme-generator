@@ -1,9 +1,12 @@
 /*#region Обработка нажатия кнопок*/
+
 let imageType = '';
-var generatePressed = function () {
-    imageType = 'image/jpeg';
-    launchEditor('../public/images/Doggies.jpg');
+let generatePressed = function () {
+    imageType = 'image/png';
+    let number = getRandomInt(7) + 1;
+    launchEditor(`../public/images/${number}.png`);
 }
+
 var backPressed = function () {
     document.getElementById('div_for_images').style.display = 'none';
     document.getElementById('app').style.display = 'none';
@@ -11,7 +14,19 @@ var backPressed = function () {
     document.getElementById('back_b').style.display = 'none';
     document.getElementById('generate_b').style.display = 'block';
     document.getElementById('upload_b').style.display = 'block';
+    document.getElementById('gallery_b').style.display = 'block';
+    document.querySelectorAll('.second_state').forEach(function (elem) {
+            elem.style.display = 'none';
+        });
+    document.querySelectorAll('.first_state').forEach(function (elem) {
+            elem.style.display = 'block';
+        });
 }
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
 let uploadMeme = function (file) {
     if (!file) {
         return;
@@ -27,9 +42,17 @@ let uploadMeme = function (file) {
     reader.onloadend = () => launchEditor(reader.result);
     reader.readAsDataURL(file);
 }
+
 let getImageType = function () {
     return imageType;
 }
+
+function myFunction(imgs) {
+    let modal = document.getElementById('myModal');
+    modal.style.display = "none";
+    launchEditor(imgs.src);
+}
+
 let resizeEditorWindows = function (width, height) {
     let memeImage = document.getElementById('mem_image');
     memeImage.style.width = width;
@@ -42,6 +65,7 @@ let resizeEditorWindows = function (width, height) {
     draggable.style.top = '-' + height;
     draggable.style.left = '0px';
 }
+
 let adaptImgSize = function() {
     let memeWidth = this.width;
     let memeHeight = this.height;
@@ -57,6 +81,7 @@ let adaptImgSize = function() {
     }
     resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
 }
+
 let checkImgSize = function (img) {
     const size = 1920;
     if (img.width > size || img.height > size) {
@@ -77,14 +102,7 @@ let launchEditor = function (imgSrc) {
         document.querySelectorAll('.first_state').forEach(function (elem) {
             elem.style.display = 'none';
         });
-    }
-    let backPressed = function () {
-        document.querySelectorAll('.second_state').forEach(function (elem) {
-            elem.style.display = 'none';
-        });
-        document.querySelectorAll('.first_state').forEach(function (elem) {
-            elem.style.display = 'block';
-        });
+        document.getElementById('gallery_b').style.display = 'none';
     }
 }
 /*#endregion*/

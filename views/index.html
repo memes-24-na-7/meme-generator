@@ -14,6 +14,44 @@
         upload pic
     </label>
 
+    <button id="gallery_b">gallery</button>
+    <div id="myModal" class="modal" style="display: none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">×</span>
+                <h2>Выберите изображение</h2>
+            </div>
+            <div class="modal-body" style="overflow:auto;">
+                <div class="image">
+                    <img src='../public/images/1.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image" >
+                    <img src='../public/images/2.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/3.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/4.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/5.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/6.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+                <div class="image">
+                    <img src='../public/images/7.png' onclick="myFunction(this);" style="width:100%">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+        <img id="expandedImg" style="width:100%">
+        <div id="imgtext"></div>
+    </div>
+  
     <div id="div_for_images" class="div_for_images editor-block second_state">
         <div id="meme-container">
             <img alt="mem image" id='mem_image'>
@@ -25,7 +63,8 @@
         </div>
     </div>
 
-    <div id="app" class="div_for_text_editing editor-block second_state" style="display: none">
+    <div id="app" class="div_for_text_editing editor-block second_state">
+
         <h1>Create Images from Text</h1>
         <form>
             <label>Enter text:
@@ -43,6 +82,9 @@
                     <option>Roboto</option>
                 </select>
             </label>
+            <label>Size:
+                <input type="number" id="size-input" value="100">
+            </label>
             <button type="button" id="generate-btn">Generate</button>
         </form>
     </div>
@@ -52,6 +94,19 @@
 
     <script src="../public/scripts/index_very_bad.js"></script>
     <script>
+      let modal = document.getElementById('myModal');
+        document.getElementById("gallery_b").onclick = function() {
+            modal.style.display = "block";
+        }; // button
+        (document.getElementsByClassName("close")[0]).onclick = function() {
+            modal.style.display = "none";
+        }; // span
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+      
       function downloadResult(){
         html2canvas(document.getElementById('meme-container')).then(function(canvas) {
           let a = document.createElement('a');
