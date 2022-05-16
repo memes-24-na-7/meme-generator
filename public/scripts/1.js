@@ -4,6 +4,14 @@ var generatePressed = function () {
     imageType = 'image/jpeg';
     launchEditor('../public/images/Doggies.jpg');
 }
+var backPressed = function () {
+    document.getElementById('div_for_images').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('download_b').style.display = 'none';
+    document.getElementById('back_b').style.display = 'none';
+    document.getElementById('generate_b').style.display = 'block';
+    document.getElementById('upload_b').style.display = 'block';
+}
 let uploadMeme = function (file) {
     if (!file) {
         return;
@@ -49,26 +57,35 @@ let adaptImgSize = function() {
     }
     resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
 }
+let checkImgSize = function (img) {
+    const size = 1920;
+    if (img.width > size || img.height > size) {
+        return false;
+    }
+    return true;
+}
 let launchEditor = function (imgSrc) {
     let img = new Image();
     img.src = imgSrc;
-    document.getElementById('mem_image').src = imgSrc;
-    img.onload = adaptImgSize;
+    if (checkImgSize(img)) {
+        document.getElementById('mem_image').src = imgSrc;
+        img.onload = adaptImgSize;
 
-    document.querySelectorAll('.second_state').forEach(function (elem) {
-        elem.style.display = 'block';
-    });
-    document.querySelectorAll('.first_state').forEach(function (elem) {
-        elem.style.display = 'none';
-    });
-}
-let backPressed = function () {
-    document.querySelectorAll('.second_state').forEach(function (elem) {
-        elem.style.display = 'none';
-    });
-    document.querySelectorAll('.first_state').forEach(function (elem) {
-        elem.style.display = 'block';
-    });
+        document.querySelectorAll('.second_state').forEach(function (elem) {
+            elem.style.display = 'block';
+        });
+        document.querySelectorAll('.first_state').forEach(function (elem) {
+            elem.style.display = 'none';
+        });
+    }
+    let backPressed = function () {
+        document.querySelectorAll('.second_state').forEach(function (elem) {
+            elem.style.display = 'none';
+        });
+        document.querySelectorAll('.first_state').forEach(function (elem) {
+            elem.style.display = 'block';
+        });
+    }
 }
 /*#endregion*/
 
@@ -77,12 +94,13 @@ var x, y, target = null;
 
 document.addEventListener('mousedown', function(e) {
     fitTextBoxSize();
+    var divForImagesHeight = document.getElementById('div_for_images').getBoundingClientRect().height;
     for (var i = 0; e.path[i] !== document.body; i++) {
         if (e.path[i].classList.contains('draggable')) {
             target = e.path[i];
             if (target.style.left === '' || target.style.top === '') {
                 target.style.left = 0 + 'px'; // место клика на экране
-                target.style.top = -360 + 'px';
+                target.style.top = -divForImagesHeight + 'px';
             }
             target.classList.add('dragging');
             x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
@@ -93,12 +111,12 @@ document.addEventListener('mousedown', function(e) {
 });
 
 var fitTextBoxSize = function () {
-    var text_div = document.getElementById('draggable');
-    var text_image = document.getElementById('text_image');
-    var new_w = Math.round(text_image.getBoundingClientRect().width) + 'px';
-    var new_h = Math.round(text_image.getBoundingClientRect().height) + 'px';
-    text_div.style.width = new_w;
-    text_div.style.height = new_h;
+    var textDiv = document.getElementById('draggable');
+    var textImage = document.getElementById('text_image');
+    var newW = Math.round(textImage.getBoundingClientRect().width) + 'px';
+    var newH = Math.round(textImage.getBoundingClientRect().height) + 'px';
+    textDiv.style.width = newW;
+    textDiv.style.height = newH;
 }
 
 var counter = 0;
@@ -114,10 +132,11 @@ document.addEventListener('mousemove', function(e) {
     target.style.top = e.clientY - y + 'px';
     var pRect = target.parentElement.getBoundingClientRect();
     var tgtRect = target.getBoundingClientRect();
+    var divForImagesHeight = document.getElementById('div_for_images').getBoundingClientRect().height;
     if (tgtRect.left < pRect.left) target.style.left = 0;
-    if (tgtRect.top < pRect.top) target.style.top = -360+'px';
+    if (tgtRect.top < pRect.top) target.style.top = -Math.round(divForImagesHeight)+'px';
     if (tgtRect.right > pRect.right) target.style.left = pRect.width - tgtRect.width + 'px';
-    if (tgtRect.bottom > pRect.bottom) target.style.top = pRect.height - tgtRect.height -360 + 'px';
+    if (tgtRect.bottom > pRect.bottom) target.style.top = pRect.height - tgtRect.height -Math.round(divForImagesHeight) + 'px';
 });
 /*#endregion*/
 
