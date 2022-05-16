@@ -20,7 +20,7 @@ button, .button-like {
   position: absolute;
 }
 
-#upload_b_button {
+#upload-b-button {
   visibility: hidden;
 }
 
@@ -43,43 +43,43 @@ button, .button-like {
 /*#endregion*/
 
 /*#region Положение кнопочек*/
-#generate_b, #upload_b, #gallery_b {
+#generate-b, #upload-b, #gallery-b {
   top: calc(50% - 42px);
   display: inline-block;
 }
 
-#upload_b {
+#upload-b {
   left: calc(50% - 225px - 60px);
 }
 
-#gallery_b {
+#gallery-b {
   left: calc(50% + 75px + 60px);
 }
 /*кнопка по центру, относительно нее другие*/
-#generate_b {
+#generate-b {
   left: calc(50% - 75px);
 }
 
-#download_b, #back_b {
+#download-b, #back-b {
   /*bottom: 10px; !*calc(10%);*!*/
   margin-top: 15px;
   display: none;
 }
 
-#download_b {
+#download-b {
   left: calc(50% - 160px);
 }
 
-#back_b {
+#back-b {
   left: calc(50% + 10px);
 }
 /*#endregion*/
 
 /*#region Состояния*/
-.second_state {
+.second-state {
   display:none
 }
-.first_state {
+.first-state {
 }
 /*#endregion*/
 
@@ -95,14 +95,14 @@ button, .button-like {
   user-select: none;
 }
 
-.text_img {
+.text-img {
   pointer-events: none;
   margin-top: -15px;
   /*margin-left: -5px;*/
 }
 
 .dragger {
-  height: 0px;
+  height: 0;
 }
 
 .dragger::before {
@@ -110,7 +110,7 @@ button, .button-like {
   display: inline-block;
 }
 
-.div_for_images {
+.div-for-images {
   margin-top: 15px;
   border: 5px solid #0cb2a1;
   margin-left: auto;
