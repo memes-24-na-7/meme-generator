@@ -1,6 +1,21 @@
 /*#region Обработка нажатия кнопок*/
 let imageType = '';
 
+let launchWithImageUrl = function(url) {
+    const img = new Image();
+    img.setAttribute('crossOrigin', 'anonymous');
+    img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL("image/png");
+        launchEditor(dataURL);
+    }
+    img.src = url
+}
+
 let generatePressed = function () {
     imageType = 'image/png';
     //let number = getRandomInt(7) + 1;
@@ -9,7 +24,7 @@ let generatePressed = function () {
         .then(res => res.json())
         .then(result => {
             let randNumber = getRandomInt(100);
-            launchEditor(result.data.memes[randNumber].url);
+            launchWithImageUrl(result.data.memes[randNumber].url);
         })
         .catch(err => console.log(err));
 };
@@ -51,7 +66,7 @@ let chooseImage = function (imgs) {
     let modal = document.getElementById('myModal');
     modal.style.display = "none";
     imageType = 'image/png';
-    launchEditor(imgs.src);
+    launchWithImageUrl(imgs.src);
 };
 
 let resizeEditorWindows = function (width, height) {
@@ -89,6 +104,7 @@ let checkImgSize = function (img) {
 };
 
 let launchEditor = function (imgSrc) {
+    console.log(imgSrc);
     let img = new Image();
     img.src = imgSrc;
     if (checkImgSize(img)) {
