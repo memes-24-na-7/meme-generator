@@ -4,118 +4,115 @@
     <meta charset="UTF-8">
     <title>Memes</title>
     <link rel='stylesheet' href="../public/stylesheets/style.css">
-    <script src="../public/scripts/1.js"></script>
+
     <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
-    <button onclick="generatePressed()" id='generate_b' class='first_state'> generate </button>
-    <label id="upload_b" class="button-like" class='first_state'>
-        <input id="upload_b_button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
-        upload pic
-    </label>
+<button onclick="generatePressed()" id="generate-b" class="first-state"> generate </button>
+<label id="upload-b" class="button-like first-state">
+    <input id="upload-b-button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
+    upload pic
+</label>
 
-
-    <button id="gallery_b">gallery</button>
-    <div id="myModal" class="modal" style="display: none">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">×</span>
-                <h2>Выберите изображение</h2>
-            </div>
-            <div class="modal-body" style="overflow:auto;">
-                <div class="image">
-                    <img src='../public/images/1.png' onclick="myFunction(this);" style="width:100%">
-                </div>
-                <div class="image" >
-                    <img src='../public/images/2.png' onclick="myFunction(this);" style="width:100%">
-                </div>
-                <div class="image">
-                    <img src='../public/images/3.png' onclick="myFunction(this);" style="width:100%">
-                </div>
-                <div class="image">
-                    <img src='../public/images/4.png' onclick="myFunction(this);" style="width:100%">
-                </div>
-                <div class="image">
-                    <img src='../public/images/5.png' onclick="myFunction(this);" style="width:100%">
-                </div>
-                <div class="image">
-                    <img src='../public/images/6.png' onclick="myFunction(this);" style="width:100%">
-                </div>
-                <div class="image">
-                    <img src='../public/images/7.png' onclick="myFunction(this);" style="width:100%">
-                </div>
-            </div>
+<button id="gallery-b" class="first-state">gallery</button>
+<div id="myModal" class="modal" style="display: none">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">×</span>
+            <h2>Выберите изображение</h2>
+        </div>
+        <div class="modal-body" style="overflow:auto;">
+            <script>
+                fetch("https://api.imgflip.com/get_memes")
+                    .then(res => res.json())
+                    .then(result => {
+                        for(i = 0; i < 100; i++)
+                        {
+                            let newImageDiv = document.createElement('div');
+                            newImageDiv.className = "image";
+                            newImageDiv.innerHTML += `<img src=${result.data.memes[i].url} onclick="chooseImage(this);" style="width:100%">`;
+                            // для картинок локально (for(i = 1; i <= 7; i++))
+                            //board.innerHTML += `<img src='../public/images/${x}.png' onclick="chooseImage(this);" style="width:100%">`;
+                            document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
+                        }
+                    })
+                    .catch(err => console.log(err));
+            </script>
         </div>
     </div>
-    <div class="container">
-        <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
-        <img id="expandedImg" style="width:100%">
-        <div id="imgtext"></div>
-    </div>
-    <script>
-        let modal = document.getElementById('myModal');
-        document.getElementById("gallery_b").onclick = function() {
-            modal.style.display = "block";
-        }; // button
-        (document.getElementsByClassName("close")[0]).onclick = function() {
-            modal.style.display = "none";
-        }; // span
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
+</div>
+<div class="container">
+    <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+    <img id="expandedImg" style="width:100%">
+    <div id="imgtext"></div>
+</div>
 
-    <div id="div_for_images" class="div_for_images second_state" style="overflow:hidden;">
-        <img src="../public/images/Doggies.jpg" alt="mem image" id='mem_image'
-             class='second_state' style='height: 100%; width: 100%; object-fit: contain'>
+<div id="div-for-images" class="div-for-images editor-block second-state">
+    <div id="meme-container">
+        <img alt="mem image" id='mem-image'>
         <div id="draggable" class="draggable">
             <div id="dragger" class="dragger">
-                <img src="../public/images/logo.png" alt="text image" id="text_image" class="text_img">
+                <img src="../public/images/logo.png" alt="text image" id="text-image" class="text-img">
             </div>
         </div>
     </div>
+</div>
 
-    <div id="app" class="div_for_text_editing second_state" style="display: none">
-        <h1>Create Images from Text</h1>
-        <form>
-            <label>Enter text:
-                <input type="text" id="text-input">
-            </label>
-            <label>Font:
-                <select id="font-select">
-                    <option>Tahoma</option>
-                    <option>Great Vibes</option>
-                    <option>Georgia</option>
-                    <option>EB Garamond</option>
-                    <option>Jost</option>
-                    <option>Pattaya</option>
-                    <option>Playfair Display</option>
-                    <option>Roboto</option>
-                </select>
-            </label>
-            <button type="button" id="generate-btn">Generate</button>
-        </form>
-    </div>
+<div id="app" class="div-for-text-editing editor-block second-state">
 
-    <button onclick="backPressed()" id='back_b' class='second_state'> back </button>
-    <button onclick="downloadResult()" id='download_b' class='second_state'> download </button>
+    <h1>Create Images from Text</h1>
+    <form>
+        <label>Enter text:
+            <input type="text" id="text-input">
+        </label>
+        <label>Font:
+            <select id="font-select">
+                <option>Tahoma</option>
+                <option>Great Vibes</option>
+                <option>Georgia</option>
+                <option>EB Garamond</option>
+                <option>Jost</option>
+                <option>Pattaya</option>
+                <option>Playfair Display</option>
+                <option>Roboto</option>
+            </select>
+        </label>
+        <label>Size:
+            <input type="number" id="size-input" value="100">
+        </label>
+        <button type="button" id="generate-btn">Generate</button>
+    </form>
+</div>
 
-    <script src="../public/scripts/index_very_bad.js"></script>
-    <script>
-      function downloadResult(){
-        let toSave = connectParts();
-        document.body.appendChild(toSave);
 
-        html2canvas(toSave).then(function(canvas) {
-          let a = document.createElement('a');
-          a.href = canvas.toDataURL("image/jpeg", 0.9).replace("image/jpeg", "image/octet-stream");
-          a.download = 'your_meme.jpg';
-          a.click();
+<button onclick="backPressed()" id='back-b' class='second-state'> back </button>
+<button onclick="downloadResult()" id='download-b' class='second-state'> download </button>
+
+<script src="../public/scripts/index.js"></script>
+<script>
+    let modal = document.getElementById('myModal');
+    document.getElementById("gallery-b").onclick = function() {
+        modal.style.display = "block";
+    }; // button
+    (document.getElementsByClassName("close")[0]).onclick = function() {
+        modal.style.display = "none";
+    }; // span
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function downloadResult(){
+        html2canvas(document.getElementById('meme-container')).then(function(canvas) {
+            let a = document.createElement('a');
+            let imageType = 'image/png';
+            console.log(imageType);
+            a.href = canvas.toDataURL(imageType, 0.9).replace(imageType, "image/octet-stream");
+            a.download = 'your-meme.' + imageType.split('/')[1];
+            a.click();
         });
-        document.body.removeChild(toSave);
-      }
-    </script>
+    }
+</script>
 </body>
 </html>

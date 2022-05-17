@@ -1,12 +1,31 @@
 /*#region Обработка нажатия кнопок*/
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
+let imageType = '';
 
 let generatePressed = function () {
-    let number = getRandomInt(7) + 1;
-    launchEditor(`../public/images/${number}.png`);
-}
+    imageType = 'image/png';
+    //let number = getRandomInt(7) + 1;
+    //launchEditor(`../public/images/${number}.png`);
+    fetch("https://api.imgflip.com/get_memes")
+        .then(res => res.json())
+        .then(result => {
+            let randNumber = getRandomInt(100);
+            launchEditor(result.data.memes[randNumber].url);
+        })
+        .catch(err => console.log(err));
+};
+
+let backPressed = function () {
+    document.querySelectorAll('.second-state').forEach(function (elem) {
+        elem.style.display = 'none';
+    });
+    document.querySelectorAll('.first-state').forEach(function (elem) {
+        elem.style.display = 'block';
+    });
+};
+
+let getRandomInt = function (max) {
+    return Math.floor(Math.random() * max);
+};
 
 let uploadMeme = function (file) {
     if (!file) {
@@ -17,117 +36,213 @@ let uploadMeme = function (file) {
         alert(`Please, upload an image file, ${type} is not an image.`);
         return;
     }
+
+    imageType = file.type;
     let reader = new FileReader();
     reader.onloadend = () => launchEditor(reader.result);
     reader.readAsDataURL(file);
-}
+};
 
-function myFunction(imgs) {
+let getImageType = function () {
+    return imageType;
+};
+
+let chooseImage = function (imgs) {
     let modal = document.getElementById('myModal');
     modal.style.display = "none";
+    imageType = 'image/png';
     launchEditor(imgs.src);
-}
+};
 
-var launchEditor = function (imgSrc) {
-    document.getElementById('generate_b').style.display = 'none';
-    document.getElementById('upload_b').style.display = 'none';
-    // add gallery_b
-    document.getElementById('gallery_b').style.display = 'none';
-    document.getElementById('div_for_images').style.display = 'block';
-    document.getElementById('mem_image').style.display = 'block';
-    document.getElementById('mem_image').src = imgSrc;
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('download_b').style.display = 'block';
-    document.getElementById('back_b').style.display = 'block';
-    draggable = document.getElementById('draggable');
-    draggable.style.top = '-360px';
+let resizeEditorWindows = function (width, height) {
+    let memeImage = document.getElementById('mem-image');
+    memeImage.style.width = width;
+    memeImage.style.height = height;
+    document.getElementById('div-for-images').style.height = height;
+    document.querySelectorAll('.editor-block').forEach(function (elem) {
+        elem.style.width = width;
+    });
+    let draggable = document.getElementById('draggable');
+    draggable.style.top = '-' + height;
     draggable.style.left = '0px';
-    console.log(document.getElementById('text_image'))
-}
+};
 
-var backPressed = function () {
-    document.getElementById('div_for_images').style.display = 'none';
-    document.getElementById('div_for_text_editing').style.display = 'none';
-    document.getElementById('download_b').style.display = 'none';
-    document.getElementById('back_b').style.display = 'none';
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('generate_b').style.display = 'block';
-    document.getElementById('upload_b').style.display = 'block';
-    // add gallery_b
-    document.getElementById('gallery_b').style.display = 'block';
-}
+let adaptImgSize = function() {
+    let memeWidth = this.width;
+    let memeHeight = this.height;
+    let maxWidth = document.body.clientWidth * 0.9;
+    if (memeWidth > maxWidth) {
+        memeHeight = maxWidth * memeHeight / memeWidth;
+        memeWidth = maxWidth;
+    }
+    let maxHeight = document.body.clientHeight * 0.65;
+    if (memeHeight > maxHeight) {
+        memeWidth = maxHeight * memeWidth / memeHeight;
+        memeHeight = maxHeight;
+    }
+    resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
+};
+
+let checkImgSize = function (img) {
+    const size = 1920;
+    return !(img.width > size || img.height > size);
+};
+
+let launchEditor = function (imgSrc) {
+    let img = new Image();
+    img.src = imgSrc;
+    if (checkImgSize(img)) {
+        document.getElementById('mem-image').src = imgSrc;
+        img.onload = adaptImgSize;
+
+        document.querySelectorAll('.second-state').forEach(function (elem) {
+            elem.style.display = 'block';
+        });
+        document.querySelectorAll('.first-state').forEach(function (elem) {
+            elem.style.display = 'none';
+        });
+    }
+};
 /*#endregion*/
 
-var connectParts = function () {
-    let meme = document.createElement('div');
-    meme.style.position = 'absolute';
-
-    let originalMemePic = document.getElementById('mem_image');
-    let memePic = document.createElement('img');
-    memePic.src = originalMemePic.src;
-    meme.appendChild(memePic);
-    memePic.width = originalMemePic.width;
-    memePic.height = originalMemePic.height;
-
-    let originalTextPic = document.getElementById('text_image');
-    let textPic = document.createElement('img');
-    textPic.src = originalTextPic.getAttribute('src');
-    textPic.style.position = 'absolute';
-    let memeMargin = (document.body.clientWidth - originalMemePic.clientWidth) / 2;
-    textPic.style.top = String(originalTextPic.offsetTop - 100) + 'px';
-    textPic.style.left = String(originalTextPic.offsetLeft - memeMargin) + 'px';
-
-    meme.appendChild(textPic);
-    return meme;
-}
-
-
 /*#region Для передвижения и изменения размера контейнера текста*/
-var x, y, target = null;
+let i, y, target = null;
 
 document.addEventListener('mousedown', function(e) {
     fitTextBoxSize();
-    for (var i = 0; e.path[i] !== document.body; i++) {
+    let divForImagesHeight = document.getElementById('div-for-images').getBoundingClientRect().height;
+    for (let i = 0; e.path[i] !== document.body; i++) {
         if (e.path[i].classList.contains('draggable')) {
             target = e.path[i];
             if (target.style.left === '' || target.style.top === '') {
                 target.style.left = 0 + 'px'; // место клика на экране
-                target.style.top = -360 + 'px';
+                target.style.top = -divForImagesHeight + 'px';
             }
             target.classList.add('dragging');
-            x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
+            i = e.clientX - target.style.left.slice(0, -2); // место клика на экране
             y = e.clientY - target.style.top.slice(0, -2);
             return;
         }
     }
 });
 
-var fitTextBoxSize = function () {
-    var text_div = document.getElementById('draggable');
-    var text_image = document.getElementById('text_image');
-    var new_w = Math.round(text_image.getBoundingClientRect().width) + 'px';
-    var new_h = Math.round(text_image.getBoundingClientRect().height) + 'px';
-    text_div.style.width = new_w;
-    text_div.style.height = new_h;
+let fitTextBoxSize = function () {
+    let textDiv = document.getElementById('draggable');
+    let textImage = document.getElementById('text-image');
+    let newW = Math.round(textImage.getBoundingClientRect().width) + 'px';
+    let newH = Math.round(textImage.getBoundingClientRect().height) + 'px';
+    textDiv.style.width = newW;
+    textDiv.style.height = newH;
 }
 
-var counter = 0;
+let counter = 0;
 
 document.addEventListener('mouseup', function() {
-    if (target !== null) target.classList.remove('dragging');
+    if (target !== null) {
+        target.classList.remove('dragging');
+    }
     target = null;
     counter += 1;
 });
 document.addEventListener('mousemove', function(e) {
     if (target === null) return;
-    target.style.left = e.clientX - x + 'px';
+    target.style.left = e.clientX - i + 'px';
     target.style.top = e.clientY - y + 'px';
-    var pRect = target.parentElement.getBoundingClientRect();
-    var tgtRect = target.getBoundingClientRect();
-    if (tgtRect.left < pRect.left) target.style.left = 0;
-    if (tgtRect.top < pRect.top) target.style.top = -360+'px';
-    if (tgtRect.right > pRect.right) target.style.left = pRect.width - tgtRect.width + 'px';
-    if (tgtRect.bottom > pRect.bottom) target.style.top = pRect.height - tgtRect.height -360 + 'px';
+    let pRect = target.parentElement.getBoundingClientRect();
+    let tgtRect = target.getBoundingClientRect();
+    let divForImagesHeight = document.getElementById('div-for-images').getBoundingClientRect().height;
+    if (tgtRect.left < pRect.left) {
+        target.style.left = 0;
+    }
+    if (tgtRect.top < pRect.top) {
+        target.style.top = -Math.round(divForImagesHeight) + 'px';
+    }
+    if (tgtRect.right > pRect.right) {
+        target.style.left = pRect.width - tgtRect.width + 'px';
+    }
+    if (tgtRect.bottom > pRect.bottom) {
+        target.style.top = pRect.height - tgtRect.height - Math.round(divForImagesHeight) + 'px';
+    }
 });
 /*#endregion*/
 
+const availableFonts = [
+    "Tahoma",
+    "Great Vibes",
+    "Georgia",
+    "EB Garamond",
+    "Jost",
+    "Pattaya",
+    "Playfair Display",
+    "Roboto"
+];
+
+if (window.document.fonts && window.document.fonts.load) {
+    availableFonts.forEach((font) => window.document.fonts.load(`16px ${font}`));
+}
+
+const btn = document.getElementById("generate-btn");
+
+btn.addEventListener("click", async () => {
+    btn.setAttribute("disabled", "true");
+    await generateImage();
+    btn.removeAttribute("disabled");
+});
+
+const dpr = window.devicePixelRatio || 1;
+
+async function generateImage() {
+    const text = document.getElementById("text-input").value;
+    const font = document.getElementById("font-select").selectedOptions[0]
+        .textContent;
+    const size = document.getElementById("size-input").value;
+    if (!text) {
+        return;
+    }
+    const imageBlob = await textToBitmap(text, font, size);
+    const imageUrl = URL.createObjectURL(imageBlob);
+    const image = document.getElementById('text-image');
+    image.src = imageUrl;
+}
+
+function textToBitmap(text, font, size) {
+    const canvas = window.document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.font = `${size * dpr}px "${font}"`;
+    const {
+        actualBoundingBoxLeft,
+        actualBoundingBoxRight,
+        fontBoundingBoxAscent,
+        fontBoundingBoxDescent,
+        actualBoundingBoxAscent,
+        actualBoundingBoxDescent,
+        width
+    } = ctx.measureText(text);
+    canvas.height = Math.max(
+        Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
+        ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
+
+    canvas.width = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight);
+
+    let dfi = document.getElementById("div-for-images").getBoundingClientRect();
+    if (dfi.width < canvas.width) {
+        let dsk = dfi.width / canvas.width;
+        console.log(dsk)
+        size *= dsk;
+        canvas.height *= dsk;
+        canvas.width *= dsk;
+    }
+    if (dfi.height < canvas.height) {
+        let dsk = dfi.height / canvas.height;
+        size *= dsk;
+        canvas.height *= dsk;
+        canvas.width *= dsk;
+    }
+
+    ctx.font = `${size * dpr}px "${font}"`;
+    ctx.textBaseline = "top";
+    ctx.fillText(text, 0, 0);
+    return new Promise((resolve) => {
+        canvas.toBlob(resolve);
+    });
+}
