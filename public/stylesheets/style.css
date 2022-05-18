@@ -1,30 +1,99 @@
 body {
-  background-image: url(../images/background1.jpg);
-  font-family: Arial, Helvetica, sans-serif;
+  background-image: url(../images/back-light.jpg);
+  font-family: "Comic Sans MS", cursive, sans-serif;
   margin-left: auto;
   margin-right: auto;
 }
 
-button, .button-like {
+.page-button {
   align-items: center;
   text-align: center;
   justify-content: center;
+  margin: 10px 20px;
   width: 150px;
-  height: 100px;
-  border: 5px solid #0cb2a1;
-  background: #43e1d7;
+  height: 80px;
+  border: 5px solid #0b7481;
+  background: #A5E4EC;
+  border-radius: 30%;
   border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
-  box-shadow: 15px 15px 50px rgba(0,0,0,0.2);
-  animation: anim-button 10s infinite;
+  box-shadow: 15px 15px 50px rgba(192, 247, 250, 0.48);
   font: italic small-caps bold 20px cursive;
-  color: #014941;
+  color: #012138;
   font-weight: 1200;
-  position: absolute;
+  display: inline-block;
   /*vertical-align: bottom;*/
+}
+
+#upload-b {
+  padding-top: 5px;
+  width: 140px;
+  height: 70px;
 }
 
 #upload-b-button {
   visibility: hidden;
+}
+
+.page-button:hover {
+  animation: anim-button 10s infinite;
+}
+
+#start-buttons {
+  top: calc(50% - 50px);
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.text-generator-form form {
+  display: inline-block;
+  margin: 5px auto;
+  width: 100%;
+}
+
+.form-content {
+  list-style-type: none;
+  padding: 0;
+  display: inline-block;
+  width: 80%;
+  margin: 0 auto;
+  text-align: right;
+}
+
+.form-field {
+  -ms-box-sizing:content-box;
+  -moz-box-sizing:content-box;
+  -webkit-box-sizing:content-box;
+  box-sizing:content-box;
+
+  width: 90%;
+  margin: 5px 0;
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid #0b7481;
+  color: white;
+  background: rgba(36, 37, 42, 0.6);
+}
+
+.form-field option {
+  background: #0e1321;
+  margin: 10px;
+}
+
+#generate-btn {
+  border: 1px solid rgba(10, 180, 180, 1);
+  background: rgba(68, 86, 96, 0.6);
+  font: italic small-caps bold 18px cursive;
+  color: #0e1321;
+  margin: 20px auto;
+  padding: 8px 50px;
+  transition: .4s;
+}
+
+#generate-btn:hover {
+  background-color: #0e1321;
+  color: #A5E4EC;
 }
 
 @keyframes anim-button {
@@ -45,39 +114,11 @@ button, .button-like {
 }
 /*#endregion*/
 
-/*#region Положение кнопочек*/
-#generate-b, #upload-b, #gallery-b {
-  top: calc(50% - 42px);
+.editor-page-buttons {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
-
-#upload-b {
-  left: calc(50% - 225px - 60px);
-}
-
-#gallery-b {
-  left: calc(50% + 75px + 60px);
-}
-/*кнопка по центру, относительно нее другие*/
-#generate-b {
-  left: calc(50% - 75px);
-}
-
-#download-b, #back-b {
-  visibility: hidden;
-  position: absolute;
-  bottom: 0;
-  display: inline-block;
-}
-
-#download-b {
-  left: calc(50% - 160px);
-  /*vertical-align: bottom;*/
-}
-
-#back-b {
-  left: calc(50% + 10px);
-}
-/*#endregion*/
 
 /*#region Состояния*/
 .second-state {
@@ -109,33 +150,16 @@ button, .button-like {
   height: 0;
 }
 
-.div-for-images {
+.div-for-images, .form-for-text-editing {
   /*margin-top: 15px;*/
-  border: 5px solid #0cb2a1;
+  border: 5px solid #0b7481;
   margin-left: auto;
   margin-right: auto;
-  background-color: #11bea7;
+  background-color: #A5E4EC;
 }
-
-#div_ {
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#app {
-  visibility: hidden;
-  margin-left: auto;
-  margin-right: auto;
-  height: 200px;
-  background-color: #43e1d7;
-  border: 5px solid #0cb2a1;
-}
-
 
 .editor-block {
-  margin-left: auto;
-  margin-right: auto;
+  margin: 10px auto;
 }
 
 #meme-container {
@@ -238,11 +262,10 @@ label {
         -> сверху див для картикок, снизу - для текста */
   body {
     text-align: center;
-
     margin-left: auto;
     margin-right: auto;
   }
-  .div-for-images, .div-for-text-editing {
+  .div-for-images, .form-for-text-editing {
     display: inline-block;
     vertical-align: top;
     margin-left: auto;
@@ -255,11 +278,25 @@ label {
 }
 
 @media (max-width: 700px) {
-  .div-for-images, .div-for-text-editing {
+  .div-for-images, .form-for-text-editing {
     display: block;
     vertical-align: top;
     margin-left: auto;
     margin-right: auto;
+  }
+  .form-for-text-editing {
+    display: inline-block;
+    text-align: center;
+  }
+  .form-for-text-editing form{
+    margin: 0 auto;
+  }
+  #start-buttons {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 25px;
+    left: calc(50% - 75px);
   }
   #div_ {
     display: block;

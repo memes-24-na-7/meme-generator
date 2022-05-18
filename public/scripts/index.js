@@ -8,6 +8,8 @@ let generatePressed = function () {
 };
 
 let backPressed = function () {
+    console.log(document.getElementById('mem-image'));
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
     document.querySelectorAll('.second-state').forEach(function (elem) {
             elem.style.visibility = 'hidden';
         });
@@ -51,31 +53,34 @@ let resizeEditorWindows = function (width, height) {
     let memeImage = document.getElementById('mem-image');
     memeImage.style.width = width;
     memeImage.style.height = height;
-    document.getElementById('app').style.width = width;
+    document.getElementById('text-generator-form').style.width = width;
     document.querySelectorAll('.editor-block').forEach(function (elem) {
         elem.style.width = width;
-        elem.style.height = height;
         // TODO: При "широком" положении не надо менять размер текстового дива, он должен быть постоянным
     });
-    // document.getElementById('app')
+    document.getElementById('div-for-images').style.height = height;
     let draggable = document.getElementById('draggable');
     draggable.style.top = '-' + height;
     draggable.style.left = '0px';
 };
 
 let adaptImgSize = function() {
+    console.log(this.width, this.height);
     let memeWidth = this.width;
     let memeHeight = this.height;
-    let maxWidth = document.body.clientWidth * 0.9;
+    let maxWidth = window.screen.width * 0.9;
+    console.log(maxWidth);
     if (memeWidth > maxWidth) {
         memeHeight = maxWidth * memeHeight / memeWidth;
         memeWidth = maxWidth;
     }
-    let maxHeight = document.body.clientHeight * 0.65;
+    let maxHeight = window.screen.height * 0.65;
+    console.log(maxHeight);
     if (memeHeight > maxHeight) {
         memeWidth = maxHeight * memeWidth / memeHeight;
         memeHeight = maxHeight;
     }
+    console.log(memeWidth, memeHeight);
     resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
 };
 

@@ -8,13 +8,14 @@
     <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
-    <button onclick="generatePressed()" id="generate-b" class="first-state"> generate </button>
-    <label id="upload-b" class="button-like first-state">
-        <input id="upload-b-button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
-        upload pic
-    </label>
-
-    <button id="gallery-b" class="first-state">gallery</button>
+    <div id="start-buttons" class="first-state">
+        <label id="upload-b" class="page-button">
+            <input id="upload-b-button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
+            upload pic
+        </label>
+        <button onclick="generatePressed()" id="generate-b" class="page-button">random</button>
+        <button id="gallery-b" class="page-button">gallery</button>
+    </div>
     <div id="myModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -51,7 +52,6 @@
         <img id="expandedImg" style="width:100%">
         <div id="imgtext"></div>
     </div>
-  
     <div id="div-for-images" class="div-for-images editor-block second-state">
         <div id="meme-container">
             <img alt="mem image" id='mem-image'>
@@ -62,33 +62,42 @@
             </div>
         </div>
     </div>
-    <div id='div_' class="editor-block">
-        <div id="app" class="div-for-text-editing  second-state">
-            <h1>Create Images from Text</h1>
-            <form>
-                <label>Enter text:
-                    <input type="text" id="text-input">
-                </label>
-                <label>Font:
-                    <select id="font-select">
-                        <option>Tahoma</option>
-                        <option>Great Vibes</option>
-                        <option>Georgia</option>
-                        <option>EB Garamond</option>
-                        <option>Jost</option>
-                        <option>Pattaya</option>
-                        <option>Playfair Display</option>
-                        <option>Roboto</option>
-                    </select>
-                </label>
-                <label>Size:
-                    <input type="number" id="size-input" value="100">
-                </label>
-                <button type="button" id="generate-btn">Generate</button>
-            </form>
-        </div>
-        <button onclick="backPressed()" id='back-b' class='second-state'> back </button>
-        <button onclick="downloadResult()" id='download-b' class='second-state'> download </button>
+    <div id="text-generator-form">
+        <form class="form-for-text-editing editor-block second-state">
+            <h1>Add your text:</h1>
+            <ul class="form-content">
+                <li>
+                    <label>Enter text:
+                        <input type="text" id="text-input" class="form-field">
+                    </label>
+                </li>
+                <li>
+                    <label>Font:
+                        <select id="font-select" class="form-field">
+                            <option>Tahoma</option>
+                            <option>Great Vibes</option>
+                            <option>Georgia</option>
+                            <option>EB Garamond</option>
+                            <option>Jost</option>
+                            <option>Pattaya</option>
+                            <option>Playfair Display</option>
+                            <option>Roboto</option>
+                        </select>
+                    </label>
+                </li>
+                <li>
+                    <label>Size:
+                        <input type="number" id="size-input" value="100" class="form-field">
+                    </label>
+                </li>
+            </ul>
+            <button type="button" id="generate-btn">Generate</button>
+        </form>
+    </div>
+
+    <div class="second-state editor-page-buttons">
+        <button onclick="backPressed()" id='back-b' class='page-button second-state'> back </button>
+        <button onclick="downloadResult()" id='download-b' class='page-button second-state'> download </button>
     </div>
 
     <script src="../public/scripts/index.js"></script>
