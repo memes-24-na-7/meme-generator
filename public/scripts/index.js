@@ -9,10 +9,10 @@ let generatePressed = function () {
 
 let backPressed = function () {
     document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.display = 'none';
+            elem.style.visibility = 'hidden';
         });
     document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.display = 'block';
+            elem.style.visibility = 'visible';
         });
 };
 
@@ -51,10 +51,13 @@ let resizeEditorWindows = function (width, height) {
     let memeImage = document.getElementById('mem-image');
     memeImage.style.width = width;
     memeImage.style.height = height;
-    document.getElementById('div-for-images').style.height = height;
+    document.getElementById('app').style.width = width;
     document.querySelectorAll('.editor-block').forEach(function (elem) {
         elem.style.width = width;
+        elem.style.height = height;
+        // TODO: При "широком" положении не надо менять размер текстового дива, он должен быть постоянным
     });
+    // document.getElementById('app')
     let draggable = document.getElementById('draggable');
     draggable.style.top = '-' + height;
     draggable.style.left = '0px';
@@ -87,12 +90,11 @@ let launchEditor = function (imgSrc) {
     if (checkImgSize(img)) {
         document.getElementById('mem-image').src = imgSrc;
         img.onload = adaptImgSize;
-
-        document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.display = 'block';
-        });
         document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.display = 'none';
+            elem.style.visibility = 'hidden';
+        });
+        document.querySelectorAll('.second-state').forEach(function (elem) {
+            elem.style.visibility = 'visible';
         });
     }
 };

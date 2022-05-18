@@ -1,6 +1,8 @@
 body {
   background-image: url(../images/background1.jpg);
   font-family: Arial, Helvetica, sans-serif;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 button, .button-like {
@@ -18,6 +20,7 @@ button, .button-like {
   color: #014941;
   font-weight: 1200;
   position: absolute;
+  /*vertical-align: bottom;*/
 }
 
 #upload-b-button {
@@ -45,7 +48,6 @@ button, .button-like {
 /*#region Положение кнопочек*/
 #generate-b, #upload-b, #gallery-b {
   top: calc(50% - 42px);
-  display: inline-block;
 }
 
 #upload-b {
@@ -61,13 +63,15 @@ button, .button-like {
 }
 
 #download-b, #back-b {
-  /*bottom: 10px; !*calc(10%);*!*/
-  margin-top: 15px;
-  display: none;
+  visibility: hidden;
+  position: absolute;
+  bottom: 0;
+  display: inline-block;
 }
 
 #download-b {
   left: calc(50% - 160px);
+  /*vertical-align: bottom;*/
 }
 
 #back-b {
@@ -77,7 +81,7 @@ button, .button-like {
 
 /*#region Состояния*/
 .second-state {
-  display:none
+  visibility: hidden;
 }
 .first-state {
 }
@@ -97,7 +101,7 @@ button, .button-like {
 
 .text-img {
   pointer-events: none;
-  margin-top: -15px;
+  /*margin-top: -5px;*/
   /*margin-left: -5px;*/
 }
 
@@ -105,24 +109,25 @@ button, .button-like {
   height: 0;
 }
 
-.dragger::before {
-  content: "";
-  display: inline-block;
-}
-
 .div-for-images {
-  margin-top: 15px;
+  /*margin-top: 15px;*/
   border: 5px solid #0cb2a1;
   margin-left: auto;
   margin-right: auto;
   background-color: #11bea7;
 }
 
+#div_ {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #app {
-  margin-top: 15px;
-  display: none;
+  visibility: hidden;
+  margin-left: auto;
+  margin-right: auto;
   height: 200px;
-  width: 640px;
   background-color: #43e1d7;
   border: 5px solid #0cb2a1;
 }
@@ -219,3 +224,47 @@ button, .button-like {
 .image img:hover {
   opacity: 1;
 }
+
+label {
+  display: block;
+}
+
+@media (min-width: 700px) {
+  /* ЗДЕСЬ - СТИЛИ ДЛЯ ШИРОКОЙ ВКЛАДОЧКИ */
+  /* ЗАДУМКА
+     {Обычное окно (на всю ширину компа)} || {Горизонтальная картинка}
+        -> слева див для картинок, правее - для текста
+     {Окно уже 700пх} || {длинная картинка (соотношение длины к ширине больше либо равно 16/9)}
+        -> сверху див для картикок, снизу - для текста */
+  body {
+    text-align: center;
+
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .div-for-images, .div-for-text-editing {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #div_ {
+    display: inline-block;
+  }
+  /* TODO: после изменения внешнего вида подвинуть кнопочки */
+}
+
+@media (max-width: 700px) {
+  .div-for-images, .div-for-text-editing {
+    display: block;
+    vertical-align: top;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #div_ {
+    display: block;
+  }
+
+}
+
+/* TODO: Съехал текст (ниже дает ставиться) */
