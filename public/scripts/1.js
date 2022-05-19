@@ -3,68 +3,27 @@ let imageType = '';
 
 let generatePressed = function () {
     imageType = 'image/png';
-    let number = getRandomInt(7) + 1;
-    launchEditor(`../public/images/${number}.png`);
+    //let number = getRandomInt(7) + 1;
+    //launchEditor(`../public/images/${number}.png`);
+    fetch("https://api.imgflip.com/get_memes")
+        .then(res => res.json())
+        .then(result => {
+            let randNumber = getRandomInt(100);
+            launchWithImageUrl(result.data.memes[randNumber].url);
+        })
+        .catch(err => console.log(err));
 };
 
 let backPressed = function () {
-    document.body.scrollTop = document.documentElement.scrollTop = 0;
     document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.visibility = 'hidden';
-        });
+        elem.style.display = 'none';
+    });
     document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.visibility = 'visible';
-        });
-    document.getElementById('text-image').src = '../public/images/logo.png';
-    document.getElementById("text-input").value = '';
-    document.getElementById("font-select").value = 'Tahoma';
-    document.getElementById("size-input").value = 100;
+        elem.style.display = 'block';
+    });
 };
 
-let downloadImgToGallery = function() {
-    fetch("https://api.imgflip.com/get_memes")
-      .then(res => res.json())
-      .then(result => {
-          let counter = parseFloat(document.getElementById('counter').textContent);
-          for(i = counter * 10; i < counter * 10 + 10; i++)
-          {
-              let newImageDiv = document.createElement('div');
-              newImageDiv.className = "image";
-              let img = document.createElement('img');
-              img.src = result.data.memes[i].url;
-              //img.id = `img${i}`;
-              //document.getElementById(`img${i}`).onclick = chooseImage(img);
-              img.setAttribute('onclick', 'chooseImage(this)');
-              img.style.width = "100%";
-              newImageDiv.appendChild(img);
-              //newImageDiv.innerHTML += `<img src=${result.data.memes[i].url} onclick="chooseImage(this);" style="width:100%">`;
-              // для картинок локально (for(i = 1; i <= 7; i++))
-              //board.innerHTML += `<img src='../public/images/${x}.png' onclick="chooseImage(this);" style="width:100%">`;
-              document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
-          }
-          document.getElementById('counter').textContent = (counter + 1).toString();
-      })
-      .catch(err => console.log(err));
-};
 
-let launchWithImageUrl = function(url) {
-    const img = new Image();
-    img.setAttribute('crossOrigin', 'anonymous');
-    img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL("image/png");
-        launchEditor(dataURL);
-    }
-    img.src = url
-}
-
-let getRandomInt = function (max) {
-    return Math.floor(Math.random() * max);
-};
 
 let uploadMeme = function (file) {
     if (!file) {
@@ -97,12 +56,10 @@ let resizeEditorWindows = function (width, height) {
     let memeImage = document.getElementById('mem-image');
     memeImage.style.width = width;
     memeImage.style.height = height;
-    document.getElementById('text-generator-form').style.width = width;
+    document.getElementById('div-for-images').style.height = height;
     document.querySelectorAll('.editor-block').forEach(function (elem) {
         elem.style.width = width;
-        // TODO: При "широком" положении не надо менять размер текстового дива, он должен быть постоянным
     });
-    document.getElementById('div-for-images').style.height = height;
     let draggable = document.getElementById('draggable');
     draggable.style.top = '-' + height;
     draggable.style.left = '0px';
@@ -111,12 +68,12 @@ let resizeEditorWindows = function (width, height) {
 let adaptImgSize = function() {
     let memeWidth = this.width;
     let memeHeight = this.height;
-    let maxWidth = window.screen.width * 0.9;
+    let maxWidth = document.body.clientWidth * 0.9;
     if (memeWidth > maxWidth) {
         memeHeight = maxWidth * memeHeight / memeWidth;
         memeWidth = maxWidth;
     }
-    let maxHeight = window.screen.height * 0.65;
+    let maxHeight = document.body.clientHeight * 0.65;
     if (memeHeight > maxHeight) {
         memeWidth = maxHeight * memeWidth / memeHeight;
         memeHeight = maxHeight;
@@ -130,23 +87,25 @@ let checkImgSize = function (img) {
 };
 
 let launchEditor = function (imgSrc) {
+    console.log(imgSrc);
     let img = new Image();
     img.src = imgSrc;
     if (checkImgSize(img)) {
         document.getElementById('mem-image').src = imgSrc;
         img.onload = adaptImgSize;
-        document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.visibility = 'hidden';
-        });
+
         document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.visibility = 'visible';
+            elem.style.display = 'block';
+        });
+        document.querySelectorAll('.first-state').forEach(function (elem) {
+            elem.style.display = 'none';
         });
     }
 };
 /*#endregion*/
 
 /*#region Для передвижения и изменения размера контейнера текста*/
-let x, y, target = null;
+let i, y, target = null;
 
 document.addEventListener('mousedown', function(e) {
     fitTextBoxSize();
@@ -159,7 +118,7 @@ document.addEventListener('mousedown', function(e) {
                 target.style.top = -divForImagesHeight + 'px';
             }
             target.classList.add('dragging');
-            x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
+            i = e.clientX - target.style.left.slice(0, -2); // место клика на экране
             y = e.clientY - target.style.top.slice(0, -2);
             return;
         }
@@ -186,7 +145,7 @@ document.addEventListener('mouseup', function() {
 });
 document.addEventListener('mousemove', function(e) {
     if (target === null) return;
-    target.style.left = e.clientX - x + 'px';
+    target.style.left = e.clientX - i + 'px';
     target.style.top = e.clientY - y + 'px';
     let pRect = target.parentElement.getBoundingClientRect();
     let tgtRect = target.getBoundingClientRect();
