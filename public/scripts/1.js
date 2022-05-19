@@ -3,63 +3,27 @@ let imageType = '';
 
 let generatePressed = function () {
     imageType = 'image/png';
-    let number = getRandomInt(7) + 1;
-    launchEditor(`../public/images/${number}.png`);
+    //let number = getRandomInt(7) + 1;
+    //launchEditor(`../public/images/${number}.png`);
+    fetch("https://api.imgflip.com/get_memes")
+        .then(res => res.json())
+        .then(result => {
+            let randNumber = getRandomInt(100);
+            launchWithImageUrl(result.data.memes[randNumber].url);
+        })
+        .catch(err => console.log(err));
 };
 
 let backPressed = function () {
     document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.display = 'none';
-        });
+        elem.style.display = 'none';
+    });
     document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.display = 'block';
-        });
+        elem.style.display = 'block';
+    });
 };
 
-let downloadImgToGallery = function() {
-    fetch("https://api.imgflip.com/get_memes")
-      .then(res => res.json())
-      .then(result => {
-          let counter = parseFloat(document.getElementById('counter').textContent);
-          for(i = counter * 10; i < counter * 10 + 10; i++)
-          {
-              let newImageDiv = document.createElement('div');
-              newImageDiv.className = "image";
-              let img = document.createElement('img');
-              img.src = result.data.memes[i].url;
-              //img.id = `img${i}`;
-              //document.getElementById(`img${i}`).onclick = chooseImage(img);
-              img.setAttribute('onclick', 'chooseImage(this)');
-              img.style.width = "100%";
-              newImageDiv.appendChild(img);
-              //newImageDiv.innerHTML += `<img src=${result.data.memes[i].url} onclick="chooseImage(this);" style="width:100%">`;
-              // для картинок локально (for(i = 1; i <= 7; i++))
-              //board.innerHTML += `<img src='../public/images/${x}.png' onclick="chooseImage(this);" style="width:100%">`;
-              document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
-          }
-          document.getElementById('counter').textContent = (counter + 1).toString();
-      })
-      .catch(err => console.log(err));
-};
 
-let launchWithImageUrl = function(url) {
-    const img = new Image();
-    img.setAttribute('crossOrigin', 'anonymous');
-    img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL("image/png");
-        launchEditor(dataURL);
-    }
-    img.src = url
-}
-
-let getRandomInt = function (max) {
-    return Math.floor(Math.random() * max);
-};
 
 let uploadMeme = function (file) {
     if (!file) {
@@ -123,6 +87,7 @@ let checkImgSize = function (img) {
 };
 
 let launchEditor = function (imgSrc) {
+    console.log(imgSrc);
     let img = new Image();
     img.src = imgSrc;
     if (checkImgSize(img)) {
@@ -140,7 +105,7 @@ let launchEditor = function (imgSrc) {
 /*#endregion*/
 
 /*#region Для передвижения и изменения размера контейнера текста*/
-let x, y, target = null;
+let i, y, target = null;
 
 document.addEventListener('mousedown', function(e) {
     fitTextBoxSize();
@@ -153,7 +118,7 @@ document.addEventListener('mousedown', function(e) {
                 target.style.top = -divForImagesHeight + 'px';
             }
             target.classList.add('dragging');
-            x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
+            i = e.clientX - target.style.left.slice(0, -2); // место клика на экране
             y = e.clientY - target.style.top.slice(0, -2);
             return;
         }
@@ -180,7 +145,7 @@ document.addEventListener('mouseup', function() {
 });
 document.addEventListener('mousemove', function(e) {
     if (target === null) return;
-    target.style.left = e.clientX - x + 'px';
+    target.style.left = e.clientX - i + 'px';
     target.style.top = e.clientY - y + 'px';
     let pRect = target.parentElement.getBoundingClientRect();
     let tgtRect = target.getBoundingClientRect();
