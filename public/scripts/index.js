@@ -14,6 +14,10 @@ let backPressed = function () {
     document.querySelectorAll('.first-state').forEach(function (elem) {
             elem.style.display = 'block';
         });
+    document.getElementById('text-image').src = '../public/images/logo.png';
+    document.getElementById("text-input").value = '';
+    document.getElementById("font-select").value = 'Tahoma';
+    document.getElementById("size-input").value = 100;
 };
 
 let getRandomInt = function (max) {
