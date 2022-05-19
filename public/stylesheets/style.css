@@ -220,3 +220,7 @@ button, .button-like {
 .image img:hover {
   opacity: 1;
 }
+
+#next-b {
+  left: auto;
+}
