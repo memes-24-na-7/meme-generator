@@ -3,8 +3,13 @@ let imageType = '';
 
 let generatePressed = function () {
     imageType = 'image/png';
-    let number = getRandomInt(7) + 1;
-    launchEditor(`../public/images/${number}.png`);
+    fetch("https://api.imgflip.com/get_memes")
+      .then(res => res.json())
+      .then(result => {
+          let randNumber = getRandomInt(100);
+          launchWithImageUrl(result.data.memes[randNumber].url);
+      })
+      .catch(err => console.log(err));
 };
 
 let backPressed = function () {
