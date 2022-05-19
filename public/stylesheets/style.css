@@ -1,5 +1,6 @@
 body {
   background-image: url(../images/back-light.jpg);
+  text-align: center;
   font-family: "Comic Sans MS", cursive, sans-serif;
   margin-left: auto;
   margin-right: auto;
@@ -267,7 +268,6 @@ label {
      {Окно уже 700пх} || {длинная картинка (соотношение длины к ширине больше либо равно 16/9)}
         -> сверху див для картикок, снизу - для текста */
   body {
-    text-align: center;
     margin-left: auto;
     margin-right: auto;
   }

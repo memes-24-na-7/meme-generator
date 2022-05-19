@@ -98,8 +98,8 @@
     </div>
 
     <div class="second-state editor-page-buttons">
-        <button onclick="backPressed()" id='back-b' class='page-button second-state'> back </button>
-        <button onclick="downloadResult()" id='download-b' class='page-button second-state'> download </button>
+        <button onclick="backPressed()" id='back-b' class='page-button'> back </button>
+        <button onclick="downloadResult()" id='download-b' class='page-button'> download </button>
     </div>
 
     <script src="../public/scripts/index.js"></script>
@@ -121,7 +121,6 @@
         html2canvas(document.getElementById('meme-container')).then(function(canvas) {
           let a = document.createElement('a');
           let imageType = 'image/png';
-          console.log(imageType);
           a.href = canvas.toDataURL(imageType, 0.9).replace(imageType, "image/octet-stream");
           a.download = 'your-meme.' + imageType.split('/')[1];
           a.click();

@@ -8,7 +8,6 @@ let generatePressed = function () {
 };
 
 let backPressed = function () {
-    console.log(document.getElementById('mem-image'));
     document.body.scrollTop = document.documentElement.scrollTop = 0;
     document.querySelectorAll('.second-state').forEach(function (elem) {
             elem.style.visibility = 'hidden';
@@ -65,22 +64,18 @@ let resizeEditorWindows = function (width, height) {
 };
 
 let adaptImgSize = function() {
-    console.log(this.width, this.height);
     let memeWidth = this.width;
     let memeHeight = this.height;
     let maxWidth = window.screen.width * 0.9;
-    console.log(maxWidth);
     if (memeWidth > maxWidth) {
         memeHeight = maxWidth * memeHeight / memeWidth;
         memeWidth = maxWidth;
     }
     let maxHeight = window.screen.height * 0.65;
-    console.log(maxHeight);
     if (memeHeight > maxHeight) {
         memeWidth = maxHeight * memeWidth / memeHeight;
         memeHeight = maxHeight;
     }
-    console.log(memeWidth, memeHeight);
     resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
 };
 
