@@ -8,11 +8,12 @@ let generatePressed = function () {
 };
 
 let backPressed = function () {
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
     document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.display = 'none';
+            elem.style.visibility = 'hidden';
         });
     document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.display = 'block';
+            elem.style.visibility = 'visible';
         });
     document.getElementById('text-image').src = '../public/images/logo.png';
     document.getElementById("text-input").value = '';
@@ -96,10 +97,12 @@ let resizeEditorWindows = function (width, height) {
     let memeImage = document.getElementById('mem-image');
     memeImage.style.width = width;
     memeImage.style.height = height;
-    document.getElementById('div-for-images').style.height = height;
+    document.getElementById('text-generator-form').style.width = width;
     document.querySelectorAll('.editor-block').forEach(function (elem) {
         elem.style.width = width;
+        // TODO: При "широком" положении не надо менять размер текстового дива, он должен быть постоянным
     });
+    document.getElementById('div-for-images').style.height = height;
     let draggable = document.getElementById('draggable');
     draggable.style.top = '-' + height;
     draggable.style.left = '0px';
@@ -108,12 +111,12 @@ let resizeEditorWindows = function (width, height) {
 let adaptImgSize = function() {
     let memeWidth = this.width;
     let memeHeight = this.height;
-    let maxWidth = document.body.clientWidth * 0.9;
+    let maxWidth = window.screen.width * 0.9;
     if (memeWidth > maxWidth) {
         memeHeight = maxWidth * memeHeight / memeWidth;
         memeWidth = maxWidth;
     }
-    let maxHeight = document.body.clientHeight * 0.65;
+    let maxHeight = window.screen.height * 0.65;
     if (memeHeight > maxHeight) {
         memeWidth = maxHeight * memeWidth / memeHeight;
         memeHeight = maxHeight;
@@ -132,12 +135,11 @@ let launchEditor = function (imgSrc) {
     if (checkImgSize(img)) {
         document.getElementById('mem-image').src = imgSrc;
         img.onload = adaptImgSize;
-
-        document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.display = 'block';
-        });
         document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.display = 'none';
+            elem.style.visibility = 'hidden';
+        });
+        document.querySelectorAll('.second-state').forEach(function (elem) {
+            elem.style.visibility = 'visible';
         });
     }
 };
