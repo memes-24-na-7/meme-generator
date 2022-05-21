@@ -1,5 +1,6 @@
 /*#region Обработка нажатия кнопок*/
 let imageType = '';
+let editorMode = false;
 
 let generatePressed = function () {
     imageType = 'image/png';
@@ -13,17 +14,19 @@ let generatePressed = function () {
 };
 
 let backPressed = function () {
-    document.body.scrollTop = document.documentElement.scrollTop = 0;
-    document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.visibility = 'hidden';
-        });
-    document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.visibility = 'visible';
-        });
-    document.getElementById('text-image').src = '../public/images/logo.png';
-    document.getElementById("text-input").value = '';
-    document.getElementById("font-select").value = 'Tahoma';
-    document.getElementById("size-input").value = 100;
+  document.body.scrollTop = document.documentElement.scrollTop = 0;
+  document.getElementById('generate-btn').style.display = 'none';
+  document.querySelectorAll('.second-state').forEach(function (elem) {
+    elem.style.visibility = 'hidden';
+  });
+  document.querySelectorAll('.first-state').forEach(function (elem) {
+    elem.style.visibility = 'visible';
+  });
+  document.getElementById('text-image').src = '../public/images/logo.png';
+  document.getElementById("text-input").value = '';
+  document.getElementById("font-select").value = 'Tahoma';
+  document.getElementById("size-input").value = 100;
+  editorMode = false;
 };
 
 let downloadImgToGallery = function() {
@@ -62,7 +65,7 @@ let launchWithImageUrl = function(url) {
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
         const dataURL = canvas.toDataURL("image/png");
-        launchEditor(dataURL);
+        loadSrcToEdit(dataURL);
     }
     img.src = url
 }
@@ -83,7 +86,7 @@ let uploadMeme = function (file) {
 
     imageType = file.type;
     let reader = new FileReader();
-    reader.onloadend = () => launchEditor(reader.result);
+    reader.onloadend = () => loadSrcToEdit(reader.result);
     reader.readAsDataURL(file);
 };
 
@@ -102,6 +105,7 @@ let resizeEditorWindows = function (width, height) {
     let memeImage = document.getElementById('mem-image');
     memeImage.style.width = width;
     memeImage.style.height = height;
+    document.getElementById('meme-container').style.height = height;
     document.getElementById('text-generator-form').style.width = width;
     document.querySelectorAll('.editor-block').forEach(function (elem) {
         elem.style.width = width;
@@ -113,20 +117,52 @@ let resizeEditorWindows = function (width, height) {
     draggable.style.left = '0px';
 };
 
+let launchEditorPage = function () {
+  document.getElementById('generate-btn').style.display = 'block';
+  document.querySelectorAll('.first-state').forEach(function (elem) {
+    elem.style.visibility = 'hidden';
+  });
+  document.querySelectorAll('.second-state').forEach(function (elem) {
+    elem.style.visibility = 'visible';
+  });
+}
+
 let adaptImgSize = function() {
-    let memeWidth = this.width;
-    let memeHeight = this.height;
-    let maxWidth = window.screen.width * 0.9;
-    if (memeWidth > maxWidth) {
-        memeHeight = maxWidth * memeHeight / memeWidth;
-        memeWidth = maxWidth;
-    }
-    let maxHeight = window.screen.height * 0.65;
+  let memeWidth = this.width;
+  let memeHeight = this.height;
+  let minWidth = 350;
+  let minHeight = 75;
+  let maxWidth = window.screen.width * 0.9;
+  let maxHeight = window.screen.height * 0.65;
+
+  if (memeWidth < minWidth) {
+    memeHeight = minWidth * memeHeight / memeWidth;
     if (memeHeight > maxHeight) {
-        memeWidth = maxHeight * memeWidth / memeHeight;
-        memeHeight = maxHeight;
+      alert("Your image is too narrow, crop it or choose another one.");
+      return;
     }
-    resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
+    memeWidth = minWidth;
+  }
+
+  if (memeHeight < minHeight) {
+    memeWidth = minHeight * memeWidth / memeHeight;
+    if (memeWidth > maxWidth) {
+      alert("Your image is too wide, crop it or choose another one.");
+      return;
+    }
+    memeHeight = minHeight;
+  }
+
+  if (memeWidth > maxWidth) {
+    memeHeight = maxWidth * memeHeight / memeWidth;
+    memeWidth = maxWidth;
+  }
+  if (memeHeight > maxHeight) {
+    memeWidth = maxHeight * memeWidth / memeHeight;
+    memeHeight = maxHeight;
+  }
+  resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
+  launchEditorPage();
 };
 
 let checkImgSize = function (img) {
@@ -134,19 +170,13 @@ let checkImgSize = function (img) {
     return !(img.width > size || img.height > size);
 };
 
-let launchEditor = function (imgSrc) {
-    let img = new Image();
-    img.src = imgSrc;
-    if (checkImgSize(img)) {
-        document.getElementById('mem-image').src = imgSrc;
-        img.onload = adaptImgSize;
-        document.querySelectorAll('.first-state').forEach(function (elem) {
-            elem.style.visibility = 'hidden';
-        });
-        document.querySelectorAll('.second-state').forEach(function (elem) {
-            elem.style.visibility = 'visible';
-        });
-    }
+let loadSrcToEdit = function (imgSrc) {
+  let img = new Image();
+  img.src = imgSrc;
+  if (checkImgSize(img)) {
+    document.getElementById('mem-image').src = imgSrc;
+    img.onload = adaptImgSize;
+  }
 };
 /*#endregion*/
 
