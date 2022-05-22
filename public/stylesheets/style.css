@@ -4,6 +4,9 @@ body {
   font-family: "Comic Sans MS", cursive, sans-serif;
   margin-left: auto;
   margin-right: auto;
+  --border-color: #0b7481;
+  --text-background: #A5E4EC;
+  --text-color: #ccffe6;
 }
 
 .page-button {
@@ -23,7 +26,38 @@ body {
   font-weight: 1200;
   display: inline-block;
   padding: 0 5px;
-  /*vertical-align: bottom;*/
+  cursor: none;
+}
+
+.page-button:hover {
+    box-shadow: none;
+}
+
+.cursor {
+  position: fixed;
+  top: -50px;
+  z-index: 99;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: none;
+  border: solid 2px var(--text-background);
+  pointer-events: none;
+  transition: transform .3s ease,
+  background .3s ease,
+  border-color .3s ease;
+}
+
+.buttons-container:hover ~ .cursor {
+  mix-blend-mode: difference;
+  transform: scale(1.5);
+  cursor: none;
+  background: var(--text-color);
+  border-color: var(--border-color);
+}
+
+#upload-b-button {
+  display: none;
 }
 
 #upload-b {
@@ -32,17 +66,13 @@ body {
   height: 70px;
 }
 
-#upload-b-button {
-  display: none;
-}
-
 #next-b {
   left: auto;
 }
 
-.page-button:hover {
-  animation: anim-button 10s infinite;
-}
+/*.page-button:hover {*/
+/*  animation: anim-button 10s infinite;*/
+/*}*/
 
 #start-buttons {
   top: calc(50% - 50px);
@@ -80,7 +110,7 @@ body {
   margin: 5px 0;
   font-size: 16px;
   padding: 10px;
-  border: 1px solid #0b7481;
+  border: 1px solid var(--border-color);
   color: white;
   background: rgba(36, 37, 42, 0.6);
 }
@@ -107,7 +137,7 @@ body {
 
 #generate-btn:hover {
   background-color: #0e1321;
-  color: #A5E4EC;
+  color: var(--text-background);
 }
 
 @keyframes anim-button {
@@ -166,10 +196,10 @@ body {
 
 .div-for-images, .form-for-text-editing {
   /*margin-top: 15px;*/
-  border: 5px solid #0b7481;
+  border: 5px solid var(--border-color);
   margin-left: auto;
   margin-right: auto;
-  background-color: #A5E4EC;
+  background-color: var(--text-background);
 }
 
 .editor-block {
@@ -319,4 +349,4 @@ label {
 
 }
 
-/* TODO: Съехал текст (ниже дает ставиться) */
+ /*TODO: Съехал текст (ниже дает ставиться)*/

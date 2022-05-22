@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <title>Memes</title>
     <link rel='stylesheet' href="../public/stylesheets/style.css">
+    <script src="../public/scripts/buttonScript.js"></script>
     <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
-    <div id="start-buttons" class="first-state">
+    <div id="start-buttons" class="first-state buttons-container">
         <label id="upload-b" class="page-button">
             <input id="upload-b-button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
             upload pic
@@ -83,10 +84,12 @@
         </form>
     </div>
 
-    <div class="second-state editor-page-buttons">
+    <div class="second-state editor-page-buttons buttons-container">
         <button onclick="backPressed()" id='back-b' class='page-button'> back </button>
         <button onclick="downloadResult()" id='download-b' class='page-button'> download </button>
     </div>
+
+    <div class="cursor"></div>
 
     <script src="../public/scripts/index.js"></script>
     <script>
