@@ -262,7 +262,7 @@ if (window.document.fonts && window.document.fonts.load) {
     availableFonts.forEach((font) => window.document.fonts.load(`16px ${font}`));
 }
 
-const btn = document.getElementById("generate-btn");
+const btn = document.getElementById('generate-btn');
 
 btn.addEventListener("click", async () => {
     btn.setAttribute("disabled", "true");
@@ -307,6 +307,8 @@ async function generateImage() {
     item.appendChild(del);
     del.textContent = 'X';
     del.style.right = '0';
+    del.classList.add('form-btn');
+    del.classList.add('cross-btn');
     del.addEventListener('click', (evt) => {
         console.log('sas')
         img.remove();
