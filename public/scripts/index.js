@@ -278,16 +278,43 @@ async function generateImage() {
     const font = document.getElementById("font-select").selectedOptions[0]
         .textContent;
     const size = document.getElementById("size-input").value;
+    const color = document.getElementById("text-color").value;
     if (!text) {
         return;
     }
-    const imageBlob = await textToBitmap(text, font, size);
+    const imageBlob = await textToBitmap(text, font, size, color);
     const imageUrl = URL.createObjectURL(imageBlob);
-    const image = document.getElementById('text-image');
-    image.src = imageUrl;
+    // const image = document.getElementById('text-image');
+    const drag = document.createElement('div');
+    document.getElementById('meme-container').appendChild(drag);
+    drag.classList.add('draggable');
+    const dragger = document.createElement('div');
+    drag.appendChild(dragger);
+    dragger.classList.add('dragger');
+    const img = document.createElement('img');
+    dragger.appendChild(img);
+    img.classList.add('text-img');
+    img.src = imageUrl;
+    const id = text + font + size + color
+    img.id = id + 'img';
+
+    const item = document.createElement('li');
+    document.getElementById('text-list').appendChild(item);
+    item.id = id + 'li';
+    item.textContent = `${text} ${font} ${size}px ${color}`;
+    const del = document.createElement('button');
+    del.type = 'button';
+    item.appendChild(del);
+    del.textContent = 'X';
+    del.style.right = '0';
+    del.addEventListener('click', (evt) => {
+        console.log('sas')
+        img.remove();
+        item.remove();
+    })
 }
 
-function textToBitmap(text, font, size) {
+function textToBitmap(text, font, size, color) {
     const canvas = window.document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     ctx.font = `${size * dpr}px "${font}"`;
@@ -323,6 +350,7 @@ function textToBitmap(text, font, size) {
 
     ctx.font = `${size * dpr}px "${font}"`;
     ctx.textBaseline = "top";
+    ctx.fillStyle = color;
     ctx.fillText(text, 0, 0);
     return new Promise((resolve) => {
         canvas.toBlob(resolve);
