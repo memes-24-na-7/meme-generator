@@ -46,20 +46,15 @@ let downloadImgToGallery = function() {
       .then(res => res.json())
       .then(result => {
           let counter = parseFloat(document.getElementById('counter').textContent);
-          for(i = counter * 10; i < counter * 10 + 10; i++)
+          for(let i = counter * 10; i < counter * 10 + 10; i++)
           {
               let newImageDiv = document.createElement('div');
               newImageDiv.className = "image";
               let img = document.createElement('img');
               img.src = result.data.memes[i].url;
-              //img.id = `img${i}`;
-              //document.getElementById(`img${i}`).onclick = chooseImage(img);
               img.setAttribute('onclick', 'chooseImage(this)');
               img.style.width = "100%";
               newImageDiv.appendChild(img);
-              //newImageDiv.innerHTML += `<img src=${result.data.memes[i].url} onclick="chooseImage(this);" style="width:100%">`;
-              // для картинок локально (for(i = 1; i <= 7; i++))
-              //board.innerHTML += `<img src='../public/images/${x}.png' onclick="chooseImage(this);" style="width:100%">`;
               document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
           }
           document.getElementById('counter').textContent = (counter + 1).toString();
