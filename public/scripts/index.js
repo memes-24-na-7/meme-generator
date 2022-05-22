@@ -5,15 +5,14 @@ let editorMode = false;
 let generatePressed = function () {
     imageType = 'image/png';
     fetch("https://api.imgflip.com/get_memes")
-        .then(res => res.json())
-        .then(result => {
-            let randNumber = getRandomInt(100);
-            launchWithImageUrl(result.data.memes[randNumber].url);
-        })
-        .catch(err => console.log(err));
+      .then(res => res.json())
+      .then(result => {
+          let randNumber = getRandomInt(100);
+          launchWithImageUrl(result.data.memes[randNumber].url);
+      })
+      .catch(err => console.log(err));
 };
 
-// TODO: сброс положения текста
 let textToStartPosition = function () {
     let textDiv = document.getElementById('draggable');
     let textImage = document.getElementById('text-image');
@@ -27,45 +26,45 @@ let textToStartPosition = function () {
 }
 
 let backPressed = function () {
-    document.body.scrollTop = document.documentElement.scrollTop = 0;
-    document.getElementById('generate-btn').style.display = 'none';
-    document.querySelectorAll('.second-state').forEach(function (elem) {
-        elem.style.visibility = 'hidden';
-    });
-    document.querySelectorAll('.first-state').forEach(function (elem) {
-        elem.style.visibility = 'visible';
-    });
-    document.getElementById('text-image').src = '../public/images/logo.png';
-    document.getElementById("text-input").value = '';
-    document.getElementById("font-select").value = 'Tahoma';
-    document.getElementById("size-input").value = 100;
-    editorMode = false;
+  document.body.scrollTop = document.documentElement.scrollTop = 0;
+  document.getElementById('generate-btn').style.display = 'none';
+  document.querySelectorAll('.second-state').forEach(function (elem) {
+    elem.style.visibility = 'hidden';
+  });
+  document.querySelectorAll('.first-state').forEach(function (elem) {
+    elem.style.visibility = 'visible';
+  });
+  document.getElementById('text-image').src = '../public/images/logo.png';
+  document.getElementById("text-input").value = '';
+  document.getElementById("font-select").value = 'Tahoma';
+  document.getElementById("size-input").value = 100;
+  editorMode = false;
 };
 
 let downloadImgToGallery = function() {
     fetch("https://api.imgflip.com/get_memes")
-        .then(res => res.json())
-        .then(result => {
-            let counter = parseFloat(document.getElementById('counter').textContent);
-            for(i = counter * 10; i < counter * 10 + 10; i++)
-            {
-                let newImageDiv = document.createElement('div');
-                newImageDiv.className = "image";
-                let img = document.createElement('img');
-                img.src = result.data.memes[i].url;
-                //img.id = `img${i}`;
-                //document.getElementById(`img${i}`).onclick = chooseImage(img);
-                img.setAttribute('onclick', 'chooseImage(this)');
-                img.style.width = "100%";
-                newImageDiv.appendChild(img);
-                //newImageDiv.innerHTML += `<img src=${result.data.memes[i].url} onclick="chooseImage(this);" style="width:100%">`;
-                // для картинок локально (for(i = 1; i <= 7; i++))
-                //board.innerHTML += `<img src='../public/images/${x}.png' onclick="chooseImage(this);" style="width:100%">`;
-                document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
-            }
-            document.getElementById('counter').textContent = (counter + 1).toString();
-        })
-        .catch(err => console.log(err));
+      .then(res => res.json())
+      .then(result => {
+          let counter = parseFloat(document.getElementById('counter').textContent);
+          for(i = counter * 10; i < counter * 10 + 10; i++)
+          {
+              let newImageDiv = document.createElement('div');
+              newImageDiv.className = "image";
+              let img = document.createElement('img');
+              img.src = result.data.memes[i].url;
+              //img.id = `img${i}`;
+              //document.getElementById(`img${i}`).onclick = chooseImage(img);
+              img.setAttribute('onclick', 'chooseImage(this)');
+              img.style.width = "100%";
+              newImageDiv.appendChild(img);
+              //newImageDiv.innerHTML += `<img src=${result.data.memes[i].url} onclick="chooseImage(this);" style="width:100%">`;
+              // для картинок локально (for(i = 1; i <= 7; i++))
+              //board.innerHTML += `<img src='../public/images/${x}.png' onclick="chooseImage(this);" style="width:100%">`;
+              document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
+          }
+          document.getElementById('counter').textContent = (counter + 1).toString();
+      })
+      .catch(err => console.log(err));
 };
 
 let launchWithImageUrl = function(url) {
@@ -125,56 +124,56 @@ let resizeEditorWindows = function (width, height) {
     });
     document.getElementById('div-for-images').style.height = height;
     let draggable = document.getElementById('draggable');
-    draggable.style.top = '-' + height.slice(0, -2) - 5 + "px"; // TODO:
+    draggable.style.top = '-' + height.slice(0, -2) - 5 + "px";
     draggable.style.left = '0px';
 };
 
 let launchEditorPage = function () {
-    document.getElementById('generate-btn').style.display = 'block';
-    document.querySelectorAll('.first-state').forEach(function (elem) {
-        elem.style.visibility = 'hidden';
-    });
-    document.querySelectorAll('.second-state').forEach(function (elem) {
-        elem.style.visibility = 'visible';
-    });
+  document.getElementById('generate-btn').style.display = 'block';
+  document.querySelectorAll('.first-state').forEach(function (elem) {
+    elem.style.visibility = 'hidden';
+  });
+  document.querySelectorAll('.second-state').forEach(function (elem) {
+    elem.style.visibility = 'visible';
+  });
 }
 
 let adaptImgSize = function() {
-    let memeWidth = this.width;
-    let memeHeight = this.height;
-    let minWidth = 350;
-    let minHeight = 75;
-    let maxWidth = window.screen.width * 0.9;
-    let maxHeight = window.screen.height * 0.65;
+  let memeWidth = this.width;
+  let memeHeight = this.height;
+  let minWidth = 350;
+  let minHeight = 75;
+  let maxWidth = window.screen.width * 0.9;
+  let maxHeight = window.screen.height * 0.65;
 
-    if (memeWidth < minWidth) {
-        memeHeight = minWidth * memeHeight / memeWidth;
-        if (memeHeight > maxHeight) {
-            alert("Your image is too narrow, crop it or choose another one.");
-            return;
-        }
-        memeWidth = minWidth;
-    }
-
-    if (memeHeight < minHeight) {
-        memeWidth = minHeight * memeWidth / memeHeight;
-        if (memeWidth > maxWidth) {
-            alert("Your image is too wide, crop it or choose another one.");
-            return;
-        }
-        memeHeight = minHeight;
-    }
-
-    if (memeWidth > maxWidth) {
-        memeHeight = maxWidth * memeHeight / memeWidth;
-        memeWidth = maxWidth;
-    }
+  if (memeWidth < minWidth) {
+    memeHeight = minWidth * memeHeight / memeWidth;
     if (memeHeight > maxHeight) {
-        memeWidth = maxHeight * memeWidth / memeHeight;
-        memeHeight = maxHeight;
+      alert("Your image is too narrow, crop it or choose another one.");
+      return;
     }
-    resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
-    launchEditorPage();
+    memeWidth = minWidth;
+  }
+
+  if (memeHeight < minHeight) {
+    memeWidth = minHeight * memeWidth / memeHeight;
+    if (memeWidth > maxWidth) {
+      alert("Your image is too wide, crop it or choose another one.");
+      return;
+    }
+    memeHeight = minHeight;
+  }
+
+  if (memeWidth > maxWidth) {
+    memeHeight = maxWidth * memeHeight / memeWidth;
+    memeWidth = maxWidth;
+  }
+  if (memeHeight > maxHeight) {
+    memeWidth = maxHeight * memeWidth / memeHeight;
+    memeHeight = maxHeight;
+  }
+  resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
+  launchEditorPage();
 };
 
 let checkImgSize = function (img) {
@@ -183,12 +182,12 @@ let checkImgSize = function (img) {
 };
 
 let loadSrcToEdit = function (imgSrc) {
-    let img = new Image();
-    img.src = imgSrc;
-    if (checkImgSize(img)) {
-        document.getElementById('mem-image').src = imgSrc;
-        img.onload = adaptImgSize;
-    }
+  let img = new Image();
+  img.src = imgSrc;
+  if (checkImgSize(img)) {
+    document.getElementById('mem-image').src = imgSrc;
+    img.onload = adaptImgSize;
+  }
 };
 /*#endregion*/
 
@@ -242,13 +241,13 @@ document.addEventListener('mousemove', function(e) {
         target.style.left = 0;
     }
     if (tgtRect.top < pRect.top) {
-        target.style.top = -divForImagesHeight + 5 + 'px'; // TODO:
+        target.style.top = -divForImagesHeight + 5 + 'px';
     }
     if (tgtRect.right > pRect.right) {
         target.style.left = pRect.width - tgtRect.width + 'px';
     }
     if (tgtRect.bottom > pRect.bottom) {
-        target.style.top = pRect.height - tgtRect.height - divForImagesHeight + 6 + 'px'; // TODO:
+        target.style.top = pRect.height - tgtRect.height - divForImagesHeight + 6 + 'px';
     }
 });
 /*#endregion*/
@@ -273,7 +272,7 @@ const btn = document.getElementById("generate-btn");
 btn.addEventListener("click", async () => {
     btn.setAttribute("disabled", "true");
     await generateImage();
-    textToStartPosition(); // TODO:
+    textToStartPosition();
     btn.removeAttribute("disabled");
 });
 
