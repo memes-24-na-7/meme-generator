@@ -197,10 +197,10 @@ body {
 
 .modal-content {
   position: relative;
-  background-color: #45c5c2;
+  background-color: #A5E4EC;
   margin: auto;
   padding: 0;
-  border: 5px solid #0b9a8c;
+  border: 5px solid #0b7481;
   width: 50%;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
   -webkit-animation-name: animatetop;
@@ -318,3 +318,4 @@ label {
 }
 
 /* TODO: Съехал текст (ниже дает ставиться) */
+

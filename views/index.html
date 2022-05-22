@@ -24,20 +24,12 @@
                 <h2>Выберите изображение</h2>
             </div>
             <div class="modal-body" style="overflow:auto;">
-                <script>
-                    downloadImgToGallery();
-                </script>
             </div>
             <button onclick="downloadImgToGallery()" id="next-b" className="first-state">далее</button>
             <p1 id="counter" style="display: none">0</p1>
         </div>
     </div>
 
-    <div class="container">
-        <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
-        <img id="expandedImg" style="width:100%">
-        <div id="imgtext"></div>
-    </div>
 
     <div id="div-for-images" class="div-for-images editor-block second-state">
         <div id="meme-container">
@@ -93,6 +85,7 @@
       let modal = document.getElementById('myModal');
       document.getElementById("gallery-b").onclick = function() {
         modal.style.display = "block";
+          downloadImgToGallery(); // add for uploading first 10 img
       }; // button
       (document.getElementsByClassName("close")[0]).onclick = function() {
         modal.style.display = "none";
