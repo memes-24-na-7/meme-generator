@@ -13,6 +13,18 @@ let generatePressed = function () {
       .catch(err => console.log(err));
 };
 
+let textToStartPosition = function () {
+    let textDiv = document.getElementById('draggable');
+    let textImage = document.getElementById('text-image');
+    let newW = Math.round(textImage.getBoundingClientRect().width);
+    let newH = Math.round(textImage.getBoundingClientRect().height);
+    textDiv.style.width = newW + 'px'; // TODO: почему-то не сразу действует
+    textDiv.style.height = newH + 'px';
+    textDiv.style.left = 0;
+    textDiv.style.top = -document.getElementById('div-for-images').getBoundingClientRect().height + 5 + "px";
+    document.getElementById('draggable').click();
+}
+
 let backPressed = function () {
   document.body.scrollTop = document.documentElement.scrollTop = 0;
   document.getElementById('generate-btn').style.display = 'none';
@@ -109,11 +121,10 @@ let resizeEditorWindows = function (width, height) {
     document.getElementById('text-generator-form').style.width = width;
     document.querySelectorAll('.editor-block').forEach(function (elem) {
         elem.style.width = width;
-        // TODO: При "широком" положении не надо менять размер текстового дива, он должен быть постоянным
     });
     document.getElementById('div-for-images').style.height = height;
     let draggable = document.getElementById('draggable');
-    draggable.style.top = '-' + height;
+    draggable.style.top = '-' + height.slice(0, -2) - 5 + "px";
     draggable.style.left = '0px';
 };
 
@@ -208,7 +219,7 @@ let fitTextBoxSize = function () {
     let newH = Math.round(textImage.getBoundingClientRect().height) + 'px';
     textDiv.style.width = newW;
     textDiv.style.height = newH;
-}
+} //
 
 let counter = 0;
 
@@ -230,13 +241,13 @@ document.addEventListener('mousemove', function(e) {
         target.style.left = 0;
     }
     if (tgtRect.top < pRect.top) {
-        target.style.top = -Math.round(divForImagesHeight) + 'px';
+        target.style.top = -divForImagesHeight + 5 + 'px';
     }
     if (tgtRect.right > pRect.right) {
         target.style.left = pRect.width - tgtRect.width + 'px';
     }
     if (tgtRect.bottom > pRect.bottom) {
-        target.style.top = pRect.height - tgtRect.height - Math.round(divForImagesHeight) + 'px';
+        target.style.top = pRect.height - tgtRect.height - divForImagesHeight + 6 + 'px';
     }
 });
 /*#endregion*/
@@ -261,6 +272,7 @@ const btn = document.getElementById("generate-btn");
 btn.addEventListener("click", async () => {
     btn.setAttribute("disabled", "true");
     await generateImage();
+    textToStartPosition();
     btn.removeAttribute("disabled");
 });
 
