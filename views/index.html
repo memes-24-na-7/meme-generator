@@ -28,8 +28,14 @@
             <button onclick="downloadImgToGallery()" id="next-b" className="first-state">далее</button>
             <p1 id="counter" style="display: none">0</p1>
         </div>
+        <div class="modal-body" style="overflow:auto;">
+            <script>
+                downloadImgToGallery();
+            </script>
+        </div>
+        <button onclick="downloadImgToGallery()" id="next-b" className="first-state">далее</button>
+        <p1 id="counter" style="display: none">0</p1>
     </div>
-
 
     <div id="div-for-images" class="div-for-images editor-block second-state">
         <div id="meme-container">
@@ -47,7 +53,7 @@
             <h1>Add your text:</h1>
             <ul class="form-content">
                 <li>
-                    <label>Enter text:
+                    <label>Text:
                         <input type="text" id="text-input" class="form-field">
                     </label>
                 </li>
@@ -104,7 +110,7 @@
           a.download = 'your-meme.' + imageType.split('/')[1];
           a.click();
         });
-      }
-    </script>
+    }
+</script>
 </body>
 </html>

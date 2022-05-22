@@ -28,7 +28,7 @@ body {
 
 #upload-b {
   display: inline-flex;
-  width: 140px;
+  width: 130px;
   height: 70px;
 }
 
@@ -65,7 +65,6 @@ body {
 .form-content {
   list-style-type: none;
   padding: 0;
-  display: inline-block;
   width: 80%;
   margin: 0 auto;
   text-align: right;
@@ -89,6 +88,10 @@ body {
 .form-field option {
   background: #0e1321;
   margin: 10px;
+}
+
+.form-field li {
+  margin: 15px auto;
 }
 
 #generate-btn {
@@ -142,9 +145,9 @@ body {
 .draggable {
   width: 347px; /*длина изначальной текстовой картинки*/
   height: 71px; /*высота изначальной текстовой картинки*/
-  /*background: #0cb2a1; !*цвет для дебага*!*/
+  background: #0cb2a1; /*цвет для дебага*/
   position: relative;
-  top: -360px; /*сдвижка на высоту картинки*/
+  /*top: -360px; !*сдвижка на высоту картинки*!*/
 }
 
 .draggable.dragging {
@@ -173,9 +176,8 @@ body {
   margin: 10px auto;
 }
 
-#meme-container {
-  width: inherit;
-  height: inherit;
+#meme-image {
+  float: left;
 }
 
 /*#region модальное окно*/
@@ -314,8 +316,4 @@ label {
   #div_ {
     display: block;
   }
-
 }
-
-/* TODO: Съехал текст (ниже дает ставиться) */
-
