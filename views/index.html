@@ -28,23 +28,11 @@
             <button onclick="downloadImgToGallery()" id="next-b" className="first-state">далее</button>
             <p1 id="counter" style="display: none">0</p1>
         </div>
-<!--        <div class="modal-body" style="overflow:auto;">-->
-<!--            <script>-->
-<!--                downloadImgToGallery();-->
-<!--            </script>-->
-<!--        </div>-->
-<!--        <button onclick="downloadImgToGallery()" id="next-b" className="first-state">далее</button>-->
-<!--        <p1 id="counter" style="display: none">0</p1>-->
     </div>
 
     <div id="div-for-images" class="div-for-images editor-block second-state">
         <div id="meme-container">
             <img draggable="false" alt="mem image" id='mem-image'>
-<!--            <div id="draggable" class="draggable">-->
-<!--                <div id="dragger" class="dragger">-->
-<!--                    <img src="../public/images/logo.png" alt="text image" id="text-image" class="text-img">-->
-<!--                </div>-->
-<!--            </div>-->
         </div>
     </div>
   
@@ -82,14 +70,14 @@
                     </label>
                 </li>
             </ul>
-            <button type="button" id="generate-btn">Generate</button>
+            <button type="button" id="generate-btn" class="form-btn">Generate</button>
             <div id="generated-text">
                 <ul id="text-list"></ul>
             </div>
         </form>
     </div>
 
-    <div class="second-state editor-page-buttons">
+    <div id="editor-page-buttons" class="second-state">
         <button onclick="backPressed()" id='back-b' class='page-button'> back </button>
         <button onclick="downloadResult()" id='download-b' class='page-button'> download </button>
     </div>
