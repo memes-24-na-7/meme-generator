@@ -167,8 +167,8 @@ body {
 /*#region Meme*/
 
 .draggable {
-  width: 347px; /*длина изначальной текстовой картинки*/
-  height: 71px; /*высота изначальной текстовой картинки*/
+  width: fit-content;
+  height: fit-content;
   /*background: #0cb2a1; !*цвет для дебага*!*/
   position: relative;
   /*top: -360px; !*сдвижка на высоту картинки*!*/
@@ -185,7 +185,8 @@ body {
 }
 
 .dragger {
-  height: 0;
+  width: fit-content;
+  height: fit-content;
 }
 
 .editor-block {
