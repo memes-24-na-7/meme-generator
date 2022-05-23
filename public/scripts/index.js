@@ -13,17 +13,17 @@ let generatePressed = function () {
       .catch(err => console.log(err));
 };
 
-let textToStartPosition = function () {
-    let textDiv = document.getElementById('draggable');
-    let textImage = document.getElementById('text-image');
-    let newW = Math.round(textImage.getBoundingClientRect().width);
-    let newH = Math.round(textImage.getBoundingClientRect().height);
-    textDiv.style.width = newW + 'px'; // TODO: почему-то не сразу действует
-    textDiv.style.height = newH + 'px';
-    textDiv.style.left = 0;
-    textDiv.style.top = -document.getElementById('div-for-images').getBoundingClientRect().height + 5 + "px";
-    document.getElementById('draggable').click();
-}
+// let textToStartPosition = function () {
+//     let textDiv = document.getElementById('draggable');
+//     let textImage = document.getElementById('text-image');
+//     let newW = Math.round(textImage.getBoundingClientRect().width);
+//     let newH = Math.round(textImage.getBoundingClientRect().height);
+//     textDiv.style.width = newW + 'px'; // TODO: почему-то не сразу действует
+//     textDiv.style.height = newH + 'px';
+//     textDiv.style.left = 0;
+//     textDiv.style.top = -document.getElementById('div-for-images').getBoundingClientRect().height + 5 + "px";
+//     document.getElementById('draggable').click();
+// }
 
 let backPressed = function () {
   document.body.scrollTop = document.documentElement.scrollTop = 0;
@@ -34,7 +34,12 @@ let backPressed = function () {
   document.querySelectorAll('.first-state').forEach(function (elem) {
     elem.style.visibility = 'visible';
   });
-  document.getElementById('text-image').src = '../public/images/logo.png';
+  document.querySelectorAll('.draggable').forEach(function (elem) {
+    elem.remove();
+  });
+  document.querySelectorAll('#text-list li').forEach(function (elem) {
+    elem.remove();
+  });
   document.getElementById("text-input").value = '';
   document.getElementById("font-select").value = 'Tahoma';
   document.getElementById("size-input").value = 100;
@@ -188,7 +193,6 @@ let loadSrcToEdit = function (imgSrc) {
 let x, y, target = null;
 
 document.addEventListener('mousedown', function(e) {
-    // fitTextBoxSize();
     let divForImagesHeight = document.getElementById('div-for-images').getBoundingClientRect().height;
     for (let i = 0; e.path[i] !== document.body; i++) {
         if (e.path[i].classList.contains('draggable')) {
@@ -265,7 +269,6 @@ const btn = document.getElementById('generate-btn');
 btn.addEventListener("click", async () => {
     btn.setAttribute("disabled", "true");
     await generateImage();
-    // textToStartPosition();
     btn.removeAttribute("disabled");
 });
 
@@ -282,11 +285,9 @@ async function generateImage() {
     }
     const imageBlob = await textToBitmap(text, font, size, color);
     const imageUrl = URL.createObjectURL(imageBlob);
-    // const image = document.getElementById('text-image');
     const drag = document.createElement('div');
 
     drag.classList.add('draggable');
-    console.log(String(document.getElementById('mem-image').offsetHeight))
     drag.style.top = '-' + String(document.getElementById('mem-image').offsetHeight) - 5 + "px";
     drag.style.left = '0px';
     document.getElementById('meme-container').appendChild(drag);
@@ -297,7 +298,7 @@ async function generateImage() {
     dragger.appendChild(img);
     img.classList.add('text-img');
     img.src = imageUrl;
-    const id = text + font + size + color
+    const id = text + font + size + color;
     img.id = id + 'img';
 
     const item = document.createElement('li');
@@ -312,10 +313,9 @@ async function generateImage() {
     del.classList.add('form-btn');
     del.classList.add('cross-btn');
     del.addEventListener('click', (evt) => {
-        console.log('sas')
         img.remove();
         item.remove();
-    })
+    });
 }
 
 function textToBitmap(text, font, size, color) {
@@ -340,7 +340,6 @@ function textToBitmap(text, font, size, color) {
     let dfi = document.getElementById("div-for-images").getBoundingClientRect();
     if (dfi.width < canvas.width) {
         let dsk = dfi.width / canvas.width;
-        console.log(dsk)
         size *= dsk;
         canvas.height *= dsk;
         canvas.width *= dsk;
