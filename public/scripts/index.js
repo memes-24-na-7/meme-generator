@@ -118,9 +118,7 @@ let resizeEditorWindows = function (width, height) {
         elem.style.width = width;
     });
     document.getElementById('div-for-images').style.height = height;
-    let draggable = document.getElementById('draggable');
-    draggable.style.top = '-' + height.slice(0, -2) - 5 + "px";
-    draggable.style.left = '0px';
+
 };
 
 let launchEditorPage = function () {
@@ -190,7 +188,7 @@ let loadSrcToEdit = function (imgSrc) {
 let x, y, target = null;
 
 document.addEventListener('mousedown', function(e) {
-    fitTextBoxSize();
+    // fitTextBoxSize();
     let divForImagesHeight = document.getElementById('div-for-images').getBoundingClientRect().height;
     for (let i = 0; e.path[i] !== document.body; i++) {
         if (e.path[i].classList.contains('draggable')) {
@@ -267,7 +265,7 @@ const btn = document.getElementById("generate-btn");
 btn.addEventListener("click", async () => {
     btn.setAttribute("disabled", "true");
     await generateImage();
-    textToStartPosition();
+    // textToStartPosition();
     btn.removeAttribute("disabled");
 });
 
@@ -286,8 +284,12 @@ async function generateImage() {
     const imageUrl = URL.createObjectURL(imageBlob);
     // const image = document.getElementById('text-image');
     const drag = document.createElement('div');
-    document.getElementById('meme-container').appendChild(drag);
+
     drag.classList.add('draggable');
+    console.log(String(document.getElementById('mem-image').offsetHeight))
+    drag.style.top = '-' + String(document.getElementById('mem-image').offsetHeight) - 5 + "px";
+    drag.style.left = '0px';
+    document.getElementById('meme-container').appendChild(drag);
     const dragger = document.createElement('div');
     drag.appendChild(dragger);
     dragger.classList.add('dragger');
