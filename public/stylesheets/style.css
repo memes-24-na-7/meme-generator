@@ -267,9 +267,14 @@ body {
 }
 
 .modal-body {
-  padding: 2px 16px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  /*бесят эти рандомные цифры, но иначе не центрировалось*/
+  padding: 2px 21px 0px 10px;
+  display: flex;
+  /*flex-flow: row wrap;*/
+  flex-wrap:wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
 }
 /*#endregion*/
 
