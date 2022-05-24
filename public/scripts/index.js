@@ -58,7 +58,11 @@ let downloadImgToGallery = function() {
               let img = document.createElement('img');
               img.src = result.data.memes[i].url;
               img.setAttribute('onclick', 'chooseImage(this)');
-              img.style.width = "100%";
+              img.style.backgroundSize = "cover";
+              img.style.backgroundPosition = "center";
+              img.style.aspectRatio = "1/1";
+              img.style.height = "160px";
+              img.style.border = "4px solid #0b7481";
               newImageDiv.appendChild(img);
               document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
           }
