@@ -1,6 +1,5 @@
 /*#region Обработка нажатия кнопок*/
 let imageType = '';
-let editorMode = false;
 
 let generatePressed = function () {
     imageType = 'image/png';
@@ -43,7 +42,6 @@ let backPressed = function () {
   document.getElementById("text-input").value = '';
   document.getElementById("font-select").value = 'Tahoma';
   document.getElementById("size-input").value = 100;
-  editorMode = false;
 };
 
 let downloadImgToGallery = function() {
@@ -359,3 +357,31 @@ function textToBitmap(text, font, size, color) {
         canvas.toBlob(resolve);
     });
 }
+
+/*#region buttons and cursor moving effects */
+let scrollY = window.scrollY;
+
+window.addEventListener('scroll', function(e) {
+  scrollY = window.scrollY;
+});
+
+document.querySelectorAll('.page-button').forEach(el => {
+  el.addEventListener('mousemove', function(e) {
+    const pos = this.getBoundingClientRect();
+    const mx = e.pageX - pos.left - pos.width/2;
+    const my = e.pageY - scrollY - pos.top - pos.height/2;
+    this.style.transform = 'translate('+ mx * 0.15 +'px, '+ my * 0.3 +'px)';
+  });
+});
+
+document.querySelectorAll('.page-button').forEach(el => el.addEventListener('mouseleave', function() {
+  this.style.transform = 'translate(0px, 0px)';
+}));
+
+document.addEventListener('mousemove', function(e) {
+  document.querySelectorAll('.cursor').forEach((cursor) => {
+    cursor.style.left = (e.pageX - 25) + 'px';
+    cursor.style.top = (e.pageY - scrollY - 25) + 'px';
+  });
+});
+/*#endregion*/
