@@ -4,6 +4,7 @@ body {
   font-family: "Comic Sans MS", cursive, sans-serif;
   margin-left: auto;
   margin-right: auto;
+  overflow-x: hidden;
   --border-color: #0b7481;
   --text-background: #A5E4EC;
   --text-color: #ccffe6;
@@ -35,8 +36,6 @@ body {
 
 .cursor {
   position: fixed;
-  top: -50px;
-  z-index: 99;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -48,8 +47,8 @@ body {
   border-color .3s ease;
 }
 
-.buttons-container:hover ~ .cursor {
-  mix-blend-mode: difference;
+.page-button:hover ~ .cursor {
+  mix-blend-mode: screen;
   transform: scale(1.5);
   cursor: none;
   background: var(--text-color);

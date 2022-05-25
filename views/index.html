@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Memes</title>
     <link rel='stylesheet' href="../public/stylesheets/style.css">
-    <script src="../public/scripts/buttonScript.js"></script>
     <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
@@ -17,6 +16,7 @@
             random
         </button>
         <button id="gallery-b" class="page-button">gallery</button>
+        <div class="cursor"></div>
     </div>
     <div id="myModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -87,9 +87,8 @@
     <div class="second-state editor-page-buttons buttons-container">
         <button onclick="backPressed()" id='back-b' class='page-button'> back </button>
         <button onclick="downloadResult()" id='download-b' class='page-button'> download </button>
+        <div class="cursor"></div>
     </div>
-
-    <div class="cursor"></div>
 
     <script src="../public/scripts/index.js"></script>
     <script>
