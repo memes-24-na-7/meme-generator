@@ -70,27 +70,6 @@ body {
   left: auto;
 }
 
-/*.page-button:hover {*/
-/*  animation: anim-button 10s infinite;*/
-/*}*/
-
-@keyframes anim-button {
-  0% {
-    border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
-    box-shadow: 15px 15px 50px rgba(0,0,0,0.2);
-  }
-  25% {
-    border-radius: 58% 42% 75% 25%/76% 46% 54% 24%;
-  }
-  50% {
-    border-radius: 50% 50% 33% 67%/55% 27% 73% 45%;
-    box-shadow: -10px -5px 50px rgba(0,0,0,0.2);
-  }
-  75% {
-    border-radius: 33% 67% 58% 42%/63% 68% 32% 37%;
-  }
-}
-
 #start-buttons {
   top: calc(50% - 50px);
   position: absolute;
@@ -183,7 +162,7 @@ body {
 
 #text-list li {
   background-color: white;
-  margin: 10px auto;
+  margin: 10px 40px 10px auto;
   padding: 0 10px;
   text-align: left;
 }
@@ -194,8 +173,6 @@ body {
 .second-state {
   visibility: hidden;
 }
-.first-state {
-}
 /*#endregion*/
 
 /*#region Meme*/
@@ -203,9 +180,7 @@ body {
 .draggable {
   width: fit-content;
   height: fit-content;
-  /*background: #0cb2a1; !*цвет для дебага*!*/
   position: relative;
-  /*top: -360px; !*сдвижка на высоту картинки*!*/
 }
 
 .draggable.dragging {
@@ -214,8 +189,6 @@ body {
 
 .text-img {
   pointer-events: none;
-  /*margin-top: -5px;*/
-  /*margin-left: -5px;*/
 }
 
 .dragger {
@@ -224,7 +197,6 @@ body {
 }
 
 .div-for-images, .form-for-text-editing {
-  /*margin-top: 15px;*/
   border: 5px solid var(--border-color);
   margin-left: auto;
   margin-right: auto;

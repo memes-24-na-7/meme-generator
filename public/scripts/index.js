@@ -12,18 +12,6 @@ let generatePressed = function () {
       .catch(err => console.log(err));
 };
 
-// let textToStartPosition = function () {
-//     let textDiv = document.getElementById('draggable');
-//     let textImage = document.getElementById('text-image');
-//     let newW = Math.round(textImage.getBoundingClientRect().width);
-//     let newH = Math.round(textImage.getBoundingClientRect().height);
-//     textDiv.style.width = newW + 'px'; // TODO: почему-то не сразу действует
-//     textDiv.style.height = newH + 'px';
-//     textDiv.style.left = 0;
-//     textDiv.style.top = -document.getElementById('div-for-images').getBoundingClientRect().height + 5 + "px";
-//     document.getElementById('draggable').click();
-// }
-
 let backPressed = function () {
   document.body.scrollTop = document.documentElement.scrollTop = 0;
   document.getElementById('generate-btn').style.display = 'none';
@@ -59,7 +47,6 @@ let downloadImgToGallery = function() {
               img.style.backgroundSize = "cover";
               img.style.backgroundPosition = "center";
               img.style.aspectRatio = "1/1";
-              //img.style.height = "160px";
               img.style.width = "100%";
               img.style.border = "4px solid #0b7481";
               newImageDiv.appendChild(img);
