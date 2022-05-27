@@ -37,24 +37,27 @@ let downloadImgToGallery = function() {
       .then(res => res.json())
       .then(result => {
           let counter = parseFloat(document.getElementById('counter').textContent);
-          for(let i = counter * 10; i < counter * 10 + 10; i++)
-          {
-              let newImageDiv = document.createElement('div');
-              newImageDiv.className = "image";
-              let img = document.createElement('img');
-              img.src = result.data.memes[i].url;
-              img.setAttribute('onclick', 'chooseImage(this)');
-              img.style.backgroundSize = "cover";
-              img.style.backgroundPosition = "center";
-              img.style.aspectRatio = "1/1";
-              img.style.width = "100%";
-              img.style.border = "4px solid #0b7481";
-              newImageDiv.appendChild(img);
-              document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
+          for(let i = counter * 10; i < counter * 10 + 10; i++) {
+              addImg(result, i);
           }
           document.getElementById('counter').textContent = (counter + 1).toString();
+          if (counter === 9)
+              document.getElementById("next-b").style.visibility = "hidden";
       })
       .catch(err => console.log(err));
+};
+
+let addImg = function(result, i) {
+    let newImageDiv = document.createElement('div');
+    newImageDiv.className = "image";
+    let img = document.createElement('img');
+    img.src = result.data.memes[i].url;
+    img.setAttribute('onclick', 'chooseImage(this)');
+    img.style.aspectRatio = "1/1";
+    img.style.width = "100%";
+    img.style.border = "4px solid #0b7481";
+    newImageDiv.appendChild(img);
+    document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
 };
 
 let launchWithImageUrl = function(url) {
