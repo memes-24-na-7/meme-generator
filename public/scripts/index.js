@@ -32,25 +32,28 @@ let backPressed = function () {
   document.getElementById("size-input").value = 100;
 };
 
+let styleAddedGalleryImage = function (src, onclickFunctionName) {
+  let newImageDiv = document.createElement('div');
+  newImageDiv.className = "image";
+  let img = document.createElement('img');
+  img.src = src;
+  img.setAttribute('onclick', `chooseImage(this, ${onclickFunctionName})`);
+  img.style.backgroundSize = "cover";
+  img.style.backgroundPosition = "center";
+  img.style.aspectRatio = "1/1";
+  img.style.width = "100%";
+  img.style.border = "4px solid #0b7481";
+  newImageDiv.appendChild(img);
+  document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
+}
+
 let downloadImgToGallery = function() {
   fetch("https://api.imgflip.com/get_memes")
     .then(res => res.json())
     .then(result => {
       let counter = parseFloat(document.getElementById('counter').textContent);
-      for(let i = counter * 10; i < counter * 10 + 10; i++)
-      {
-        let newImageDiv = document.createElement('div');
-        newImageDiv.className = "image";
-        let img = document.createElement('img');
-        img.src = result.data.memes[i].url;
-        img.setAttribute('onclick', 'chooseImage(this)');
-        img.style.backgroundSize = "cover";
-        img.style.backgroundPosition = "center";
-        img.style.aspectRatio = "1/1";
-        img.style.width = "100%";
-        img.style.border = "4px solid #0b7481";
-        newImageDiv.appendChild(img);
-        document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
+      for(let i = counter * 10; i < counter * 10 + 10; i++) {
+        styleAddedGalleryImage(result.data.memes[i].url, 'launchWithImageUrl');
       }
       document.getElementById('counter').textContent = (counter + 1).toString();
     })
@@ -76,19 +79,31 @@ let getRandomInt = function (max) {
   return Math.floor(Math.random() * max);
 };
 
-let uploadMeme = function (file) {
+let isInputAllowable = function (file) {
   if (!file) {
-    return;
+    return false;
   }
   let type = file.type.split('/')[0];
   if (type !== 'image') {
     alert(`Please, upload an image file, ${type} is not an image.`);
+    return false;
+  }
+
+  return true;
+}
+
+let uploadMeme = function (file) {
+  if (!isInputAllowable(file)) {
     return;
   }
 
   imageType = file.type;
   let reader = new FileReader();
-  reader.onloadend = () => loadSrcToEdit(reader.result);
+  reader.onloadend = async () => {
+    let imageData = reader.result;
+    styleAddedGalleryImage(imageData, loadSrcToEdit);
+    loadSrcToEdit(imageData);
+  };
   reader.readAsDataURL(file);
 };
 
@@ -96,11 +111,11 @@ let getImageType = function () {
   return imageType;
 };
 
-let chooseImage = function (imgs) {
+let chooseImage = function (imgs, launchFunction) {
   let modal = document.getElementById('myModal');
   modal.style.display = "none";
   imageType = 'image/png';
-  launchWithImageUrl(imgs.src);
+  launchFunction(imgs.src);
 };
 
 let resizeEditorWindows = function (width, height) {
@@ -129,7 +144,7 @@ let launchEditorPage = function () {
 let adaptImgSize = function() {
   let memeWidth = this.width;
   let memeHeight = this.height;
-  let minWidth = 350;
+  let minWidth = 300;
   let minHeight = 75;
   let maxWidth = window.screen.width * 0.9;
   let maxHeight = window.screen.height * 0.65;

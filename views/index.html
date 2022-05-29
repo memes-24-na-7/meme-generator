@@ -14,10 +14,14 @@
             <input id="upload-b-button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
             upload pic
         </label>
+        <form>
+
+        </form>
         <button onclick="generatePressed()" id="generate-b" class="page-button">
             random
         </button>
         <button id="gallery-b" class="page-button">gallery</button>
+        <button onclick="getGallery()" class="page-button">my pics</button>
         <div class="cursor"></div>
     </div>
     <div id="myModal" class="modal" style="display: none;">
