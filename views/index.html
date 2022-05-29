@@ -94,7 +94,9 @@
       let modal = document.getElementById('myModal');
       document.getElementById("gallery-b").onclick = function() {
         modal.style.display = "block";
-          downloadImgToGallery(); // add for uploading first 10 img
+        let counter = parseFloat(document.getElementById('counter').textContent);
+        if (counter === 0) // to not upload imgs when click on gallery not for the first time
+          downloadImgToGallery(); // add for uploading first 10 imgs
       }; // button
       (document.getElementsByClassName("close")[0]).onclick = function() {
         modal.style.display = "none";
