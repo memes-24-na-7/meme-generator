@@ -3,119 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <title>Memes</title>
+<!--    <link rel='stylesheet' href="/stylesheets/style.css">-->
+<!--    <script src="/scripts/html2canvas.js"></script>-->
     <link rel='stylesheet' href="../public/stylesheets/style.css">
     <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
-    <div id="start-buttons" class="first-state buttons-container">
-        <label id="upload-b" class="page-button">
-            <input id="upload-b-button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
-            upload pic
-        </label>
-        <button onclick="generatePressed()" id="generate-b" class="page-button">
-            random
-        </button>
-        <button id="gallery-b" class="page-button">gallery</button>
-        <div class="cursor"></div>
+<div id="start-buttons" class="first-state buttons-container">
+  <label id="upload-b" class="page-button">
+    <input id="upload-b-button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
+    upload pic
+  </label>
+  <button onclick="generatePressed()" id="generate-b" class="page-button">
+    random
+  </button>
+  <button onclick="openModalWindow()" id="gallery-b" class="page-button">gallery</button>
+  <div class="cursor"></div>
+</div>
+<div id="myModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span onclick="closeModalWindow()" class="close">×</span>
+      <h2>Choose image</h2>
     </div>
-    <div id="myModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">×</span>
-                <h2>Choose image</h2>
-            </div>
-            <div class="modal-body" style="overflow:auto;">
-            </div>
-            <button onclick="downloadImgToGallery()" id="next-b" className="first-state">Next</button>
-            <p1 id="counter" style="display: none">0</p1>
+    <div class="modal-body" style="overflow:auto;">
+    </div>
+    <button onclick="downloadImgToGallery()" id="next-b" className="first-state">Next</button>
+    <p1 id="counter" style="display: none">0</p1>
+  </div>
+</div>
+
+<div id="div-for-images" class="div-for-images editor-block second-state">
+  <div id="meme-container">
+    <img draggable="false" alt="mem image" id='mem-image'>
+  </div>
+</div>
+
+<div id="text-generator-form">
+  <form class="form-for-text-editing editor-block second-state">
+    <h1>Add your text:</h1>
+    <ul class="form-content">
+      <li>
+        Text:
+        <input type="text" id="text-input" class="form-field">
+      </li>
+      <li>
+        Font:
+        <select id="font-select" class="form-field">
+          <option>Tahoma</option>
+          <option>Great Vibes</option>
+          <option>Georgia</option>
+          <option>EB Garamond</option>
+          <option>Jost</option>
+          <option>Pattaya</option>
+          <option>Playfair Display</option>
+          <option>Roboto</option>
+        </select>
+      </li>
+      <li>
+        Size:
+        <input type="number" id="size-input" value="100" class="form-field">
+      </li>
+      <li>
+        Color:
+        <input type="color" id="text-color" value="#0b7481" class="form-field">
+      </li>
+      <li>
+        <button type="button" id="generate-btn" class="form-btn">Generate</button>
+      </li>
+      <li>
+        <div id="generated-text">
+          <ul id="text-list"></ul>
         </div>
-    </div>
+      </li>
+    </ul>
+  </form>
+</div>
 
-    <div id="div-for-images" class="div-for-images editor-block second-state">
-        <div id="meme-container">
-            <img draggable="false" alt="mem image" id='mem-image'>
-        </div>
-    </div>
-  
-    <div id="text-generator-form">
-        <form class="form-for-text-editing editor-block second-state">
-            <h1>Add your text:</h1>
-            <ul class="form-content">
-                <li>
-                    <label>Text:
-                        <input type="text" id="text-input" class="form-field">
-                    </label>
-                </li>
-                <li>
-                    <label>Font:
-                        <select id="font-select" class="form-field">
-                            <option>Tahoma</option>
-                            <option>Great Vibes</option>
-                            <option>Georgia</option>
-                            <option>EB Garamond</option>
-                            <option>Jost</option>
-                            <option>Pattaya</option>
-                            <option>Playfair Display</option>
-                            <option>Roboto</option>
-                        </select>
-                    </label>
-                </li>
-                <li>
-                    <label>Size:
-                        <input type="number" id="size-input" value="100" class="form-field">
-                    </label>
-                </li>
-                <li>
-                    <label>Color:
-                        <input type="color" id="text-color" value="black" class="form-field">
-                    </label>
-                </li>
-                <li>
-                    <button type="button" id="generate-btn" class="form-btn">Generate</button>
-                </li>
-                <li>
-                    <div id="generated-text">
-                        <ul id="text-list"></ul>
-                    </div>
-                </li>
-            </ul>
+<div id="editor-page-buttons" class="second-state buttons-container">
+  <button onclick="backPressed()" id='back-b' class='page-button'> back </button>
+  <button onclick="downloadResult()" id='download-b' class='page-button'> download </button>
+  <div class="cursor"></div>
+</div>
 
-        </form>
-    </div>
-
-    <div id="editor-page-buttons" class="second-state buttons-container">
-        <button onclick="backPressed()" id='back-b' class='page-button'> back </button>
-        <button onclick="downloadResult()" id='download-b' class='page-button'> download </button>
-        <div class="cursor"></div>
-    </div>
-
-    <script src="../public/scripts/index.js"></script>
-    <script>
-      let modal = document.getElementById('myModal');
-      document.getElementById("gallery-b").onclick = function() {
-        modal.style.display = "block";
-        let counter = parseFloat(document.getElementById('counter').textContent);
-        if (counter === 0) // to not upload imgs when click on gallery not for the first time
-          downloadImgToGallery(); // add for uploading first 10 imgs
-      }; // button
-      (document.getElementsByClassName("close")[0]).onclick = function() {
-        modal.style.display = "none";
-      }; // span
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      }
-
-      function downloadResult(){
-        html2canvas(document.getElementById('meme-container')).then(function(canvas) {
-          let a = document.createElement('a');
-          let imageType = 'image/png';
-          a.href = canvas.toDataURL(imageType, 0.9).replace(imageType, "image/octet-stream");
-          a.download = 'your-meme.' + imageType.split('/')[1];
-          a.click();
-        });
-    }
+<!--    <script src="/scripts/index.js"></script>-->
+<script src="../public/scripts/index.js"></script>
+<script>
+  function downloadResult(){
+    html2canvas(document.getElementById('meme-container')).then(function(canvas) {
+      let a = document.createElement('a');
+      let imageType = 'image/png';
+      a.href = canvas.toDataURL(imageType, 0.9).replace(imageType, "image/octet-stream");
+      a.download = 'your-meme.' + imageType.split('/')[1];
+      a.click();
+    });
+  }
 </script>
 </body>
 </html>
