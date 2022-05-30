@@ -1,14 +1,14 @@
 const cookieParser = require('cookie-parser');
 const createError = require('http-errors');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
-const uuid = require('uuid');
-const url = require('url');
-const fs = require('fs');
+// const uuid = require('uuid');
+// const url = require('url');
+// const fs = require('fs');
 
 // var logger = require('morgan');
-// var router = express.Router();
+var router = express.Router();
 
 let app = express();
 
@@ -26,38 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/', indexRouter);
 const cookieName = 'meme-editor-uid';
 
-let addUserFilename = function(uid, filename = null) {
-  fs.readFile('galleries.json', 'utf-8', (err, data) => {
-    if (err) {
-      console.log(err);
-    }
-    let galleries = JSON.parse(data);
-
-    if (!filename && typeof galleries[uid] === 'undefined') {
-      galleries[uid] = Array();
-      fs.writeFile('galleries.json', JSON.stringify(galleries), err => console.log(err));
-    }
-
-    if (filename) {
-      galleries[uid].push(filename);
-      fs.writeFile('galleries.json', JSON.stringify(galleries), err => console.log(err));
-    }
-  });
-};
-
 app.get('/', function(req, res, next) {
-  let uid = cookieParser.JSONCookies(req.cookies)[cookieName];
-  if (typeof uid === 'undefined') {
-    uid = uuid.v4();
-    let content = fs.readFileSync('galleries.json', 'utf8');
-    let users = JSON.parse(content);
-    while (users.hasOwnProperty(uid)) {
-      uid = uuid.v4();
-    }
-    res.cookie(cookieName, uid);
-  }
-
-  addUserFilename(uid);
   res.sendFile(path.join(__dirname, '/views/index.html'));
 });
 

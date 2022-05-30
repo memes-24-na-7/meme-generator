@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Memes</title>
-    <link rel='stylesheet' href="/stylesheets/style.css">
-    <script src="/scripts/html2canvas.js"></script>
-<!--    <link rel='stylesheet' href="../public/stylesheets/style.css">-->
-<!--    <script src="../public/scripts/html2canvas.js"></script>-->
+<!--    <link rel='stylesheet' href="/stylesheets/style.css">-->
+<!--    <script src="/scripts/html2canvas.js"></script>-->
+    <link rel='stylesheet' href="../public/stylesheets/style.css">
+    <script src="../public/scripts/html2canvas.js"></script>
 </head>
 <body>
     <div id="start-buttons" class="first-state buttons-container">
@@ -14,14 +14,10 @@
             <input id="upload-b-button" type="file" accept="image/*" onchange="uploadMeme(this.files[0])">
             upload pic
         </label>
-        <form>
-
-        </form>
         <button onclick="generatePressed()" id="generate-b" class="page-button">
             random
         </button>
         <button id="gallery-b" class="page-button">gallery</button>
-        <button onclick="getGallery()" class="page-button">my pics</button>
         <div class="cursor"></div>
     </div>
     <div id="myModal" class="modal" style="display: none;">
@@ -76,11 +72,16 @@
                         <input type="color" id="text-color" value="black" class="form-field">
                     </label>
                 </li>
+                <li>
+                    <button type="button" id="generate-btn" class="form-btn">Generate</button>
+                </li>
+                <li>
+                    <div id="generated-text">
+                        <ul id="text-list"></ul>
+                    </div>
+                </li>
             </ul>
-            <button type="button" id="generate-btn" class="form-btn">Generate</button>
-            <div id="generated-text">
-                <ul id="text-list"></ul>
-            </div>
+
         </form>
     </div>
 
@@ -90,13 +91,15 @@
         <div class="cursor"></div>
     </div>
 
-    <script src="/scripts/index.js"></script>
-<!--    <script src="../public/scripts/index.js"></script>-->
+<!--    <script src="/scripts/index.js"></script>-->
+    <script src="../public/scripts/index.js"></script>
     <script>
       let modal = document.getElementById('myModal');
       document.getElementById("gallery-b").onclick = function() {
         modal.style.display = "block";
-          downloadImgToGallery(); // add for uploading first 10 img
+        let counter = parseFloat(document.getElementById('counter').textContent);
+        if (counter === 0) // to not upload imgs when click on gallery not for the first time
+          downloadImgToGallery(); // add for uploading first 10 imgs
       }; // button
       (document.getElementsByClassName("close")[0]).onclick = function() {
         modal.style.display = "none";
