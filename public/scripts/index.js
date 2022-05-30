@@ -1,8 +1,20 @@
-/*#region Обработка нажатия кнопок*/
-let imageType = '';
+const memImage = document.getElementById('mem-image');
+const generateBtn = document.getElementById('generate-btn');
+const memeContainer = document.getElementById('meme-container');
+const divForImages = document.getElementById("div-for-images");
+const textGeneratorForm = document.getElementById('text-generator-form');
+const galleryCounter = document.getElementById('counter');
+const nextBtn = document.getElementById("next-b");
+const textInput = document.getElementById("text-input");
+const fontSelect = document.getElementById("font-select");
+const sizeInput = document.getElementById("size-input");
+const textColor = document.getElementById("text-color");
+const modal = document.getElementById('myModal');
+const textList = document.getElementById('text-list');
 
-let generatePressed = function () {
-  imageType = 'image/png';
+/*#region Обработка нажатия кнопок*/
+
+let randomPressed = function () {
   fetch("https://api.imgflip.com/get_memes")
     .then(res => res.json())
     .then(result => {
@@ -12,37 +24,45 @@ let generatePressed = function () {
     .catch(err => console.log(err));
 };
 
-let backPressed = function () {
+let changeState = function () {
   document.body.scrollTop = document.documentElement.scrollTop = 0;
-  document.getElementById('generate-btn').style.display = 'none';
+  generateBtn.style.display = 'none';
   document.querySelectorAll('.second-state').forEach(function (elem) {
     elem.style.visibility = 'hidden';
   });
   document.querySelectorAll('.first-state').forEach(function (elem) {
     elem.style.visibility = 'visible';
   });
+}
+
+let cleanForm = function () {
   document.querySelectorAll('.draggable').forEach(function (elem) {
     elem.remove();
   });
   document.querySelectorAll('#text-list li').forEach(function (elem) {
     elem.remove();
   });
-  document.getElementById("text-input").value = '';
-  document.getElementById("font-select").value = 'Tahoma';
-  document.getElementById("size-input").value = 100;
+  textInput.value = '';
+  fontSelect.value = 'Tahoma';
+  sizeInput.value = 100;
+}
+
+let backPressed = function () {
+  changeState();
+  cleanForm();
 };
 
 let downloadImgToGallery = function() {
   fetch("https://api.imgflip.com/get_memes")
     .then(res => res.json())
     .then(result => {
-      let counter = parseFloat(document.getElementById('counter').textContent);
+      let counter = parseFloat(galleryCounter.textContent);
       for(let i = counter * 10; i < counter * 10 + 10; i++) {
         addImg(result.data.memes[i].url, 'launchWithImageUrl');
       }
-      document.getElementById('counter').textContent = (counter + 1).toString();
+      galleryCounter.textContent = (counter + 1).toString();
       if (counter === 9) {
-        document.getElementById("next-b").style.visibility = "hidden";
+        nextBtn.style.visibility = "hidden";
       }
     })
     .catch(err => console.log(err));
@@ -54,9 +74,6 @@ let addImg = function(src, onclickFunctionName) {
   let img = document.createElement('img');
   img.src = src;
   img.setAttribute('onclick', `chooseImage(this, ${onclickFunctionName})`);
-  img.style.aspectRatio = "1/1";
-  img.style.width = "100%";
-  img.style.border = "4px solid #0b7481";
   newImageDiv.appendChild(img);
   document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
 };
@@ -72,9 +89,9 @@ let launchWithImageUrl = function(url) {
     ctx.drawImage(img, 0, 0);
     const dataURL = canvas.toDataURL("image/png");
     loadSrcToEdit(dataURL);
-  }
-  img.src = url
-}
+  };
+  img.src = url;
+};
 
 let getRandomInt = function (max) {
   return Math.floor(Math.random() * max);
@@ -89,7 +106,6 @@ let isInputAllowable = function (file) {
     alert(`Please, upload an image file, ${type} is not an image.`);
     return false;
   }
-
   return true;
 }
 
@@ -97,8 +113,6 @@ let uploadMeme = function (file) {
   if (!isInputAllowable(file)) {
     return;
   }
-
-  imageType = file.type;
   let reader = new FileReader();
   reader.onloadend = async () => {
     let imageData = reader.result;
@@ -108,39 +122,31 @@ let uploadMeme = function (file) {
   reader.readAsDataURL(file);
 };
 
-let getImageType = function () {
-  return imageType;
-};
-
 let chooseImage = function (imgs, launchFunction) {
-  let modal = document.getElementById('myModal');
   modal.style.display = "none";
-  imageType = 'image/png';
   launchFunction(imgs.src);
 };
 
 let resizeEditorWindows = function (width, height) {
-  let memeImage = document.getElementById('mem-image');
-  memeImage.style.width = width;
-  memeImage.style.height = height;
-  document.getElementById('meme-container').style.height = height;
-  document.getElementById('text-generator-form').style.width = width;
+  memImage.style.width = width;
+  memImage.style.height = height;
+  memeContainer.style.height = height;
+  textGeneratorForm.style.width = width;
   document.querySelectorAll('.editor-block').forEach(function (elem) {
     elem.style.width = width;
   });
-  document.getElementById('div-for-images').style.height = height;
-
+  divForImages.style.height = height;
 };
 
 let launchEditorPage = function () {
-  document.getElementById('generate-btn').style.display = 'block';
+  generateBtn.style.display = 'block';
   document.querySelectorAll('.first-state').forEach(function (elem) {
     elem.style.visibility = 'hidden';
   });
   document.querySelectorAll('.second-state').forEach(function (elem) {
     elem.style.visibility = 'visible';
   });
-}
+};
 
 let adaptImgSize = function() {
   let memeWidth = this.width;
@@ -180,18 +186,11 @@ let adaptImgSize = function() {
   launchEditorPage();
 };
 
-let checkImgSize = function (img) {
-  const size = 1920;
-  return !(img.width > size || img.height > size);
-};
-
 let loadSrcToEdit = function (imgSrc) {
   let img = new Image();
   img.src = imgSrc;
-  if (checkImgSize(img)) {
-    document.getElementById('mem-image').src = imgSrc;
-    img.onload = adaptImgSize;
-  }
+  memImage.src = imgSrc;
+  img.onload = adaptImgSize;
 };
 /*#endregion*/
 
@@ -199,7 +198,7 @@ let loadSrcToEdit = function (imgSrc) {
 let x, y, target = null;
 
 document.addEventListener('mousedown', function(e) {
-  let divForImagesHeight = document.getElementById('div-for-images').getBoundingClientRect().height;
+  let divForImagesHeight = divForImages.getBoundingClientRect().height;
   for (let i = 0; e.path[i] !== document.body; i++) {
     if (e.path[i].classList.contains('draggable')) {
       target = e.path[i];
@@ -215,23 +214,11 @@ document.addEventListener('mousedown', function(e) {
   }
 });
 
-let fitTextBoxSize = function () {
-  let textDiv = document.getElementById('draggable');
-  let textImage = document.getElementById('text-image');
-  let newW = Math.round(textImage.getBoundingClientRect().width) + 'px';
-  let newH = Math.round(textImage.getBoundingClientRect().height) + 'px';
-  textDiv.style.width = newW;
-  textDiv.style.height = newH;
-}
-
-let counter = 0;
-
 document.addEventListener('mouseup', function() {
   if (target !== null) {
     target.classList.remove('dragging');
   }
   target = null;
-  counter += 1;
 });
 
 document.addEventListener('mousemove', function(e) {
@@ -240,7 +227,7 @@ document.addEventListener('mousemove', function(e) {
   target.style.top = e.clientY - y + 'px';
   let pRect = target.parentElement.getBoundingClientRect();
   let tgtRect = target.getBoundingClientRect();
-  let divForImagesHeight = document.getElementById('div-for-images').getBoundingClientRect().height;
+  let divForImagesHeight = divForImages.getBoundingClientRect().height;
   if (tgtRect.left < pRect.left) {
     target.style.left = 0;
   }
@@ -257,18 +244,18 @@ document.addEventListener('mousemove', function(e) {
 /*#endregion*/
 
 /*#region modal*/
-let modal = document.getElementById('myModal');
 
 let openModalWindow = function() {
   modal.style.display = "block";
-  let counter = parseFloat(document.getElementById('counter').textContent);
-  if (counter === 0) // to not upload imgs when click on gallery not for the first time
-    downloadImgToGallery(); // add for uploading first 10 imgs
-}; // button
+  let counter = parseFloat(galleryCounter.textContent);
+  if (counter === 0) {
+    downloadImgToGallery();
+  }
+};
 
 let closeModalWindow = function() {
   modal.style.display = "none";
-}; // span
+};
 
 /*#endregion*/
 
@@ -287,12 +274,10 @@ if (window.document.fonts && window.document.fonts.load) {
   availableFonts.forEach((font) => window.document.fonts.load(`16px ${font}`));
 }
 
-const btn = document.getElementById('generate-btn');
-
-btn.addEventListener("click", async () => {
-  btn.setAttribute("disabled", "true");
+generateBtn.addEventListener("click", async () => {
+  generateBtn.setAttribute("disabled", "true");
   await generateImage();
-  btn.removeAttribute("disabled");
+  generateBtn.removeAttribute("disabled");
 });
 
 const dpr = window.devicePixelRatio || 1;
@@ -300,10 +285,10 @@ const dpr = window.devicePixelRatio || 1;
 let textCounter = 0n;
 
 async function generateImage() {
-  const text = document.getElementById("text-input").value;
-  const font = document.getElementById("font-select").selectedOptions[0].textContent;
-  const size = document.getElementById("size-input").value;
-  const color = document.getElementById("text-color").value;
+  const text = textInput.value;
+  const font = fontSelect.selectedOptions[0].textContent;
+  const size = sizeInput.value;
+  const color = textColor.value;
   if (!text) {
     return;
   }
@@ -314,9 +299,9 @@ async function generateImage() {
   textCounter++;
 
   drag.classList.add('draggable');
-  drag.style.top = '-' + String(document.getElementById('mem-image').offsetHeight) - 5 + "px";
+  drag.style.top = '-' + String(memImage.offsetHeight) - 5 + "px";
   drag.style.left = '0px';
-  document.getElementById('meme-container').appendChild(drag);
+  memeContainer.appendChild(drag);
   const dragger = document.createElement('div');
   drag.appendChild(dragger);
   dragger.classList.add('dragger');
@@ -326,7 +311,7 @@ async function generateImage() {
   img.src = imageUrl;
 
   const item = document.createElement('li');
-  document.getElementById('text-list').appendChild(item);
+  textList.appendChild(item);
   item.textContent = `${text} ${font} ${size}px ${color}`;
   const del = document.createElement('button');
   del.type = 'button';
@@ -360,7 +345,7 @@ function textToBitmap(text, font, size, color) {
 
   canvas.width = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight);
 
-  let dfi = document.getElementById("div-for-images").getBoundingClientRect();
+  let dfi = divForImages.getBoundingClientRect();
   if (dfi.width < canvas.width) {
     let dsk = dfi.width / canvas.width;
     size *= dsk;
