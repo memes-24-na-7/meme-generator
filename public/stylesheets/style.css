@@ -4,7 +4,6 @@ body {
   font-family: "Comic Sans MS", cursive, sans-serif;
   --border-color: #0B7481FF;
   --text-background-color: #A5E4EC;
-  --button-backlight-color: #C0F7FA7A;
   --form-light-color: #E8F0FEFF;
   --additional-text-color: #CCFFE6FF;
   --text-color: #014941FF;
@@ -21,7 +20,7 @@ body {
   border: 5px solid var(--border-color);
   background: var(--text-background-color);
   border-radius: 30%;
-  box-shadow: 5px 10px 50px var(--button-backlight-color);
+  box-shadow: 5px 10px 50px var(--form-light-color);
   font: italic small-caps bold 20px cursive;
   color: var(--text-color);
   padding: 0 5px;
@@ -88,40 +87,20 @@ body {
 }
 
 #text-generator-form form {
-  display: inline-block;
+  /*display: inline-block;*/
   margin: 10px auto;
 }
 
 .form-content {
   list-style-type: none;
-  padding: 0;
+  /*padding: 0;*/
   width: 80%;
   margin: 0 auto;
-  text-align: right;
+  /*text-align: left;*/
 }
 
-.form-field {
-  -ms-box-sizing:content-box;
-  -moz-box-sizing:content-box;
-  -webkit-box-sizing:content-box;
-  box-sizing:content-box;
-
-  width: 90%;
-  margin: 5px 0;
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  background: var(--form-light-color);
-}
-
-.form-field option {
-  background: var(--form-light-color);
-  margin: 10px;
-}
-
-.form-field li {
-  margin: 15px auto;
+#generated-text ul li {
+  margin: 10px 0;
 }
 
 .form-btn {
@@ -142,7 +121,7 @@ body {
 }
 
 #generate-btn:hover {
-  background-color: var(--text-color);
+  background-color: var(--border-color);
   color: var(--text-background-color);
 }
 
@@ -157,9 +136,55 @@ body {
 
 #text-list li {
   background-color: var(--form-light-color);
-  /*margin: 10px 40px 10px auto;*/
-  /*padding: 0 10px;*/
   text-align: left;
+}
+
+ul {
+  padding-inline-start: 0;
+}
+li {
+  text-align: left;
+}
+label.form-field {
+  display: inline-block;
+  width: calc(100%);
+}
+
+input, select {
+  background-color: var(--form-light-color);
+}
+
+input#size-input, input#text-input {
+  width: calc(100% - 8px);
+}
+
+input#text-color {
+  width: calc(100% - 6px);
+}
+
+select#font-select {
+  width: calc(100% - 2px);
+}
+
+.form-field {
+  -ms-box-sizing:content-box;
+  -moz-box-sizing:content-box;
+  -webkit-box-sizing:content-box;
+  box-sizing:content-box;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin: 5px 0;
+  font-size: 16px;
+  /*padding: 10px;*/
+  /*border: 1px solid var(--border-color);*/
+  /*color: var(--text-color);*/
+  /*background: var(--form-light-color);*/
+}
+
+#text-color {
+  height: 50px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 /*#endregion*/
