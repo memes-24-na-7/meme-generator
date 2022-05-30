@@ -222,7 +222,7 @@ let fitTextBoxSize = function () {
   let newH = Math.round(textImage.getBoundingClientRect().height) + 'px';
   textDiv.style.width = newW;
   textDiv.style.height = newH;
-} //
+}
 
 let counter = 0;
 
@@ -285,8 +285,7 @@ let textCounter = 0n;
 
 async function generateImage() {
   const text = document.getElementById("text-input").value;
-  const font = document.getElementById("font-select").selectedOptions[0]
-    .textContent;
+  const font = document.getElementById("font-select").selectedOptions[0].textContent;
   const size = document.getElementById("size-input").value;
   const color = document.getElementById("text-color").value;
   if (!text) {
@@ -377,10 +376,10 @@ window.addEventListener('scroll', function(e) {
 
 document.querySelectorAll('.page-button').forEach(el => {
   el.addEventListener('mousemove', function(e) {
-  const pos = this.getBoundingClientRect();
-  const mx = e.pageX - pos.left - pos.width/2;
-  const my = e.pageY - scrollY - pos.top - pos.height/2;
-  this.style.transform = 'translate('+ mx * 0.15 +'px, '+ my * 0.3 +'px)';
+    const pos = this.getBoundingClientRect();
+    const mx = e.pageX - pos.left - pos.width/2;
+    const my = e.pageY - scrollY - pos.top - pos.height/2;
+    this.style.transform = 'translate('+ mx * 0.15 +'px, '+ my * 0.3 +'px)';
   });
 });
 
@@ -390,8 +389,8 @@ document.querySelectorAll('.page-button').forEach(el => el.addEventListener('mou
 
 document.addEventListener('mousemove', function(e) {
   document.querySelectorAll('.cursor').forEach((cursor) => {
-  cursor.style.left = (e.pageX - 25) + 'px';
-  cursor.style.top = (e.pageY - scrollY - 25) + 'px';
+    cursor.style.left = (e.pageX - 25) + 'px';
+    cursor.style.top = (e.pageY - scrollY - 25) + 'px';
   });
 });
 /*#endregion*/
