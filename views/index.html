@@ -17,13 +17,13 @@
   <button onclick="generatePressed()" id="generate-b" class="page-button">
     random
   </button>
-  <button id="gallery-b" class="page-button">gallery</button>
+  <button onclick="openModalWindow()" id="gallery-b" class="page-button">gallery</button>
   <div class="cursor"></div>
 </div>
 <div id="myModal" class="modal" style="display: none;">
   <div class="modal-content">
     <div class="modal-header">
-      <span class="close">×</span>
+      <span onclick="closeModalWindow()" class="close">×</span>
       <h2>Choose image</h2>
     </div>
     <div class="modal-body" style="overflow:auto;">
@@ -89,22 +89,6 @@
 <!--    <script src="/scripts/index.js"></script>-->
 <script src="../public/scripts/index.js"></script>
 <script>
-  let modal = document.getElementById('myModal');
-  document.getElementById("gallery-b").onclick = function() {
-    modal.style.display = "block";
-    let counter = parseFloat(document.getElementById('counter').textContent);
-    if (counter === 0) // to not upload imgs when click on gallery not for the first time
-      downloadImgToGallery(); // add for uploading first 10 imgs
-  }; // button
-  (document.getElementsByClassName("close")[0]).onclick = function() {
-    modal.style.display = "none";
-  }; // span
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
-
   function downloadResult(){
     html2canvas(document.getElementById('meme-container')).then(function(canvas) {
       let a = document.createElement('a');

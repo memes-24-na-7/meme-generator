@@ -256,6 +256,22 @@ document.addEventListener('mousemove', function(e) {
 });
 /*#endregion*/
 
+/*#region modal*/
+let modal = document.getElementById('myModal');
+
+let openModalWindow = function() {
+  modal.style.display = "block";
+  let counter = parseFloat(document.getElementById('counter').textContent);
+  if (counter === 0) // to not upload imgs when click on gallery not for the first time
+    downloadImgToGallery(); // add for uploading first 10 imgs
+}; // button
+
+let closeModalWindow = function() {
+  modal.style.display = "none";
+}; // span
+
+/*#endregion*/
+
 const availableFonts = [
   "Tahoma",
   "Great Vibes",
