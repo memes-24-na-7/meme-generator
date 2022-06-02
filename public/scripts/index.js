@@ -11,6 +11,7 @@ const memImage = document.getElementById('mem-image');
 const textList = document.getElementById('text-list');
 const nextBtn = document.getElementById("next-b");
 const modal = document.getElementById('myModal');
+const memePhrases = ["Было бы славно", "Время начинать план скам", "Амогус", "Ля ты крыса", "Чык-Чырык", "Беды с башкой"]
 
 /*#region Обработка нажатия кнопок*/
 
@@ -20,8 +21,18 @@ let randomPressed = function () {
     .then(result => {
       let randNumber = getRandomInt(100);
       launchWithImageUrl(result.data.memes[randNumber].url);
+      let randNumber1 = getRandomInt(memePhrases.length - 1);
+        textInput.value = memePhrases[randNumber1];
+        generateImage();
     })
     .catch(err => console.log(err));
+  /*fetch("https://geek-jokes.sameerkumar.website/api?format=json")
+      .then(res => res.json())
+      .then(result => {
+        textInput.value = result.joke;
+        generateImage();
+      })
+      .catch(err => console.log(err));*/
 };
 
 let changeState = function () {
