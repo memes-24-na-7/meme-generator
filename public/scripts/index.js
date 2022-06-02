@@ -1,16 +1,17 @@
-const memImage = document.getElementById('mem-image');
-const generateBtn = document.getElementById('generate-btn');
+const textGeneratorForm = document.getElementById('text-generator-form');
 const memeContainer = document.getElementById('meme-container');
 const divForImages = document.getElementById("div-for-images");
-const textGeneratorForm = document.getElementById('text-generator-form');
+const generateBtn = document.getElementById('generate-btn');
 const galleryCounter = document.getElementById('counter');
-const nextBtn = document.getElementById("next-b");
-const textInput = document.getElementById("text-input");
 const fontSelect = document.getElementById("font-select");
+const textInput = document.getElementById("text-input");
 const sizeInput = document.getElementById("size-input");
 const textColor = document.getElementById("text-color");
-const modal = document.getElementById('myModal');
+const memImage = document.getElementById('mem-image');
 const textList = document.getElementById('text-list');
+const nextBtn = document.getElementById("next-b");
+const modal = document.getElementById('myModal');
+const memePhrases = ["Было бы славно", "Время начинать план скам", "Амогус", "Ля ты крыса", "Чык-Чырык", "Беды с башкой"]
 
 /*#region Обработка нажатия кнопок*/
 
@@ -20,8 +21,18 @@ let randomPressed = function () {
     .then(result => {
       let randNumber = getRandomInt(100);
       launchWithImageUrl(result.data.memes[randNumber].url);
+      let randNumber1 = getRandomInt(memePhrases.length - 1);
+        textInput.value = memePhrases[randNumber1];
+        generateImage();
     })
     .catch(err => console.log(err));
+  /*fetch("https://geek-jokes.sameerkumar.website/api?format=json")
+      .then(res => res.json())
+      .then(result => {
+        textInput.value = result.joke;
+        generateImage();
+      })
+      .catch(err => console.log(err));*/
 };
 
 let changeState = function () {
@@ -255,6 +266,8 @@ let closeModalWindow = function() {
 
 /*#endregion*/
 
+/*#region aaa*/
+
 const availableFonts = [
   "Tahoma",
   "Great Vibes",
@@ -288,7 +301,7 @@ async function generateImage() {
   if (!text) {
     return;
   }
-  const imageBlob = await textToBitmap(text, font, size, color);
+  const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
   const imageUrl = URL.createObjectURL(imageBlob);
   const drag = document.createElement('div');
   drag.style.zIndex = textCounter.toString();
@@ -325,11 +338,8 @@ async function generateImage() {
   });
 }
 
-function textToBitmap(text, font, size, color) {
-  const canvas = window.document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.font = `${size * dpr}px "${font}"`;
-  const {
+function getTextLineSize(ctx, textLine) {
+  let {
     actualBoundingBoxLeft,
     actualBoundingBoxRight,
     fontBoundingBoxAscent,
@@ -337,35 +347,82 @@ function textToBitmap(text, font, size, color) {
     actualBoundingBoxAscent,
     actualBoundingBoxDescent,
     width
-  } = ctx.measureText(text);
-  canvas.height = Math.max(
+  } = ctx.measureText(textLine);
+
+  let lineHeight = Math.max(
     Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
-    ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
+    (Math.abs(fontBoundingBoxAscent) || 0)
+  );
+  let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight);
+  return [lineWidth, lineHeight];
+}
 
-  canvas.width = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight);
-
+function adaptCanvasSize(canvas, size, heights) {
   let mc = memeContainer.getBoundingClientRect();
   if (mc.width < canvas.width) {
     let dsk = mc.width / canvas.width;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
+    for (let i in heights) {
+      heights[i] *= dsk;
+    }
   }
   if (mc.height < canvas.height) {
     let dsk = mc.height / canvas.height;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
+    for (let i in heights) {
+      heights[i] *= dsk;
+    }
   }
 
-  ctx.font = `${size * dpr}px "${font}"`;
-  ctx.textBaseline = "top";
+  return size;
+}
+
+function setCanvasSize(canvas, fontValue, texts, size) {
+  let ctx = canvas.getContext("2d");
+  ctx.font = fontValue;
+  let heights = [];
+  let widths = [];
+  let maxWidth = 0;
+  let totalHeight = 0;
+
+  for (let textLine of texts) {
+    let [lineWidth, lineHeight] = getTextLineSize(ctx, textLine);
+    heights.push(lineHeight);
+    widths.push(lineWidth);
+    maxWidth = Math.max(maxWidth, lineWidth);
+    totalHeight += lineHeight;
+  }
+
+  canvas.height = totalHeight;
+  canvas.width = maxWidth;
+  size = adaptCanvasSize(canvas, size, heights);
+  return [widths, heights, size];
+}
+
+function textToBitmap(texts, font, size, color) {
+  const canvas = window.document.createElement("canvas");
+  let fullFontValue = `${size * dpr}px "${font}"`;
+  let [lineWidths, lineHeights, newSize] = setCanvasSize(canvas, fullFontValue, texts, size);
+
+  const ctx = canvas.getContext("2d");
+  ctx.font = `${newSize * dpr}px "${font}"`;
   ctx.fillStyle = color;
-  ctx.fillText(text, 0, 0);
+  ctx.textBaseline = "top";
+  let y = 0;
+  for (let i = 0; i < texts.length; i++) {
+    ctx.fillText(texts[i], 0, y);
+    y += lineHeights[i];
+  }
   return new Promise((resolve) => {
     canvas.toBlob(resolve);
   });
 }
+
+/*#endregion*/
 
 /*#region buttons and cursor moving effects */
 let scrollY = window.scrollY;
