@@ -197,10 +197,15 @@ select#font-select {
 
 /*#region Meme*/
 
+#meme-container {
+  overflow: hidden;
+  position: relative;
+}
+
 .draggable {
   width: fit-content;
   height: fit-content;
-  position: relative;
+  position: absolute;
 }
 
 .draggable.dragging {

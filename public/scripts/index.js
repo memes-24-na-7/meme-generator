@@ -216,7 +216,18 @@ document.addEventListener('mousedown', function(e) {
 
 document.addEventListener('mouseup', function() {
   if (target !== null) {
-    target.classList.remove('dragging');
+    let pRect = target.parentElement.getBoundingClientRect();
+    let tgtRect = target.getBoundingClientRect();
+    if (tgtRect.bottom <= pRect.top
+      || tgtRect.top >= pRect.bottom
+      || tgtRect.right <= pRect.left
+      || tgtRect.left >= pRect.right) {
+      document.getElementById(target.id + '-btn').remove();
+      document.getElementById(target.id).remove();
+    }
+    else {
+      target.classList.remove('dragging');
+    }
   }
   target = null;
 });
@@ -225,21 +236,6 @@ document.addEventListener('mousemove', function(e) {
   if (target === null) return;
   target.style.left = e.clientX - x + 'px';
   target.style.top = e.clientY - y + 'px';
-  let pRect = target.parentElement.getBoundingClientRect();
-  let tgtRect = target.getBoundingClientRect();
-  let divForImagesHeight = divForImages.getBoundingClientRect().height;
-  if (tgtRect.left < pRect.left) {
-    target.style.left = 0;
-  }
-  if (tgtRect.top < pRect.top) {
-    target.style.top = -divForImagesHeight + 5 + 'px';
-  }
-  if (tgtRect.right > pRect.right) {
-    target.style.left = pRect.width - tgtRect.width + 'px';
-  }
-  if (tgtRect.bottom > pRect.bottom) {
-    target.style.top = pRect.height - tgtRect.height - divForImagesHeight + 6 + 'px';
-  }
 });
 /*#endregion*/
 
@@ -296,12 +292,12 @@ async function generateImage() {
   const imageUrl = URL.createObjectURL(imageBlob);
   const drag = document.createElement('div');
   drag.style.zIndex = textCounter.toString();
-  textCounter++;
+  drag.id = textCounter.toString();
 
   drag.classList.add('draggable');
-  drag.style.top = '-' + String(memImage.offsetHeight) - 5 + "px";
-  drag.style.left = '0px';
   memeContainer.appendChild(drag);
+  drag.style.top = '0';
+  drag.style.left = '0';
   const dragger = document.createElement('div');
   drag.appendChild(dragger);
   dragger.classList.add('dragger');
@@ -311,6 +307,7 @@ async function generateImage() {
   img.src = imageUrl;
 
   const item = document.createElement('li');
+  item.id = textCounter.toString() + '-btn';
   textList.appendChild(item);
   item.textContent = `${text} ${font} ${size}px ${color}`;
   const del = document.createElement('button');
@@ -320,6 +317,8 @@ async function generateImage() {
   del.style.right = '0';
   del.classList.add('form-btn');
   del.classList.add('cross-btn');
+
+  textCounter++;
   del.addEventListener('click', (evt) => {
     drag.remove();
     item.remove();
@@ -345,15 +344,15 @@ function textToBitmap(text, font, size, color) {
 
   canvas.width = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight);
 
-  let dfi = divForImages.getBoundingClientRect();
-  if (dfi.width < canvas.width) {
-    let dsk = dfi.width / canvas.width;
+  let mc = memeContainer.getBoundingClientRect();
+  if (mc.width < canvas.width) {
+    let dsk = mc.width / canvas.width;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
   }
-  if (dfi.height < canvas.height) {
-    let dsk = dfi.height / canvas.height;
+  if (mc.height < canvas.height) {
+    let dsk = mc.height / canvas.height;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
