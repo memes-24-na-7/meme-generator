@@ -148,6 +148,17 @@ let launchEditorPage = function () {
   });
 };
 
+let resizeDimensions = function(memeA, memeB, minA, maxB, alertMsg) {
+  if (memeA < minA) {
+    let resizedMemeB = minA * memeB / memeA;
+    if (resizedMemeB > maxB) {
+      alert(alertMsg);
+      return [memeA, memeB];
+    }
+    return [minA, resizedMemeB];
+  }
+}
+
 let adaptImgSize = function() {
   let memeWidth = this.width;
   let memeHeight = this.height;
@@ -156,23 +167,10 @@ let adaptImgSize = function() {
   let maxWidth = window.screen.width * 0.9;
   let maxHeight = window.screen.height * 0.65;
 
-  if (memeWidth < minWidth) {
-    memeHeight = minWidth * memeHeight / memeWidth;
-    if (memeHeight > maxHeight) {
-      alert("Your image is too narrow, crop it or choose another one.");
-      return;
-    }
-    memeWidth = minWidth;
-  }
-
-  if (memeHeight < minHeight) {
-    memeWidth = minHeight * memeWidth / memeHeight;
-    if (memeWidth > maxWidth) {
-      alert("Your image is too wide, crop it or choose another one.");
-      return;
-    }
-    memeHeight = minHeight;
-  }
+  [memeWidth, memeHeight] = resizeDimensions(memeWidth, memeHeight, minWidth, maxHeight,
+    "Your image is too narrow, crop it or choose another one.");
+  [memeHeight, memeWidth] = resizeDimensions(memeHeight, memeWidth, minHeight, maxWidth,
+    "Your image is too wide, crop it or choose another one.");
 
   if (memeWidth > maxWidth) {
     memeHeight = maxWidth * memeHeight / memeWidth;
