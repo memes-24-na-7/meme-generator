@@ -10,6 +10,7 @@ const textColor = document.getElementById("text-color");
 const memImage = document.getElementById('mem-image');
 const textList = document.getElementById('text-list');
 const nextBtn = document.getElementById("next-b");
+const align = document.getElementById('align');
 const modal = document.getElementById('myModal');
 const memePhrases = ["Было бы славно", "Время начинать план скам", "Амогус", "Ля ты крыса", "Чык-Чырык", "Беды с башкой"]
 
@@ -358,7 +359,7 @@ function getTextLineSize(ctx, textLine) {
   return [lineWidth, lineHeight];
 }
 
-function adaptCanvasSize(canvas, size, heights) {
+function adaptCanvasSize(canvas, size, heights, widths) {
   let dfi = divForImages.getBoundingClientRect();
   if (dfi.width < canvas.width) {
     let dsk = dfi.width / canvas.width;
@@ -367,6 +368,7 @@ function adaptCanvasSize(canvas, size, heights) {
     canvas.width *= dsk;
     for (let i in heights) {
       heights[i] *= dsk;
+      widths[i] *= dsk;
     }
   }
   if (dfi.height < canvas.height) {
@@ -376,6 +378,7 @@ function adaptCanvasSize(canvas, size, heights) {
     canvas.width *= dsk;
     for (let i in heights) {
       heights[i] *= dsk;
+      widths[i] *= dsk;
     }
   }
 
@@ -404,6 +407,16 @@ function setCanvasSize(canvas, fontValue, texts, size) {
   return [widths, heights, size];
 }
 
+function getX(textAlign, lineWidth, canvasWidth) {
+  if (textAlign === 'left') {
+    return 0;
+  } else if (textAlign === 'center') {
+    return (canvasWidth - lineWidth) / 2;
+  } else {
+    return canvasWidth - lineWidth;
+  }
+}
+
 function textToBitmap(texts, font, size, color) {
   const canvas = window.document.createElement("canvas");
   let fullFontValue = `${size * dpr}px "${font}"`;
@@ -413,9 +426,12 @@ function textToBitmap(texts, font, size, color) {
   ctx.font = `${newSize * dpr}px "${font}"`;
   ctx.fillStyle = color;
   ctx.textBaseline = "top";
+
+  let textAlign = align.selectedOptions[0].textContent;
   let y = 0;
+  let width = canvas.width;
   for (let i = 0; i < texts.length; i++) {
-    ctx.fillText(texts[i], 0, y);
+    ctx.fillText(texts[i], getX(textAlign, lineWidths[i], width), y);
     y += lineHeights[i];
   }
   return new Promise((resolve) => {
