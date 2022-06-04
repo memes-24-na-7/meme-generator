@@ -68,14 +68,26 @@ let downloadImgToGallery = function() {
     .catch(err => console.log(err));
 };
 
+const tabIndex = 4;
 let addImg = function(src, onclickFunctionName) {
   let newImageDiv = document.createElement('div');
   newImageDiv.className = "image";
   let img = document.createElement('img');
+  img.tabIndex = tabIndex;
   img.src = src;
   img.setAttribute('onclick', `chooseImage(this, ${onclickFunctionName})`);
+  img.onkeydown = ev => {
+    if (ev.code === "Enter") {
+      chooseImageByEnter(img);
+    }
+  }
   newImageDiv.appendChild(img);
   document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
+};
+
+let chooseImageByEnter = function (imgs) {
+  modal.style.display = "none";
+  loadSrcToEdit(imgs.src);
 };
 
 let launchWithImageUrl = function(url) {
