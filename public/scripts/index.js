@@ -19,20 +19,13 @@ let randomPressed = function () {
   fetch("https://api.imgflip.com/get_memes")
     .then(res => res.json())
     .then(result => {
-      let randNumber = getRandomInt(100);
-      launchWithImageUrl(result.data.memes[randNumber].url);
-      let randNumber1 = getRandomInt(memePhrases.length - 1);
-        textInput.value = memePhrases[randNumber1];
-        generateImage();
+      let randNumberForMeme = getRandomInt(100);
+      launchWithImageUrl(result.data.memes[randNumberForMeme].url);
+      let randNumberForText = getRandomInt(memePhrases.length - 1);
+      textInput.value = memePhrases[randNumberForText];
+      generateImage();
     })
     .catch(err => console.log(err));
-  /*fetch("https://geek-jokes.sameerkumar.website/api?format=json")
-      .then(res => res.json())
-      .then(result => {
-        textInput.value = result.joke;
-        generateImage();
-      })
-      .catch(err => console.log(err));*/
 };
 
 let changeState = function () {
@@ -322,7 +315,10 @@ async function generateImage() {
   const item = document.createElement('li');
   item.id = textCounter.toString() + '-btn';
   textList.appendChild(item);
-  item.textContent = `${text} ${font} ${size}px ${color}`;
+
+  //alert(textGeneratorForm.style.width);
+  let textToOutput = text.length <= 30 ? text : text.slice(0, 30) + "...";
+  item.textContent = `${textToOutput} ${font} ${size}px ${color}`;
   const del = document.createElement('button');
   del.type = 'button';
   item.appendChild(del);
