@@ -378,8 +378,8 @@ function adaptCanvasSize(canvas, size, heights, widths) {
       widths[i] *= dsk;
     }
   }
-  if (mc.height < canvas.height) {
-    let dsk = mc.height / canvas.height;
+  if (dfi.height < canvas.height) {
+    let dsk = dfi.height / canvas.height;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
@@ -410,7 +410,7 @@ function setCanvasSize(canvas, fontValue, texts, size) {
 
   canvas.height = totalHeight;
   canvas.width = maxWidth;
-  size = adaptCanvasSize(canvas, size, heights);
+  size = adaptCanvasSize(canvas, size, heights, widths);
   return [widths, heights, size];
 }
 
