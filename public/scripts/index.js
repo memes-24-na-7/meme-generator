@@ -20,20 +20,13 @@ let randomPressed = function () {
   fetch("https://api.imgflip.com/get_memes")
     .then(res => res.json())
     .then(result => {
-      let randNumber = getRandomInt(100);
-      launchWithImageUrl(result.data.memes[randNumber].url);
-      let randNumber1 = getRandomInt(memePhrases.length - 1);
-        textInput.value = memePhrases[randNumber1];
-        generateImage();
+      let randNumberForMeme = getRandomInt(100);
+      launchWithImageUrl(result.data.memes[randNumberForMeme].url);
+      let randNumberForText = getRandomInt(memePhrases.length - 1);
+      textInput.value = memePhrases[randNumberForText];
+      generateImage();
     })
     .catch(err => console.log(err));
-  /*fetch("https://geek-jokes.sameerkumar.website/api?format=json")
-      .then(res => res.json())
-      .then(result => {
-        textInput.value = result.joke;
-        generateImage();
-      })
-      .catch(err => console.log(err));*/
 };
 
 let changeState = function () {
@@ -80,14 +73,26 @@ let downloadImgToGallery = function() {
     .catch(err => console.log(err));
 };
 
+const tabIndex = 4;
 let addImg = function(src, onclickFunctionName) {
   let newImageDiv = document.createElement('div');
   newImageDiv.className = "image";
   let img = document.createElement('img');
+  img.tabIndex = tabIndex;
   img.src = src;
   img.setAttribute('onclick', `chooseImage(this, ${onclickFunctionName})`);
+  img.onkeydown = ev => {
+    if (ev.code === "Enter") {
+      chooseImageByEnter(img);
+    }
+  }
   newImageDiv.appendChild(img);
   document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
+};
+
+let chooseImageByEnter = function (imgs) {
+  modal.style.display = "none";
+  loadSrcToEdit(imgs.src);
 };
 
 let launchWithImageUrl = function(url) {
@@ -228,7 +233,18 @@ document.addEventListener('mousedown', function(e) {
 
 document.addEventListener('mouseup', function() {
   if (target !== null) {
-    target.classList.remove('dragging');
+    let pRect = target.parentElement.getBoundingClientRect();
+    let tgtRect = target.getBoundingClientRect();
+    if (tgtRect.bottom <= pRect.top
+      || tgtRect.top >= pRect.bottom
+      || tgtRect.right <= pRect.left
+      || tgtRect.left >= pRect.right) {
+      document.getElementById(target.id + '-btn').remove();
+      document.getElementById(target.id).remove();
+    }
+    else {
+      target.classList.remove('dragging');
+    }
   }
   target = null;
 });
@@ -237,21 +253,6 @@ document.addEventListener('mousemove', function(e) {
   if (target === null) return;
   target.style.left = e.clientX - x + 'px';
   target.style.top = e.clientY - y + 'px';
-  let pRect = target.parentElement.getBoundingClientRect();
-  let tgtRect = target.getBoundingClientRect();
-  let divForImagesHeight = divForImages.getBoundingClientRect().height;
-  if (tgtRect.left < pRect.left) {
-    target.style.left = 0;
-  }
-  if (tgtRect.top < pRect.top) {
-    target.style.top = -divForImagesHeight + 5 + 'px';
-  }
-  if (tgtRect.right > pRect.right) {
-    target.style.left = pRect.width - tgtRect.width + 'px';
-  }
-  if (tgtRect.bottom > pRect.bottom) {
-    target.style.top = pRect.height - tgtRect.height - divForImagesHeight + 6 + 'px';
-  }
 });
 /*#endregion*/
 
@@ -310,12 +311,12 @@ async function generateImage() {
   const imageUrl = URL.createObjectURL(imageBlob);
   const drag = document.createElement('div');
   drag.style.zIndex = textCounter.toString();
-  textCounter++;
+  drag.id = textCounter.toString();
 
   drag.classList.add('draggable');
-  drag.style.top = '-' + String(memImage.offsetHeight) - 5 + "px";
-  drag.style.left = '0px';
   memeContainer.appendChild(drag);
+  drag.style.top = '0';
+  drag.style.left = '0';
   const dragger = document.createElement('div');
   drag.appendChild(dragger);
   dragger.classList.add('dragger');
@@ -325,8 +326,12 @@ async function generateImage() {
   img.src = imageUrl;
 
   const item = document.createElement('li');
+  item.id = textCounter.toString() + '-btn';
   textList.appendChild(item);
-  item.textContent = `${text} ${font} ${size}px ${color}`;
+
+  //alert(textGeneratorForm.style.width);
+  let textToOutput = text.length <= 30 ? text : text.slice(0, 30) + "...";
+  item.textContent = `${textToOutput} ${font} ${size}px ${color}`;
   const del = document.createElement('button');
   del.type = 'button';
   item.appendChild(del);
@@ -334,6 +339,8 @@ async function generateImage() {
   del.style.right = '0';
   del.classList.add('form-btn');
   del.classList.add('cross-btn');
+
+  textCounter++;
   del.addEventListener('click', (evt) => {
     drag.remove();
     item.remove();
@@ -354,7 +361,7 @@ function getTextLineSize(ctx, textLine) {
   let lineHeight = Math.max(
     Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
     (Math.abs(fontBoundingBoxAscent) || 0)
-  ); // + (Math.abs(fontBoundingBoxDescent) || 0),
+  );
   let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight);
   return [lineWidth, lineHeight];
 }
@@ -371,8 +378,8 @@ function adaptCanvasSize(canvas, size, heights, widths) {
       widths[i] *= dsk;
     }
   }
-  if (dfi.height < canvas.height) {
-    let dsk = dfi.height / canvas.height;
+  if (mc.height < canvas.height) {
+    let dsk = mc.height / canvas.height;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
