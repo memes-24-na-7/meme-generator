@@ -21,10 +21,9 @@ let randomPressed = function () {
     .then(res => res.json())
     .then(result => {
       let randNumberForMeme = getRandomInt(100);
-      launchWithImageUrl(result.data.memes[randNumberForMeme].url);
       let randNumberForText = getRandomInt(memePhrases.length - 1);
       textInput.value = memePhrases[randNumberForText];
-      generateImage();
+      launchWithImageUrl(result.data.memes[randNumberForMeme].url, generateImage);
     })
     .catch(err => console.log(err));
 };
@@ -95,7 +94,7 @@ let chooseImageByEnter = function (imgs) {
   loadSrcToEdit(imgs.src);
 };
 
-let launchWithImageUrl = function(url) {
+let launchWithImageUrl = function(url, callAfterLaunch=null) {
   const img = new Image();
   img.setAttribute('crossOrigin', 'anonymous');
   img.onload = () => {
@@ -105,7 +104,7 @@ let launchWithImageUrl = function(url) {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
     const dataURL = canvas.toDataURL("image/png");
-    loadSrcToEdit(dataURL);
+    loadSrcToEdit(dataURL, callAfterLaunch);
   };
   img.src = url;
 };
@@ -165,9 +164,9 @@ let launchEditorPage = function () {
   });
 };
 
-let adaptImgSize = function() {
-  let memeWidth = this.width;
-  let memeHeight = this.height;
+let adaptImgSize = function(img) {
+  let memeWidth = img.width;
+  let memeHeight = img.height;
   let minWidth = 300;
   let minHeight = 75;
   let maxWidth = window.screen.width * 0.9;
@@ -203,11 +202,16 @@ let adaptImgSize = function() {
   launchEditorPage();
 };
 
-let loadSrcToEdit = function (imgSrc) {
+let loadSrcToEdit = function (imgSrc, callAfterLaunch=null) {
   let img = new Image();
   img.src = imgSrc;
   memImage.src = imgSrc;
-  img.onload = adaptImgSize;
+  img.onload = function() {
+    adaptImgSize(this);
+    if (callAfterLaunch != null) {
+      callAfterLaunch();
+    }
+  }
 };
 /*#endregion*/
 
