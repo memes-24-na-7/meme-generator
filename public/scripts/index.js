@@ -80,6 +80,25 @@ let downloadImgToGallery = function() {
     .catch(err => console.log(err));
 };
 
+let textImg = null;
+document.addEventListener('keydown', function (e) {
+  if (e.code === "ArrowRight" || e.code === "ArrowLeft" || e.code === "ArrowTop" || e.code === "ArrowDown") {
+    textImg = document.getElementById(document.activeElement.id.split('-')[0]);
+    if (e.code === "ArrowTop") {
+      textImg.style.top = Number(textImg.style.top.slice(0, -2)) - 10 + 'px';
+    }
+    else if (e.code === "ArrowDown") {
+      textImg.style.top = Number(textImg.style.top.slice(0, -2)) + 10 + 'px';
+    }
+    else if (e.code === "ArrowRight") {
+      textImg.style.left = Number(textImg.style.left.slice(0, -2)) + 10 + 'px';
+    }
+    else {
+      textImg.style.left = Number(textImg.style.left.slice(0, -2)) - 10 + 'px';
+    }
+  }
+});
+
 const tabIndex = 4;
 let addImg = function(src, onclickFunctionName) {
   let newImageDiv = document.createElement('div');
@@ -343,6 +362,7 @@ async function generateImage() {
   img.src = imageUrl;
 
   const item = document.createElement('li');
+  item.tabIndex = 7;
   item.id = textCounter.toString() + '-btn';
   textList.appendChild(item);
 
