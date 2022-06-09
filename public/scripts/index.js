@@ -315,6 +315,11 @@ async function generateImage() {
   const text = textInput.value;
   const font = fontSelect.selectedOptions[0].textContent;
   const size = sizeInput.value;
+  //const size = sizeInput.value < 6 ? 6 : (sizeInput.value > 300 ? 300 : sizeInput.value);
+  if (size < 10 || size > 300) {
+    alert("Размер текста не может быть меньше 10 и больше 300");
+    return;
+  }
   const color = textColor.value;
   if (!text) {
     return;

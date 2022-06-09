@@ -180,6 +180,12 @@ input#size-input, input#text-input {
   width: calc(100% - 8px);
 }
 
+#size-input:invalid {
+  border-color: red;
+  border-width: 2px;
+  background-color: rgba(252, 203, 203, 0.9);
+}
+
 input#text-color {
   width: calc(100% - 6px);
 }
