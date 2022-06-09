@@ -82,9 +82,9 @@ let downloadImgToGallery = function() {
 
 let textImg = null;
 document.addEventListener('keydown', function (e) {
-  if (e.code === "ArrowRight" || e.code === "ArrowLeft" || e.code === "ArrowTop" || e.code === "ArrowDown") {
+  if (e.code === "ArrowRight" || e.code === "ArrowLeft" || e.code === "ArrowUp" || e.code === "ArrowDown") {
     textImg = document.getElementById(document.activeElement.id.split('-')[0]);
-    if (e.code === "ArrowTop") {
+    if (e.code === "ArrowUp") {
       textImg.style.top = Number(textImg.style.top.slice(0, -2)) - 10 + 'px';
     }
     else if (e.code === "ArrowDown") {
@@ -362,7 +362,7 @@ async function generateImage() {
   img.src = imageUrl;
 
   const item = document.createElement('li');
-  item.tabIndex = 7;
+  item.tabIndex = 8;
   item.id = textCounter.toString() + '-btn';
   textList.appendChild(item);
 
@@ -371,6 +371,7 @@ async function generateImage() {
   item.textContent = `${textToOutput} ${font} ${size}px ${color}`;
   const del = document.createElement('button');
   del.type = 'button';
+  del.tabIndex = 8;
   item.appendChild(del);
   del.textContent = 'X';
   del.style.right = '0';
