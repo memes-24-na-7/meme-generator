@@ -10,8 +10,17 @@ const textColor = document.getElementById("text-color");
 const memImage = document.getElementById('mem-image');
 const textList = document.getElementById('text-list');
 const nextBtn = document.getElementById("next-b");
+const align = document.getElementById('align');
 const modal = document.getElementById('myModal');
-const memePhrases = ["Было бы славно", "Время начинать план скам", "Амогус", "Ля ты крыса", "Чык-Чырык", "Беды с башкой"]
+const memePhrases = ["было бы славно", "время начинать план скам", "амогус", "ля ты крыса",
+  "не важно, кто, \nважно, кто", "Чык-Чырык", "беды с башкой", "Москва, метро \"Люблино\", работаем",
+  "вы продоете рыбов?", "Елена, алле!", "Directed by Robert B. Weide",
+  "Слушай, а ловко ты это придумал, \nя даже в начале не понял, \nмолодец", "калыван", "пока на расслабоне \nна чиле",
+  "оооо, повезло, повезло", "вжух! и ты сдал веб", "братишка, \nя тебе покушац принес", "олды тут?",
+  "загадка от \nЖака Фреско", "гучи флип флап", "суету навести охота", "хочу оливье", "боже, я не хочу умирац",
+  "когда милицию переименовали в полицию \nмедики заволновались", "но это не точно", "скажи мне три главных слова",
+  "омагад", "я ничаянна", "ъеъ", "я твой брат, \nбрат, а кто не брат мне, \nтот не брат, брат", "малолетние дИбИлы",
+  "я просто ниче не понимаю \nващще", "сущность в виде гномика", "а кому щяс лехко", "девачки, я в шоке"]
 
 /*#region Обработка нажатия кнопок*/
 
@@ -20,10 +29,9 @@ let randomPressed = function () {
     .then(res => res.json())
     .then(result => {
       let randNumberForMeme = getRandomInt(100);
-      launchWithImageUrl(result.data.memes[randNumberForMeme].url);
       let randNumberForText = getRandomInt(memePhrases.length - 1);
       textInput.value = memePhrases[randNumberForText];
-      generateImage();
+      launchWithImageUrl(result.data.memes[randNumberForMeme].url, generateImage);
     })
     .catch(err => console.log(err));
 };
@@ -113,7 +121,7 @@ let chooseImageByEnter = function (imgs) {
   loadSrcToEdit(imgs.src);
 };
 
-let launchWithImageUrl = function(url) {
+let launchWithImageUrl = function(url, callAfterLaunch=null) {
   const img = new Image();
   img.setAttribute('crossOrigin', 'anonymous');
   img.onload = () => {
@@ -123,7 +131,7 @@ let launchWithImageUrl = function(url) {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
     const dataURL = canvas.toDataURL("image/png");
-    loadSrcToEdit(dataURL);
+    loadSrcToEdit(dataURL, callAfterLaunch);
   };
   img.src = url;
 };
@@ -183,9 +191,9 @@ let launchEditorPage = function () {
   });
 };
 
-let adaptImgSize = function() {
-  let memeWidth = this.width;
-  let memeHeight = this.height;
+let adaptImgSize = function(img) {
+  let memeWidth = img.width;
+  let memeHeight = img.height;
   let minWidth = 300;
   let minHeight = 75;
   let maxWidth = window.screen.width * 0.9;
@@ -221,11 +229,16 @@ let adaptImgSize = function() {
   launchEditorPage();
 };
 
-let loadSrcToEdit = function (imgSrc) {
+let loadSrcToEdit = function (imgSrc, callAfterLaunch=null) {
   let img = new Image();
   img.src = imgSrc;
   memImage.src = imgSrc;
-  img.onload = adaptImgSize;
+  img.onload = function() {
+    adaptImgSize(this);
+    if (callAfterLaunch != null) {
+      callAfterLaunch();
+    }
+  }
 };
 /*#endregion*/
 
@@ -321,6 +334,11 @@ async function generateImage() {
   const text = textInput.value;
   const font = fontSelect.selectedOptions[0].textContent;
   const size = sizeInput.value;
+  //const size = sizeInput.value < 6 ? 6 : (sizeInput.value > 300 ? 300 : sizeInput.value);
+  if (size < 10 || size > 300) {
+    alert("Размер текста не может быть меньше 10 и больше 300");
+    return;
+  }
   const color = textColor.value;
   if (!text) {
     return;
@@ -385,24 +403,26 @@ function getTextLineSize(ctx, textLine) {
   return [lineWidth, lineHeight];
 }
 
-function adaptCanvasSize(canvas, size, heights) {
-  let mc = memeContainer.getBoundingClientRect();
-  if (mc.width < canvas.width) {
-    let dsk = mc.width / canvas.width;
+function adaptCanvasSize(canvas, size, heights, widths) {
+  let dfi = divForImages.getBoundingClientRect();
+  if (dfi.width < canvas.width) {
+    let dsk = dfi.width / canvas.width;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
     for (let i in heights) {
       heights[i] *= dsk;
+      widths[i] *= dsk;
     }
   }
-  if (mc.height < canvas.height) {
-    let dsk = mc.height / canvas.height;
+  if (dfi.height < canvas.height) {
+    let dsk = dfi.height / canvas.height;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
     for (let i in heights) {
       heights[i] *= dsk;
+      widths[i] *= dsk;
     }
   }
 
@@ -427,8 +447,18 @@ function setCanvasSize(canvas, fontValue, texts, size) {
 
   canvas.height = totalHeight;
   canvas.width = maxWidth;
-  size = adaptCanvasSize(canvas, size, heights);
+  size = adaptCanvasSize(canvas, size, heights, widths);
   return [widths, heights, size];
+}
+
+function getX(textAlign, lineWidth, canvasWidth) {
+  if (textAlign === 'left') {
+    return 0;
+  } else if (textAlign === 'center') {
+    return (canvasWidth - lineWidth) / 2;
+  } else {
+    return canvasWidth - lineWidth;
+  }
 }
 
 function textToBitmap(texts, font, size, color) {
@@ -440,9 +470,12 @@ function textToBitmap(texts, font, size, color) {
   ctx.font = `${newSize * dpr}px "${font}"`;
   ctx.fillStyle = color;
   ctx.textBaseline = "top";
+
+  let textAlign = align.selectedOptions[0].textContent;
   let y = 0;
+  let width = canvas.width;
   for (let i = 0; i < texts.length; i++) {
-    ctx.fillText(texts[i], 0, y);
+    ctx.fillText(texts[i], getX(textAlign, lineWidths[i], width), y);
     y += lineHeights[i];
   }
   return new Promise((resolve) => {
