@@ -364,11 +364,15 @@ async function generateImage() {
   const item = document.createElement('li');
   item.tabIndex = 8;
   item.id = textCounter.toString() + '-btn';
+  item.className = 'text-pointer';
   textList.appendChild(item);
 
   //alert(textGeneratorForm.style.width);
-  let textToOutput = text.length <= 30 ? text : text.slice(0, 30) + "...";
-  item.textContent = `${textToOutput} ${font} ${size}px ${color}`;
+  // let textToOutput = text.length <= 30 ? text : text.slice(0, 30) + "...";
+  const content = document.createElement('p');
+  item.appendChild(content);
+  content.classList.add('text-content');
+  content.textContent = text; // `${textToOutput} ${font} ${size}px ${color}`
   const del = document.createElement('button');
   del.type = 'button';
   del.tabIndex = 8;
