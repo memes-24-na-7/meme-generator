@@ -80,21 +80,40 @@ let downloadImgToGallery = function() {
     .catch(err => console.log(err));
 };
 
+let removeTextImage = function(textObject) {
+  document.getElementById(textObject.id + '-btn').remove();
+  textObject.remove();
+}
+
 let textImg = null;
 document.addEventListener('keydown', function (e) {
   if (e.code === "ArrowRight" || e.code === "ArrowLeft" || e.code === "ArrowUp" || e.code === "ArrowDown") {
     textImg = document.getElementById(document.activeElement.id.split('-')[0]);
+    let pRect = textImg.parentElement.getBoundingClientRect();
+    let tgtRect = textImg.getBoundingClientRect();
     if (e.code === "ArrowUp") {
       textImg.style.top = Number(textImg.style.top.slice(0, -2)) - 10 + 'px';
+      if (tgtRect.bottom <= pRect.top) {
+        removeTextImage(textImg);
+      }
     }
     else if (e.code === "ArrowDown") {
       textImg.style.top = Number(textImg.style.top.slice(0, -2)) + 10 + 'px';
+      if (tgtRect.bottom <= pRect.top) {
+        removeTextImage(textImg);
+      }
     }
     else if (e.code === "ArrowRight") {
       textImg.style.left = Number(textImg.style.left.slice(0, -2)) + 10 + 'px';
+      if (tgtRect.left >= pRect.right) {
+        removeTextImage(textImg);
+      }
     }
     else {
       textImg.style.left = Number(textImg.style.left.slice(0, -2)) - 10 + 'px';
+      if (tgtRect.right <= pRect.left) {
+        removeTextImage(textImg);
+      }
     }
   }
 });
@@ -368,7 +387,6 @@ async function generateImage() {
   textList.appendChild(item);
 
   //alert(textGeneratorForm.style.width);
-  // let textToOutput = text.length <= 30 ? text : text.slice(0, 30) + "...";
   const content = document.createElement('p');
   item.appendChild(content);
   content.classList.add('text-content');
@@ -404,7 +422,7 @@ function getTextLineSize(ctx, textLine) {
     Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
     (Math.abs(fontBoundingBoxAscent) || 0)
   );
-  let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight);
+  let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight) + 10;
   return [lineWidth, lineHeight];
 }
 
