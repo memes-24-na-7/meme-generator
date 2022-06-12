@@ -72,7 +72,6 @@ input[type="file"] {
   width: 120px;
   height: 70px;
   border-radius: 30%;
-  background-color: #A5E4EC;
   display: inline-flex;
 }
 
@@ -104,16 +103,13 @@ input[type="file"] {
 }
 
 #text-generator-form form {
-  /*display: inline-block;*/
   margin: 10px auto;
 }
 
 .form-content {
   list-style-type: none;
-  /*padding: 0;*/
   width: 80%;
   margin: 0 auto;
-  /*text-align: left;*/
 }
 
 textarea {
@@ -152,11 +148,6 @@ textarea {
 
 #text-list {
   list-style-type: none;
-}
-
-#generate-btn, h1, label
-{
-  color: var(--text-color);
 }
 
 #text-list li {
@@ -212,15 +203,11 @@ select#font-select {
 }
 
 .form-field {
-  -ms-box-sizing:content-box;
-  -moz-box-sizing:content-box;
-  -webkit-box-sizing:content-box;
   box-sizing:content-box;
   padding-top: 10px;
   padding-bottom: 10px;
   margin: 5px 0;
   font-size: 16px;
-  /*padding: 10px;*/
   border: 1px solid var(--border-color);
   color: var(--text-color);
   background: var(--form-light-color);
@@ -309,17 +296,10 @@ select#font-select {
   animation-duration: 0.4s
 }
 
-
-@-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0}
-  to {top:0; opacity:1}
-}
-
 @keyframes animatetop {
   from {top:-300px; opacity:0}
   to {top:0; opacity:1}
 }
-
 
 .close {
   opacity: 0.8;
