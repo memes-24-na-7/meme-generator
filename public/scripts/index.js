@@ -99,7 +99,7 @@ document.addEventListener('keydown', function (e) {
     }
     else if (e.code === "ArrowDown") {
       textImg.style.top = Number(textImg.style.top.slice(0, -2)) + 10 + 'px';
-      if (tgtRect.bottom <= pRect.top) {
+      if (tgtRect.top >= pRect.bottom) {
         removeTextImage(textImg);
       }
     }
