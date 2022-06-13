@@ -12,28 +12,33 @@ const textList = document.getElementById('text-list');
 const nextBtn = document.getElementById("next-b");
 const align = document.getElementById('align');
 const modal = document.getElementById('myModal');
-const memePhrases = ["было бы славно", "время начинать план скам", "амогус", "ля ты крыса",
-  "не важно, кто, \nважно, кто", "Чык-Чырык", "беды с башкой", "Москва, метро \"Люблино\", работаем",
-  "вы продоете рыбов?", "Елена, алле!", "Directed by Robert B. Weide",
-  "Слушай, а ловко ты это придумал, \nя даже в начале не понял, \nмолодец", "калыван", "пока на расслабоне \nна чиле",
-  "оооо, повезло, повезло", "вжух! и ты сдал веб", "братишка, \nя тебе покушац принес", "олды тут?",
-  "загадка от \nЖака Фреско", "гучи флип флап", "суету навести охота", "хочу оливье", "боже, я не хочу умирац",
-  "когда милицию переименовали в полицию \nмедики заволновались", "но это не точно", "скажи мне три главных слова",
-  "омагад", "я ничаянна", "ъеъ", "я твой брат, \nбрат, а кто не брат мне, \nтот не брат, брат", "малолетние дИбИлы",
-  "я просто ниче не понимаю \nващще", "сущность в виде гномика", "а кому щяс лехко", "девачки, я в шоке"]
+const memePhrases = ["было бы славно", "время начинать план скам", "амогус",
+  "ля ты крыса", "не важно, кто, \nважно, кто", "Чык-Чырык", "беды с башкой",
+  "Москва, метро \"Люблино\", работаем", "вы продоете рыбов?", "Елена, алле!",
+  "Directed by Robert B. Weide",
+  "Слушай, а ловко ты это придумал, \nя даже в начале не понял, \nмолодец",
+  "калыван", "пока на расслабоне \nна чиле", "оооо, повезло, повезло",
+  "вжух! и ты сдал веб", "братишка, \nя тебе покушац принес", "олды тут?",
+  "загадка от \nЖака Фреско", "гучи флип флап", "суету навести охота",
+  "хочу оливье", "боже, я не хочу умирац",
+  "когда милицию переименовали в полицию \nмедики заволновались",
+  "но это не точно", "скажи мне три главных слова", "омагад", "я ничаянна",
+  "ъеъ", "я твой брат, \nбрат, а кто не брат мне, \nтот не брат, брат",
+  "малолетние дИбИлы", "я просто ниче не понимаю \nващще",
+  "сущность в виде гномика", "а кому щяс лехко", "девачки, я в шоке"];
 
 /*#region Обработка нажатия кнопок*/
 
 let randomPressed = function () {
   fetch("https://api.imgflip.com/get_memes")
-    .then(res => res.json())
-    .then(result => {
-      let randNumberForMeme = getRandomInt(100);
-      let randNumberForText = getRandomInt(memePhrases.length - 1);
-      textInput.value = memePhrases[randNumberForText];
-      launchWithImageUrl(result.data.memes[randNumberForMeme].url, generateImage);
-    })
-    .catch(err => console.log(err));
+      .then(res => res.json())
+      .then(result => {
+        let randNumForMeme = getRandomInt(100);
+        let randNumForText = getRandomInt(memePhrases.length - 1);
+        textInput.value = memePhrases[randNumForText];
+        launchWithImageUrl(result.data.memes[randNumForMeme].url, generateImage);
+      })
+      .catch(err => console.log(err));
 };
 
 let changeState = function () {
@@ -45,7 +50,7 @@ let changeState = function () {
   document.querySelectorAll('.first-state').forEach(function (elem) {
     elem.style.visibility = 'visible';
   });
-}
+};
 
 let cleanForm = function () {
   document.querySelectorAll('.draggable').forEach(function (elem) {
@@ -57,7 +62,7 @@ let cleanForm = function () {
   textInput.value = '';
   fontSelect.value = 'Tahoma';
   sizeInput.value = 100;
-}
+};
 
 let backPressed = function () {
   changeState();
@@ -66,24 +71,24 @@ let backPressed = function () {
 
 let downloadImgToGallery = function() {
   fetch("https://api.imgflip.com/get_memes")
-    .then(res => res.json())
-    .then(result => {
-      let counter = parseFloat(galleryCounter.textContent);
-      for(let i = counter * 10; i < counter * 10 + 10; i++) {
-        addImg(result.data.memes[i].url, 'launchWithImageUrl');
-      }
-      galleryCounter.textContent = (counter + 1).toString();
-      if (counter === 9) {
-        nextBtn.style.visibility = "hidden";
-      }
-    })
-    .catch(err => console.log(err));
+      .then(res => res.json())
+      .then(result => {
+        let counter = parseFloat(galleryCounter.textContent);
+        for(let i = counter * 10; i < counter * 10 + 10; i++) {
+          addImg(result.data.memes[i].url, 'launchWithImageUrl');
+        }
+        galleryCounter.textContent = (counter + 1).toString();
+        if (counter === 9) {
+          nextBtn.style.visibility = "hidden";
+        }
+      })
+      .catch(err => console.log(err));
 };
 
 let removeTextImage = function(textObject) {
   document.getElementById(textObject.id + '-btn').remove();
   textObject.remove();
-}
+};
 
 let textImg = null;
 document.addEventListener('keydown', function (e) {
@@ -130,7 +135,7 @@ let addImg = function(src, onclickFunctionName) {
     if (ev.code === "Enter") {
       chooseImageByEnter(img);
     }
-  }
+  };
   newImageDiv.appendChild(img);
   document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
 };
@@ -169,7 +174,7 @@ let isInputAllowable = function (file) {
     return false;
   }
   return true;
-}
+};
 
 let uploadMeme = function (file) {
   if (!isInputAllowable(file)) {
@@ -257,7 +262,7 @@ let loadSrcToEdit = function (imgSrc, callAfterLaunch=null) {
     if (callAfterLaunch != null) {
       callAfterLaunch();
     }
-  }
+  };
 };
 /*#endregion*/
 
@@ -285,10 +290,10 @@ document.addEventListener('mouseup', function() {
   if (target !== null) {
     let pRect = target.parentElement.getBoundingClientRect();
     let tgtRect = target.getBoundingClientRect();
-    if (tgtRect.bottom <= pRect.top
-      || tgtRect.top >= pRect.bottom
-      || tgtRect.right <= pRect.left
-      || tgtRect.left >= pRect.right) {
+    if (tgtRect.bottom <= pRect.top ||
+        tgtRect.top >= pRect.bottom ||
+        tgtRect.right <= pRect.left ||
+        tgtRect.left >= pRect.right) {
       document.getElementById(target.id + '-btn').remove();
       document.getElementById(target.id).remove();
     }
@@ -353,7 +358,6 @@ async function generateImage() {
   const text = textInput.value;
   const font = fontSelect.selectedOptions[0].textContent;
   const size = sizeInput.value;
-  //const size = sizeInput.value < 6 ? 6 : (sizeInput.value > 300 ? 300 : sizeInput.value);
   if (size < 10 || size > 300) {
     alert("Размер текста не может быть меньше 10 и больше 300");
     return;
@@ -401,7 +405,7 @@ async function generateImage() {
   del.classList.add('cross-btn');
 
   textCounter++;
-  del.addEventListener('click', (evt) => {
+  del.addEventListener('click', () => {
     drag.remove();
     item.remove();
   });
@@ -419,8 +423,8 @@ function getTextLineSize(ctx, textLine) {
   } = ctx.measureText(textLine);
 
   let lineHeight = Math.max(
-    Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
-    (Math.abs(fontBoundingBoxAscent) || 0)
+      Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
+      (Math.abs(fontBoundingBoxAscent) || 0)
   );
   let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight) + 10;
   return [lineWidth, lineHeight];
@@ -433,7 +437,7 @@ function adaptCanvasSize(canvas, size, heights, widths) {
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
-    for (let i in heights) {
+    for (let i = 0; i < heights.length; i++) {
       heights[i] *= dsk;
       widths[i] *= dsk;
     }
@@ -443,7 +447,7 @@ function adaptCanvasSize(canvas, size, heights, widths) {
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
-    for (let i in heights) {
+    for (let i = 0; i < heights.length; i++) {
       heights[i] *= dsk;
       widths[i] *= dsk;
     }
@@ -511,7 +515,7 @@ function textToBitmap(texts, font, size, color) {
 /*#region buttons and cursor moving effects */
 let scrollY = window.scrollY;
 
-window.addEventListener('scroll', function(e) {
+window.addEventListener('scroll', function() {
   scrollY = window.scrollY;
 });
 
