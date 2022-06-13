@@ -2,7 +2,8 @@ body {
   background-image: url(../images/back-light.jpg);
   text-align: center;
   font-family: "Comic Sans MS", cursive, sans-serif;
-  --border-color: #0B7481FF;
+  /*#0B7481FF*/
+  --border-color: #FFFFFF;
   --text-background-color: #A5E4EC;
   --form-light-color: #E8F0FEFF;
   --additional-text-color: #CCFFE6FF;

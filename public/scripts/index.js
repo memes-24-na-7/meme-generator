@@ -269,46 +269,65 @@ let loadSrcToEdit = function (imgSrc, callAfterLaunch=null) {
 /*#region Для передвижения и изменения размера контейнера текста*/
 let x, y, target = null;
 
-document.addEventListener('mousedown', function(e) {
+let saveTextStart = function(e) {
   let divForImagesHeight = divForImages.getBoundingClientRect().height;
-  for (let i = 0; e.path[i] !== document.body; i++) {
-    if (e.path[i].classList.contains('draggable')) {
-      target = e.path[i];
-      if (target.style.left === '' || target.style.top === '') {
-        target.style.left = 0 + 'px'; // место клика на экране
-        target.style.top = -divForImagesHeight + 'px';
-      }
-      target.classList.add('dragging');
-      x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
-      y = e.clientY - target.style.top.slice(0, -2);
-      return;
-    }
+  if (target.style.left === '' || target.style.top === '') {
+    target.style.left = 0 + 'px'; // место клика на экране
+    target.style.top = -divForImagesHeight + 'px';
   }
-});
+  target.classList.add('dragging');
+  x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
+  y = e.clientY - target.style.top.slice(0, -2);
+};
 
-document.addEventListener('mouseup', function() {
-  if (target !== null) {
-    let pRect = target.parentElement.getBoundingClientRect();
-    let tgtRect = target.getBoundingClientRect();
-    if (tgtRect.bottom <= pRect.top ||
-        tgtRect.top >= pRect.bottom ||
-        tgtRect.right <= pRect.left ||
-        tgtRect.left >= pRect.right) {
-      document.getElementById(target.id + '-btn').remove();
-      document.getElementById(target.id).remove();
-    }
-    else {
-      target.classList.remove('dragging');
-    }
-  }
-  target = null;
-});
-
-document.addEventListener('mousemove', function(e) {
+let moveText = function(e) {
   if (target === null) return;
   target.style.left = e.clientX - x + 'px';
   target.style.top = e.clientY - y + 'px';
+};
+
+let releaseText = function() {
+  if (target === null) return;
+  let pRect = target.parentElement.getBoundingClientRect();
+  let tgtRect = target.getBoundingClientRect();
+  if (tgtRect.bottom <= pRect.top ||
+    tgtRect.top >= pRect.bottom ||
+    tgtRect.right <= pRect.left ||
+    tgtRect.left >= pRect.right) {
+    document.getElementById(target.id + '-btn').remove();
+    target.remove();
+  }
+  else {
+    target.classList.remove('dragging');
+  }
+  target = null;
+};
+
+let getDraggableTarget = function(e) {
+  for (let i = 0; e.path[i] !== document.body; i++) {
+    if (e.path[i].classList.contains('draggable')) {
+      return e.path[i];
+    }
+  }
+  return null;
+};
+
+document.addEventListener('mousedown', function(e) {
+  target = getDraggableTarget(e);
+  if (target !== null)
+    saveTextStart(e);
 });
+document.addEventListener('touchstart', function (e){
+  target = getDraggableTarget(e);
+  if (target !== null)
+    saveTextStart(e.touches[0]);
+});
+document.addEventListener('mousemove', moveText);
+document.addEventListener('touchmove', function(e) {
+  moveText(e.changedTouches[0]);
+});
+document.addEventListener('mouseup', releaseText);
+document.addEventListener('touchend', releaseText);
 /*#endregion*/
 
 /*#region modal*/
@@ -352,7 +371,7 @@ generateBtn.addEventListener("click", async () => {
 
 const dpr = window.devicePixelRatio || 1;
 
-let textCounter = 0n;
+let textCounter = 0;
 
 async function generateImage() {
   const text = textInput.value;
@@ -376,6 +395,7 @@ async function generateImage() {
   memeContainer.appendChild(drag);
   drag.style.top = '0';
   drag.style.left = '0';
+
   const dragger = document.createElement('div');
   drag.appendChild(dragger);
   dragger.classList.add('dragger');
@@ -514,6 +534,12 @@ function textToBitmap(texts, font, size, color) {
 
 /*#region buttons and cursor moving effects */
 let scrollY = window.scrollY;
+
+window.addEventListener('touchstart', function() {
+  document.querySelectorAll('.cursor').forEach((cursor) => {
+    cursor.remove();
+  });
+}, { once: true });
 
 window.addEventListener('scroll', function() {
   scrollY = window.scrollY;
