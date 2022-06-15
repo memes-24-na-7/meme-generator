@@ -218,10 +218,14 @@ let launchEditorPage = function () {
 let adaptImgSize = function(img) {
   let memeWidth = img.width;
   let memeHeight = img.height;
-  let minWidth = 300;
+  let minWidth = window.innerWidth * 0.3;
   let minHeight = 75;
-  let maxWidth = window.screen.width * 0.9;
-  let maxHeight = window.screen.height * 0.65;
+  let maxWidth = window.innerWidth * 0.9;
+  let maxHeight = window.innerHeight * 0.9;
+
+  if(window.innerHeight > window.innerWidth){
+    minWidth = window.innerWidth * 0.8;
+  }
 
   if (memeWidth < minWidth) {
     memeHeight = minWidth * memeHeight / memeWidth;
