@@ -225,24 +225,23 @@ let adaptImgSize = function(img) {
 
   if(window.innerHeight > window.innerWidth){
     minWidth = window.innerWidth * 0.8;
+    maxHeight = window.innerHeight * 2;
   }
 
   if (memeWidth < minWidth) {
-    memeHeight = minWidth * memeHeight / memeWidth;
-    if (memeHeight > maxHeight) {
-      alert("Your image is too narrow, crop it or choose another one.");
-      return;
+    let newMemeHeight = minWidth * memeHeight / memeWidth;
+    if (newMemeHeight <= maxHeight) {
+      memeHeight = newMemeHeight;
+      memeWidth = minWidth;
     }
-    memeWidth = minWidth;
   }
 
   if (memeHeight < minHeight) {
-    memeWidth = minHeight * memeWidth / memeHeight;
-    if (memeWidth > maxWidth) {
-      alert("Your image is too wide, crop it or choose another one.");
-      return;
+    let newMemeWidth = minHeight * memeWidth / memeHeight;
+    if (newMemeWidth <= maxWidth) {
+      memeWidth = newMemeWidth;
+      memeHeight = minHeight;
     }
-    memeHeight = minHeight;
   }
 
   if (memeWidth > maxWidth) {
@@ -550,12 +549,16 @@ window.addEventListener('scroll', function() {
 });
 
 document.querySelectorAll('.page-button').forEach(el => {
-  el.addEventListener('mousemove', function(e) {
+  let buttonMover = function(e) {
     const pos = this.getBoundingClientRect();
     const mx = e.pageX - pos.left - pos.width/2;
     const my = e.pageY - scrollY - pos.top - pos.height/2;
     this.style.transform = 'translate('+ mx * 0.15 +'px, '+ my * 0.3 +'px)';
-  });
+  };
+  el.addEventListener('mousemove', buttonMover);
+  el.addEventListener('touchstart', function (e) {
+    this.removeEventListener('mousemove', buttonMover);
+  }, { once: true });
 });
 
 document.querySelectorAll('.page-button').forEach(el => el.addEventListener('mouseleave', function() {
