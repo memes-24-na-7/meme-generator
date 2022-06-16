@@ -62,6 +62,7 @@ let cleanForm = function () {
   textInput.value = '';
   fontSelect.value = 'Tahoma';
   sizeInput.value = 100;
+  align.value = 'center';
 };
 
 let backPressed = function () {
@@ -340,8 +341,18 @@ const availableFonts = [
   "Roboto"
 ];
 
+// if (window.document.fonts && window.document.fonts.load) {
+//   availableFonts.forEach((font) => window.document.fonts.load(`16px ${font}`).then((res) => {
+//     document.fonts.add(res);
+//   }));
+// }
 if (window.document.fonts && window.document.fonts.load) {
-  availableFonts.forEach((font) => window.document.fonts.load(`16px ${font}`));
+  availableFonts.forEach((font) => {
+    let face = new FontFace(font, `url(../public/stylesheets/fonts/${font.replaceAll(' ', '-')}.ttf)`);
+    face.load().then(face => {
+      document.fonts.add(face);
+    })
+  });
 }
 
 generateBtn.addEventListener("click", async () => {
@@ -423,17 +434,16 @@ function getTextLineSize(ctx, textLine) {
   } = ctx.measureText(textLine);
 
   let lineHeight = Math.max(
-      Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
-      (Math.abs(fontBoundingBoxAscent) || 0)
-  );
-  let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + actualBoundingBoxRight) + 10;
+    Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
+    ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
+  let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight));
   return [lineWidth, lineHeight];
 }
 
 function adaptCanvasSize(canvas, size, heights, widths) {
-  let dfi = divForImages.getBoundingClientRect();
-  if (dfi.width < canvas.width) {
-    let dsk = dfi.width / canvas.width;
+  let memRect = memImage.getBoundingClientRect();
+  if (memRect.width < canvas.width) {
+    let dsk = memRect.width / canvas.width;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
@@ -442,8 +452,8 @@ function adaptCanvasSize(canvas, size, heights, widths) {
       widths[i] *= dsk;
     }
   }
-  if (dfi.height < canvas.height) {
-    let dsk = dfi.height / canvas.height;
+  if (memRect.height < canvas.height) {
+    let dsk = memRect.height / canvas.height;
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
