@@ -13,18 +13,18 @@ const nextBtn = document.getElementById("next-b");
 const align = document.getElementById('align');
 const modal = document.getElementById('myModal');
 const memePhrases = ["было бы славно", "время начинать план скам", "амогус",
-  "ля ты крыса", "не важно, кто, \nважно, кто", "Чык-Чырык", "беды с башкой",
+  "ля ты крыса", "не важно, кто,\nважно, кто", "Чык-Чырык", "беды с башкой",
   "Москва, метро \"Люблино\", работаем", "вы продоете рыбов?", "Елена, алле!",
   "Directed by Robert B. Weide",
-  "Слушай, а ловко ты это придумал, \nя даже в начале не понял, \nмолодец",
-  "калыван", "пока на расслабоне \nна чиле", "оооо, повезло, повезло",
-  "вжух! и ты сдал веб", "братишка, \nя тебе покушац принес", "олды тут?",
-  "загадка от \nЖака Фреско", "гучи флип флап", "суету навести охота",
+  "Слушай, а ловко ты это придумал,\nя даже в начале не понял,\nмолодец",
+  "калыван", "пока на расслабоне\nна чиле", "оооо, повезло, повезло",
+  "вжух! и ты сдал веб", "братишка,\nя тебе покушац принес", "олды тут?",
+  "загадка от\nЖака Фреско", "гучи флип флап", "суету навести охота",
   "хочу оливье", "боже, я не хочу умирац",
-  "когда милицию переименовали в полицию \nмедики заволновались",
+  "когда милицию переименовали в полицию\nмедики заволновались",
   "но это не точно", "скажи мне три главных слова", "омагад", "я ничаянна",
-  "ъеъ", "я твой брат, \nбрат, а кто не брат мне, \nтот не брат, брат",
-  "малолетние дИбИлы", "я просто ниче не понимаю \nващще",
+  "ъеъ", "я твой брат,\nбрат, а кто не брат мне,\nтот не брат, брат",
+  "малолетние дИбИлы", "я просто ниче не понимаю\nващще",
   "сущность в виде гномика", "а кому щяс лехко", "девачки, я в шоке"];
 
 /*#region Обработка нажатия кнопок*/
@@ -422,7 +422,7 @@ async function generateImage() {
   });
 }
 
-function getTextLineSize(ctx, textLine) {
+function getTextLineSize(ctx, textLine, widthAddition) {
   let {
     actualBoundingBoxLeft,
     actualBoundingBoxRight,
@@ -436,7 +436,7 @@ function getTextLineSize(ctx, textLine) {
   let lineHeight = Math.max(
     Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
     ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
-  let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight));
+  let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight)) + widthAddition;
   return [lineWidth, lineHeight];
 }
 
@@ -466,16 +466,21 @@ function adaptCanvasSize(canvas, size, heights, widths) {
   return size;
 }
 
-function setCanvasSize(canvas, fontValue, texts, size) {
+function setCanvasSize(canvas, font, size, texts) {
   let ctx = canvas.getContext("2d");
-  ctx.font = fontValue;
+  ctx.font = `${size * dpr}px "${font}"`;
   let heights = [];
   let widths = [];
   let maxWidth = 0;
   let totalHeight = 0;
-
+  let widthAddition = 0;
+  if (font === 'Pattaya') {
+    widthAddition = size / 2;
+  } else if (font === 'Great Vibes') {
+    widthAddition = getTextLineSize(ctx, 'jP')[1];
+  }
   for (let textLine of texts) {
-    let [lineWidth, lineHeight] = getTextLineSize(ctx, textLine);
+    let [lineWidth, lineHeight] = getTextLineSize(ctx, textLine, widthAddition);
     heights.push(lineHeight);
     widths.push(lineWidth);
     maxWidth = Math.max(maxWidth, lineWidth);
@@ -483,25 +488,25 @@ function setCanvasSize(canvas, fontValue, texts, size) {
   }
 
   canvas.height = totalHeight;
+  console.log(canvas.height);
   canvas.width = maxWidth;
   size = adaptCanvasSize(canvas, size, heights, widths);
   return [widths, heights, size];
 }
 
-function getX(textAlign, lineWidth, canvasWidth) {
+function getX(textAlign, lineWidth, canvasWidth, xPadding) {
   if (textAlign === 'left') {
-    return 0;
+    return xPadding;
   } else if (textAlign === 'center') {
-    return (canvasWidth - lineWidth) / 2;
+    return (canvasWidth - lineWidth) / 2 + xPadding;
   } else {
-    return canvasWidth - lineWidth;
+    return canvasWidth - lineWidth + xPadding;
   }
 }
 
 function textToBitmap(texts, font, size, color) {
   const canvas = window.document.createElement("canvas");
-  let fullFontValue = `${size * dpr}px "${font}"`;
-  let [lineWidths, lineHeights, newSize] = setCanvasSize(canvas, fullFontValue, texts, size);
+  let [lineWidths, lineHeights, newSize] = setCanvasSize(canvas, font, size, texts);
 
   const ctx = canvas.getContext("2d");
   ctx.font = `${newSize * dpr}px "${font}"`;
@@ -510,9 +515,18 @@ function textToBitmap(texts, font, size, color) {
 
   let textAlign = align.selectedOptions[0].textContent;
   let y = 0;
+  let xPadding = 0;
+  if (font === 'Great Vibes') {
+    y = lineHeights[0] / 6;
+    xPadding = size / 2;
+  } else if (font === 'Pattaya') {
+    y = lineHeights[0] / 10;
+    xPadding = size / 4;
+  }
   let width = canvas.width;
+
   for (let i = 0; i < texts.length; i++) {
-    ctx.fillText(texts[i], getX(textAlign, lineWidths[i], width), y);
+    ctx.fillText(texts[i], getX(textAlign, lineWidths[i], width, xPadding), y);
     y += lineHeights[i];
   }
   return new Promise((resolve) => {
