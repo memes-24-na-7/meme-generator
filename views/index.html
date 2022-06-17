@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Memes</title>
-  <!--    <link rel='stylesheet' href="/stylesheets/style.css">-->
-  <!--    <script src="/scripts/html2canvas.js"></script>-->
-  <link href="../public/stylesheets/style.css" rel='stylesheet'>
-  <script src="../public/scripts/html2canvas.js"></script>
+  <link rel='stylesheet' href="/stylesheets/style.css">
+  <script src="/scripts/html2canvas.js"></script>
 </head>
 <body>
 <div class="first-state buttons-container" id="start-buttons">
@@ -14,7 +12,6 @@
     upload pic
     <input accept="image/*" id="upload-b-button" onchange="uploadMeme(this.files[0])" type="file" tabindex="1">
   </label>
-
   <button class="page-button" id="generate-b" onclick="randomPressed()" tabindex="2"> random</button>
   <button class="page-button" id="gallery-b" onclick="openModalWindow()" tabindex="3">gallery</button>
   <div class="cursor"></div>
@@ -93,17 +90,17 @@
   <div class="cursor"></div>
 </div>
 
-<script src="../public/scripts/index.js"></script>
+<script src="/scripts/index.js"></script>
 <script>
-    function downloadResult() {
-        html2canvas(document.getElementById('meme-container')).then(function (canvas) {
-            let a = document.createElement('a');
-            let imageType = 'image/png';
-            a.href = canvas.toDataURL(imageType, 0.9).replace(imageType, "image/octet-stream");
-            a.download = 'your-meme.' + imageType.split('/')[1];
-            a.click();
-        });
-    }
+  function downloadResult() {
+    html2canvas(document.getElementById('meme-container')).then(function (canvas) {
+      let a = document.createElement('a');
+      let imageType = 'image/png';
+      a.href = canvas.toDataURL(imageType, 0.9).replace(imageType, "image/octet-stream");
+      a.download = 'your-meme.' + imageType.split('/')[1];
+      a.click();
+    });
+  }
 </script>
 </body>
 </html>

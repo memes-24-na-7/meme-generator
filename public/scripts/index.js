@@ -219,27 +219,30 @@ let launchEditorPage = function () {
 let adaptImgSize = function(img) {
   let memeWidth = img.width;
   let memeHeight = img.height;
-  let minWidth = 300;
+  let minWidth = window.innerWidth * 0.3;
   let minHeight = 75;
-  let maxWidth = window.screen.width * 0.9;
-  let maxHeight = window.screen.height * 0.65;
+  let maxWidth = window.innerWidth * 0.9;
+  let maxHeight = window.innerHeight * 0.9;
+
+  if(window.innerHeight > window.innerWidth){
+    minWidth = window.innerWidth * 0.8;
+    maxHeight = window.innerHeight * 2;
+  }
 
   if (memeWidth < minWidth) {
-    memeHeight = minWidth * memeHeight / memeWidth;
-    if (memeHeight > maxHeight) {
-      alert("Your image is too narrow, crop it or choose another one.");
-      return;
+    let newMemeHeight = minWidth * memeHeight / memeWidth;
+    if (newMemeHeight <= maxHeight) {
+      memeHeight = newMemeHeight;
+      memeWidth = minWidth;
     }
-    memeWidth = minWidth;
   }
 
   if (memeHeight < minHeight) {
-    memeWidth = minHeight * memeWidth / memeHeight;
-    if (memeWidth > maxWidth) {
-      alert("Your image is too wide, crop it or choose another one.");
-      return;
+    let newMemeWidth = minHeight * memeWidth / memeHeight;
+    if (newMemeWidth <= maxWidth) {
+      memeWidth = newMemeWidth;
+      memeHeight = minHeight;
     }
-    memeHeight = minHeight;
   }
 
   if (memeWidth > maxWidth) {
@@ -270,46 +273,65 @@ let loadSrcToEdit = function (imgSrc, callAfterLaunch=null) {
 /*#region Для передвижения и изменения размера контейнера текста*/
 let x, y, target = null;
 
-document.addEventListener('mousedown', function(e) {
+let saveTextStart = function(e) {
   let divForImagesHeight = divForImages.getBoundingClientRect().height;
-  for (let i = 0; e.path[i] !== document.body; i++) {
-    if (e.path[i].classList.contains('draggable')) {
-      target = e.path[i];
-      if (target.style.left === '' || target.style.top === '') {
-        target.style.left = 0 + 'px'; // место клика на экране
-        target.style.top = -divForImagesHeight + 'px';
-      }
-      target.classList.add('dragging');
-      x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
-      y = e.clientY - target.style.top.slice(0, -2);
-      return;
-    }
+  if (target.style.left === '' || target.style.top === '') {
+    target.style.left = 0 + 'px'; // место клика на экране
+    target.style.top = -divForImagesHeight + 'px';
   }
-});
+  target.classList.add('dragging');
+  x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
+  y = e.clientY - target.style.top.slice(0, -2);
+};
 
-document.addEventListener('mouseup', function() {
-  if (target !== null) {
-    let pRect = target.parentElement.getBoundingClientRect();
-    let tgtRect = target.getBoundingClientRect();
-    if (tgtRect.bottom <= pRect.top ||
-        tgtRect.top >= pRect.bottom ||
-        tgtRect.right <= pRect.left ||
-        tgtRect.left >= pRect.right) {
-      document.getElementById(target.id + '-btn').remove();
-      document.getElementById(target.id).remove();
-    }
-    else {
-      target.classList.remove('dragging');
-    }
-  }
-  target = null;
-});
-
-document.addEventListener('mousemove', function(e) {
+let moveText = function(e) {
   if (target === null) return;
   target.style.left = e.clientX - x + 'px';
   target.style.top = e.clientY - y + 'px';
+};
+
+let releaseText = function() {
+  if (target === null) return;
+  let pRect = target.parentElement.getBoundingClientRect();
+  let tgtRect = target.getBoundingClientRect();
+  if (tgtRect.bottom <= pRect.top ||
+    tgtRect.top >= pRect.bottom ||
+    tgtRect.right <= pRect.left ||
+    tgtRect.left >= pRect.right) {
+    document.getElementById(target.id + '-btn').remove();
+    target.remove();
+  }
+  else {
+    target.classList.remove('dragging');
+  }
+  target = null;
+};
+
+let getDraggableTarget = function(e) {
+  for (let i = 0; e.path[i] !== document.body; i++) {
+    if (e.path[i].classList.contains('draggable')) {
+      return e.path[i];
+    }
+  }
+  return null;
+};
+
+document.addEventListener('mousedown', function(e) {
+  target = getDraggableTarget(e);
+  if (target !== null)
+    saveTextStart(e);
 });
+document.addEventListener('touchstart', function (e){
+  target = getDraggableTarget(e);
+  if (target !== null)
+    saveTextStart(e.touches[0]);
+});
+document.addEventListener('mousemove', moveText);
+document.addEventListener('touchmove', function(e) {
+  moveText(e.changedTouches[0]);
+});
+document.addEventListener('mouseup', releaseText);
+document.addEventListener('touchend', releaseText);
 /*#endregion*/
 
 /*#region modal*/
@@ -363,7 +385,7 @@ generateBtn.addEventListener("click", async () => {
 
 const dpr = window.devicePixelRatio || 1;
 
-let textCounter = 0n;
+let textCounter = 0;
 
 async function generateImage() {
   const text = textInput.value;
@@ -387,6 +409,7 @@ async function generateImage() {
   memeContainer.appendChild(drag);
   drag.style.top = '0';
   drag.style.left = '0';
+
   const dragger = document.createElement('div');
   drag.appendChild(dragger);
   dragger.classList.add('dragger');
@@ -539,17 +562,27 @@ function textToBitmap(texts, font, size, color) {
 /*#region buttons and cursor moving effects */
 let scrollY = window.scrollY;
 
+window.addEventListener('touchstart', function() {
+  document.querySelectorAll('.cursor').forEach((cursor) => {
+    cursor.remove();
+  });
+}, { once: true });
+
 window.addEventListener('scroll', function() {
   scrollY = window.scrollY;
 });
 
 document.querySelectorAll('.page-button').forEach(el => {
-  el.addEventListener('mousemove', function(e) {
+  let buttonMover = function(e) {
     const pos = this.getBoundingClientRect();
     const mx = e.pageX - pos.left - pos.width/2;
     const my = e.pageY - scrollY - pos.top - pos.height/2;
     this.style.transform = 'translate('+ mx * 0.15 +'px, '+ my * 0.3 +'px)';
-  });
+  };
+  el.addEventListener('mousemove', buttonMover);
+  el.addEventListener('touchstart', function (e) {
+    this.removeEventListener('mousemove', buttonMover);
+  }, { once: true });
 });
 
 document.querySelectorAll('.page-button').forEach(el => el.addEventListener('mouseleave', function() {
