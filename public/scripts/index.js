@@ -430,7 +430,7 @@ async function generateImage() {
   const content = document.createElement('p');
   item.appendChild(content);
   content.classList.add('text-content');
-  content.textContent = text; // `${textToOutput} ${font} ${size}px ${color}`
+  content.textContent = `${text} ${color}`; // `${textToOutput} ${font} ${size}px ${color}`
   const del = document.createElement('button');
   del.type = 'button';
   del.tabIndex = 8;
