@@ -372,7 +372,7 @@ const availableFonts = [
 // }
 if (window.document.fonts && window.document.fonts.load) {
   availableFonts.forEach((font) => {
-    let face = new FontFace(font, `url(../public/stylesheets/fonts/${font.replaceAll(' ', '-')}.ttf)`);
+    let face = new FontFace(font, `url(/stylesheets/fonts/${font.replaceAll(' ', '-')}.ttf)`);
     face.load().then(face => {
       document.fonts.add(face);
     })
