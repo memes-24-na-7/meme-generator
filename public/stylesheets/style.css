@@ -253,7 +253,7 @@ li {
   overflow: hidden;
   margin: 0;
   text-overflow: ellipsis;
-  max-width: calc(100% - 25px);
+  max-width: calc(100% - 115px);
 }
 
 .form-field {
@@ -530,7 +530,7 @@ select#font-select {
     font-size: 40px;
   }
   .text-content {
-    max-width: calc(100% - 70px);
+    max-width: calc(100% - 245px);
   }
   .cross-btn {
     width: 50px;

@@ -63,7 +63,7 @@ let cleanForm = function () {
   fontSelect.value = 'Tahoma';
   sizeInput.value = 100;
   align.value = 'center';
-  textColor.value = '#0b7481';
+  textColor.value = '#ffffff';
   memImage.scr = '';
 };
 
@@ -297,9 +297,9 @@ let releaseText = function() {
   let pRect = target.parentElement.getBoundingClientRect();
   let tgtRect = target.getBoundingClientRect();
   if (tgtRect.bottom <= pRect.top ||
-    tgtRect.top >= pRect.bottom ||
-    tgtRect.right <= pRect.left ||
-    tgtRect.left >= pRect.right) {
+      tgtRect.top >= pRect.bottom ||
+      tgtRect.right <= pRect.left ||
+      tgtRect.left >= pRect.right) {
     document.getElementById(target.id + '-btn').remove();
     target.remove();
   }
@@ -430,11 +430,18 @@ async function generateImage() {
   const content = document.createElement('p');
   item.appendChild(content);
   content.classList.add('text-content');
-  content.textContent = `${text} ${color}`; // `${textToOutput} ${font} ${size}px ${color}`
+  content.textContent = text; // `${textToOutput} ${font} ${size}px ${color}`
+  const rightContent = document.createElement('div');
+  const colorNum = document.createElement('p');
+  colorNum.textContent = color;
+  colorNum.style.margin = '0';
+  colorNum.style.display = 'inline';
+  rightContent.appendChild(colorNum);
   const del = document.createElement('button');
   del.type = 'button';
   del.tabIndex = 8;
-  item.appendChild(del);
+  rightContent.appendChild(del);
+  item.appendChild(rightContent);
   del.textContent = 'X';
   del.style.right = '0';
   del.classList.add('form-btn');
@@ -459,8 +466,8 @@ function getTextLineSize(ctx, textLine, widthAddition) {
   } = ctx.measureText(textLine);
 
   let lineHeight = Math.max(
-    Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
-    ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
+      Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
+      ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
   let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight)) + widthAddition;
   return [lineWidth, lineHeight];
 }
