@@ -63,7 +63,7 @@ let cleanForm = function () {
   fontSelect.value = 'Tahoma';
   sizeInput.value = 100;
   align.value = 'center';
-  textColor.value = '#ffffff';
+  textColor.value = '#9f9393';
   memImage.scr = '';
 };
 
