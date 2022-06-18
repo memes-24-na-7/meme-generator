@@ -389,6 +389,17 @@ const dpr = window.devicePixelRatio || 1;
 
 let textCounter = 0;
 
+let addCrossToButton = function(btn) {
+  const firstLine = document.createElement('div');
+  firstLine.classList.add('cross-line');
+  firstLine.classList.add('first-line');
+  const secondLine = document.createElement('div');
+  secondLine.classList.add('cross-line');
+  secondLine.classList.add('second-line');
+  btn.appendChild(firstLine);
+  btn.appendChild(secondLine);
+}
+
 async function generateImage() {
   const text = textInput.value;
   const font = fontSelect.selectedOptions[0].textContent;
@@ -432,19 +443,18 @@ async function generateImage() {
   content.classList.add('text-content');
   content.textContent = text; // `${textToOutput} ${font} ${size}px ${color}`
   const rightContent = document.createElement('div');
+  rightContent.style.display = 'inherit';
   const colorNum = document.createElement('p');
   colorNum.textContent = color;
   colorNum.style.margin = '0';
   colorNum.style.display = 'inline';
   rightContent.appendChild(colorNum);
   const del = document.createElement('button');
+  addCrossToButton(del);
   del.type = 'button';
   del.tabIndex = 8;
   rightContent.appendChild(del);
   item.appendChild(rightContent);
-  del.textContent = 'X';
-  del.style.right = '0';
-  del.classList.add('form-btn');
   del.classList.add('cross-btn');
 
   textCounter++;
