@@ -150,10 +150,6 @@ textarea {
   max-width: 90%;
 }
 
-.cross-btn {
-  margin: 2px 10px;
-}
-
 #text-list {
   list-style-type: none;
 }
@@ -173,6 +169,34 @@ li {
 .text-pointer {
   display: flex;
   justify-content: space-between;
+  padding-left: 10px;
+}
+
+.cross-btn {
+  border: 0;
+}
+
+.cross-btn:hover .cross-line, .cross-btn:active .cross-line {
+  background-color: var(--border-color);
+}
+
+.cross-line {
+  position: relative;
+  left: 3px;
+  content: ' ';
+  height: 25px;
+  width: 2px;
+  background-color: #333;
+}
+
+.first-line {
+  transform: rotate(45deg);
+  bottom: 4px;
+}
+
+.second-line {
+  transform: rotate(-45deg);
+  bottom: 29px;
 }
 
 .text-content {
@@ -180,7 +204,7 @@ li {
   overflow: hidden;
   margin: 0;
   text-overflow: ellipsis;
-  max-width: calc(100% - 25px);
+  max-width: calc(100% - 115px);
 }
 
 .form-field {
@@ -214,6 +238,7 @@ select#font-select {
   box-sizing:content-box;
   padding-top: 10px;
   padding-bottom: 10px;
+  border-radius: 4px;
   margin: 5px 0;
   font-size: 16px;
   border: 1px solid var(--border-color);
@@ -223,8 +248,7 @@ select#font-select {
 
 #text-color {
   height: 50px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 0;
 }
 
 /*#endregion*/
@@ -369,12 +393,16 @@ select#font-select {
   .div-for-images, .form-for-text-editing, #div_ {
     display: inline-block;
   }
+  .cross-btn {
+    margin: auto 10px;
+    width: 20px;
+    height: 20px;
+  }
 }
 
 @media (hover: hover) {
-  .cross-btn:hover, #generate-btn:hover {
+  #generate-btn:hover {
     background-color: var(--border-color);
-    color: var(--form-light-color);
     cursor: pointer;
   }
 }
@@ -444,6 +472,12 @@ select#font-select {
   #div-for-images {
     touch-action: none;
   }
+
+  .form-content {
+    width: 90%;
+    padding: 20px;
+  }
+
   #text-generator-form form ul li,
   #text-generator-form form ul li input,
   #text-generator-form form ul li select,
@@ -456,12 +490,34 @@ select#font-select {
     height: 100px;
     font-size: 40px;
   }
-  .text-content {
-    max-width: calc(100% - 70px);
+
+  #generated-text ul li {
+    margin: 20px 0;
   }
+
+  .text-content {
+    max-width: calc(100% - 250px);
+  }
+
   .cross-btn {
+    margin: auto;
     width: 50px;
+    height: 50px;
     font-size: 25px;
+  }
+
+  .cross-line {
+    height: 70px;
+    left: 18px;
+  }
+
+  .first-line {
+    bottom: 10px;
+  }
+
+  .second-line {
+    transform: rotate(-45deg);
+    bottom: 80px;
   }
 }
 /*#endregion*/
