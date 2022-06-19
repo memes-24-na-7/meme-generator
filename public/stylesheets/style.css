@@ -1,9 +1,8 @@
 body {
   margin: 0;
-  background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
-  height: 100vh;
+  background: linear-gradient(to left, #F96E46, #340068, #00E8FC);
+  background-size: 300% 100%;
+  background-position-x: 50%;
   text-align: center;
   font-family: "Comic Sans MS", cursive, sans-serif;
 
@@ -14,24 +13,6 @@ body {
   --text-color: #014941FF;
   --shadow-color: #00000033;
   overscroll-behavior: contain;
-}
-
-@keyframes gradient {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(90deg);
-  }
-  50% {
-    transform: rotate(180deg);
-  }
-  75% {
-    transform: rotate(270deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 /*#region Buttons*/
