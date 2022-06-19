@@ -4,14 +4,15 @@ const divForImages = document.getElementById("div-for-images");
 const generateBtn = document.getElementById('generate-btn');
 const galleryCounter = document.getElementById('counter');
 const fontSelect = document.getElementById("font-select");
+const body = document.getElementsByTagName('body')[0];
 const textInput = document.getElementById("text-input");
 const sizeInput = document.getElementById("size-input");
 const textColor = document.getElementById("text-color");
 const memImage = document.getElementById('mem-image');
 const textList = document.getElementById('text-list');
 const nextBtn = document.getElementById("next-b");
-const align = document.getElementById('align');
 const modal = document.getElementById('myModal');
+const align = document.getElementById('align');
 const memePhrases = ["было бы славно", "время начинать план скам", "амогус",
   "ля ты крыса", "не важно, кто,\nважно, кто", "Чык-Чырык", "беды с башкой",
   "Москва, метро \"Люблино\", работаем", "вы продоете рыбов?", "Елена, алле!",
@@ -64,7 +65,7 @@ let cleanForm = function () {
   sizeInput.value = 100;
   align.value = 'center';
   textColor.value = '#0b7481';
-  memImage.scr = '';
+  memImage.src = '';
 };
 
 let backPressed = function () {
@@ -564,10 +565,18 @@ function textToBitmap(texts, font, size, color) {
 /*#region buttons and cursor moving effects */
 let scrollY = window.scrollY;
 
+function backgroundMove(evt) {
+  let x = evt.clientX / innerWidth;
+  body.style.backgroundPositionX = `${(1 - x) * 100}%`;
+}
+
+document.addEventListener('mousemove', backgroundMove);
+
 window.addEventListener('touchstart', function() {
   document.querySelectorAll('.cursor').forEach((cursor) => {
     cursor.remove();
   });
+  document.removeEventListener('mousemove', backgroundMove);
 }, { once: true });
 
 window.addEventListener('scroll', function() {
