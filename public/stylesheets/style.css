@@ -207,17 +207,8 @@ li {
   max-width: calc(100% - 115px);
 }
 
-.form-field {
-  display: inline-block;
-  width: calc(100%);
-}
-
 .form-field input, select {
   background-color: var(--form-light-color);
-}
-
-input#size-input, input#text-input {
-  width: calc(100% - 8px);
 }
 
 #size-input:invalid {
@@ -226,18 +217,11 @@ input#size-input, input#text-input {
   background-color: rgba(252, 203, 203, 0.9);
 }
 
-input#text-color {
-  width: calc(100% - 6px);
-}
-
-select#font-select {
-  width: calc(100% - 2px);
-}
-
 .form-field {
+  display: inline-block;
+  width: calc(100%);
   box-sizing:content-box;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 0;
   border-radius: 4px;
   margin: 5px 0;
   font-size: 16px;

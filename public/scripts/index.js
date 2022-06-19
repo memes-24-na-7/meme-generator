@@ -84,7 +84,7 @@ let downloadImgToGallery = function() {
       .then(result => {
         let counter = parseFloat(galleryCounter.textContent);
         for(let i = counter * 10; i < counter * 10 + 10; i++) {
-          addImg(result.data.memes[i].url, 'launchWithImageUrl');
+          addImg(result.data.memes[i].url, launchWithImageUrl);
         }
         galleryCounter.textContent = (counter + 1).toString();
         if (counter === 9) {
@@ -132,25 +132,20 @@ document.addEventListener('keydown', function (e) {
 });
 
 const tabIndex = 4;
-let addImg = function(src, onclickFunctionName) {
+let addImg = function(src, onclickFunction) {
   let newImageDiv = document.createElement('div');
   newImageDiv.className = "image";
   let img = document.createElement('img');
   img.tabIndex = tabIndex;
   img.src = src;
-  img.setAttribute('onclick', `chooseImage(this, ${onclickFunctionName})`);
+  img.setAttribute('onclick', `chooseImage(this, ${onclickFunction.name})`);
   img.onkeydown = ev => {
     if (ev.code === "Enter") {
-      chooseImageByEnter(img);
+      chooseImage(img, onclickFunction);
     }
   };
   newImageDiv.appendChild(img);
   document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
-};
-
-let chooseImageByEnter = function (imgs) {
-  modal.style.display = "none";
-  loadSrcToEdit(imgs.src);
 };
 
 let launchWithImageUrl = function(url, callAfterLaunch=null) {
@@ -353,18 +348,17 @@ let closeModalWindow = function() {
 
 const availableFonts = [
   "Tahoma",
-  "Great Vibes",
+  "Great-Vibes",
   "Georgia",
-  "EB Garamond",
+  "EB-Garamond",
   "Jost",
   "Pattaya",
-  "Playfair Display",
+  "Playfair-Display",
   "Roboto"
 ];
 
 if (window.document.fonts && window.document.fonts.load) {
   availableFonts.forEach((font) => {
-    font.replaceAll(' ', '-');
     let face = new FontFace(font, `url(/stylesheets/fonts/${font}.ttf)`);
     face.load().then(face => {
       document.fonts.add(face);
@@ -506,7 +500,7 @@ function setCanvasSize(canvas, font, size, texts) {
   let maxWidth = 0, totalHeight = 0, widthAddition = 0;
   if (font === 'Pattaya') {
     widthAddition = size / 2;
-  } else if (font === 'Great Vibes') {
+  } else if (font === 'Great-Vibes') {
     widthAddition = getTextLineSize(ctx, 'jP')[1];
   }
   for (let textLine of texts) {
@@ -527,6 +521,7 @@ const getX = (textAlign, lineWidth, canvasWidth, xPadding) =>
         (canvasWidth - lineWidth) / 2 + xPadding : canvasWidth - lineWidth + xPadding);
 
 function textToBitmap(texts, font, size, color) {
+  font = font.replace(' ', '-');
   const canvas = window.document.createElement("canvas");
   let [lineWidths, lineHeights, newSize] = setCanvasSize(canvas, font, size, texts);
   const ctx = canvas.getContext("2d");
@@ -534,7 +529,7 @@ function textToBitmap(texts, font, size, color) {
   ctx.fillStyle = color;
   ctx.textBaseline = "top";
   let textAlign = align.selectedOptions[0].textContent, y = 0, xPadding = 0;
-  if (font === 'Great Vibes') {
+  if (font === 'Great-Vibes') {
     y = lineHeights[0] / 6;
     xPadding = size / 2;
   } else if (font === 'Pattaya') {
