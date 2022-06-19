@@ -101,7 +101,7 @@ let removeTextImage = function(textObject) {
 };
 
 document.addEventListener('keydown', function (e) {
-  if (e.code === "ArrowRight" || e.code === "ArrowLeft" || e.code ===  "ArrowUp" || e.code === "ArrowDown") {
+  if (e.code.substring(0,5) === "Arrow") {
     let textId = document.activeElement.id.split('-')[0];
     let textImg = document.getElementById(textId);
     let pRect = textImg.parentElement.getBoundingClientRect();
