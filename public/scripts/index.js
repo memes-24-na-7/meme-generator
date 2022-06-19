@@ -239,7 +239,7 @@ let adaptImgSize = function(img) {
     memW = maxH * memW / memH;
     memH = maxH;
   }
-  resizeEditorWindows(String(memW) + 'px', String(memH) + 'px');
+  resizeEditorWindows(`${memW}px`, `${memH}px`);
   launchEditorPage();
 };
 
@@ -431,7 +431,7 @@ async function generateImage() {
   img.src = URL.createObjectURL(imageBlob);
   const item = document.createElement('li');
   item.tabIndex = 8;
-  item.id = textCounter.toString() + '-btn';
+  item.id = `${textCounter}-btn`;
   item.className = 'text-pointer';
   textList.appendChild(item);
   const content = document.createElement('p');
@@ -471,14 +471,19 @@ function getTextLineSize(ctx, textLine, widthAddition) {
 }
 
 function adaptCanvasSize(canvas, size, heights, widths) {
-  let dsk, memRect = memImage.getBoundingClientRect();
+  let memRect = memImage.getBoundingClientRect();
+  let dsk = 1;
   if (memRect.width < canvas.width) {
-    dsk = memRect.width / canvas.width;
+    dsk *= memRect.width / canvas.width;
+    console.log(dsk)
   }
-  if (memRect.height < canvas.height) {
-    dsk = memRect.height / canvas.height;
+  console.log(memRect.height)
+  console.log(canvas.height)
+  if (memRect.height < canvas.height * dsk) {
+    dsk *= memRect.height / (canvas.height * dsk);
+    console.log(dsk)
   }
-  if (memRect.width < canvas.width || memRect.height < canvas.height) {
+  if (dsk < 1) {
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;

@@ -143,7 +143,6 @@ textarea {
   font: italic small-caps bold 18px cursive;
   margin: 20px auto;
   padding: 8px 30px;
-  transition: .4s;
 }
 
 #generate-btn {
