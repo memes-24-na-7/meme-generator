@@ -4,7 +4,6 @@ const textGeneratorForm = document.getElementById('text-generator-form');
 const memeContainer = document.getElementById('meme-container');
 const divForImages = document.getElementById("div-for-images");
 const generateBtn = document.getElementById('generate-btn');
-const galleryCounter = document.getElementById('counter');
 const fontSelect = document.getElementById("font-select");
 const body = document.getElementsByTagName('body')[0];
 const textInput = document.getElementById("text-input");
@@ -31,6 +30,8 @@ const memePhrases = ["было бы славно", "время начинать 
   "сущность в виде гномика", "а кому щяс лехко", "девачки, я в шоке"];
 
 /*#region Обработка нажатия кнопок*/
+
+let galleryCounter = 0;
 
 const getRandomInt = max => ~~(Math.random() * max);
 
@@ -82,11 +83,11 @@ let downloadImgToGallery = function() {
   fetch("https://api.imgflip.com/get_memes")
       .then(res => res.json())
       .then(result => {
-        let counter = parseFloat(galleryCounter.textContent);
+        let counter = galleryCounter;
         for(let i = counter * 10; i < counter * 10 + 10; i++) {
           addImg(result.data.memes[i].url, 'launchWithImageUrl');
         }
-        galleryCounter.textContent = (counter + 1).toString();
+        galleryCounter += 1;
         if (counter === 9) {
           nextBtn.style.visibility = "hidden";
         }
@@ -326,8 +327,7 @@ document.addEventListener('touchend', releaseText);
 
 let openModalWindow = function() {
   modal.style.display = "block";
-  let counter = parseFloat(galleryCounter.textContent);
-  if (counter === 0) {
+  if (galleryCounter === 0) {
     downloadImgToGallery();
   }
 };
@@ -395,10 +395,7 @@ let createAttrWithoutErrors = function () {
   return [text, font, size, color];
 };
 
-async function generateImage() {
-  const [text, font, size, color] = createAttrWithoutErrors();
-  if (undefined in [text, font, size, color]) return;
-  const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
+let createDraggableObj = function () {
   const drag = document.createElement('div');
   drag.id = textCounter.toString();
   drag.classList.add('draggable');
@@ -406,21 +403,40 @@ async function generateImage() {
   drag.style.top = '0';
   drag.style.left = '0';
   memeContainer.appendChild(drag);
-
   const dragger = document.createElement('div');
   drag.appendChild(dragger);
   dragger.classList.add('dragger');
+  return [drag, dragger];
+};
+
+let createDelButton = function(rightContent, item, drag) {
+  const del = document.createElement('button');
+  addCrossToButton(del);
+  del.type = 'button';
+  del.tabIndex = 8;
+  rightContent.appendChild(del);
+  item.appendChild(rightContent);
+  del.classList.add('cross-btn');
+  textCounter++;
+  del.addEventListener('click', () => {
+    drag.remove();
+    item.remove();
+  });
+};
+
+async function generateImage() {
+  const [text, font, size, color] = createAttrWithoutErrors();
+  if (undefined in [text, font, size, color]) return;
+  const [drag, dragger] = createDraggableObj();
   const img = document.createElement('img');
   dragger.appendChild(img);
   img.classList.add('text-img');
-  img.src = URL.createObjectURL(imageBlob);
-
+  img.src = URL.createObjectURL(await textToBitmap(text.split('\n'), font, size, color));
   const item = document.createElement('li');
   item.tabIndex = 8;
   item.id = textCounter.toString() + '-btn';
   item.className = 'text-pointer';
   textList.appendChild(item);
-
   const content = document.createElement('p');
   item.appendChild(content);
   content.classList.add('text-content');
@@ -432,19 +448,7 @@ async function generateImage() {
   colorNum.style.margin = '0';
   colorNum.style.display = 'inline';
   rightContent.appendChild(colorNum);
-  const del = document.createElement('button');
-  addCrossToButton(del);
-  del.type = 'button';
-  del.tabIndex = 8;
-  rightContent.appendChild(del);
-  item.appendChild(rightContent);
-  del.classList.add('cross-btn');
-
-  textCounter++;
-  del.addEventListener('click', () => {
-    drag.remove();
-    item.remove();
-  });
+  createDelButton(rightContent, item, drag);
 }
 
 function getTextLineSize(ctx, textLine, widthAddition) {
