@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 const textGeneratorForm = document.getElementById('text-generator-form');
 const memeContainer = document.getElementById('meme-container');
 const divForImages = document.getElementById("div-for-images");
@@ -29,6 +31,10 @@ const memePhrases = ["было бы славно", "время начинать 
 
 /*#region Обработка нажатия кнопок*/
 
+let getRandomInt = function (max) {
+  return ~~(Math.random() * max);
+};
+
 let randomPressed = function () {
   fetch("https://api.imgflip.com/get_memes")
       .then(res => res.json())
@@ -44,20 +50,20 @@ let randomPressed = function () {
 let changeState = function () {
   document.body.scrollTop = document.documentElement.scrollTop = 0;
   generateBtn.style.display = 'none';
-  document.querySelectorAll('.second-state').forEach(function (elem) {
-    elem.style.visibility = 'hidden';
+  document.querySelectorAll('.second-state').forEach(function (e) {
+    e.style.visibility = 'hidden';
   });
-  document.querySelectorAll('.first-state').forEach(function (elem) {
-    elem.style.visibility = 'visible';
+  document.querySelectorAll('.first-state').forEach(function (e) {
+    e.style.visibility = 'visible';
   });
 };
 
 let cleanForm = function () {
-  document.querySelectorAll('.draggable').forEach(function (elem) {
-    elem.remove();
+  document.querySelectorAll('.draggable').forEach(function (e) {
+    e.remove();
   });
-  document.querySelectorAll('#text-list li').forEach(function (elem) {
-    elem.remove();
+  document.querySelectorAll('#text-list li').forEach(function (e) {
+    e.remove();
   });
   textInput.value = '';
   fontSelect.value = 'Tahoma';
@@ -93,10 +99,9 @@ let removeTextImage = function(textObject) {
   textObject.remove();
 };
 
-let textImg = null;
 document.addEventListener('keydown', function (e) {
-  if (e.code === "ArrowRight" || e.code === "ArrowLeft" || e.code === "ArrowUp" || e.code === "ArrowDown") {
-    textImg = document.getElementById(document.activeElement.id.split('-')[0]);
+  if (e.code in ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"]) {
+    let textImg = document.getElementById(document.activeElement.id.split('-')[0]);
     let pRect = textImg.parentElement.getBoundingClientRect();
     let tgtRect = textImg.getBoundingClientRect();
     if (e.code === "ArrowUp") {
@@ -163,10 +168,6 @@ let launchWithImageUrl = function(url, callAfterLaunch=null) {
   img.src = url;
 };
 
-let getRandomInt = function (max) {
-  return Math.floor(Math.random() * max);
-};
-
 let isInputAllowable = function (file) {
   if (!file) {
     return false;
@@ -202,19 +203,19 @@ let resizeEditorWindows = function (width, height) {
   memImage.style.height = height;
   memeContainer.style.height = height;
   textGeneratorForm.style.width = width;
-  document.querySelectorAll('.editor-block').forEach(function (elem) {
-    elem.style.width = width;
+  document.querySelectorAll('.editor-block').forEach(function (e) {
+    e.style.width = width;
   });
   divForImages.style.height = height;
 };
 
 let launchEditorPage = function () {
   generateBtn.style.display = 'block';
-  document.querySelectorAll('.first-state').forEach(function (elem) {
-    elem.style.visibility = 'hidden';
+  document.querySelectorAll('.first-state').forEach(function (e) {
+    e.style.visibility = 'hidden';
   });
-  document.querySelectorAll('.second-state').forEach(function (elem) {
-    elem.style.visibility = 'visible';
+  document.querySelectorAll('.second-state').forEach(function (e) {
+    e.style.visibility = 'visible';
   });
 };
 
@@ -277,7 +278,7 @@ let x, y, target = null;
 
 let saveTextStart = function(e) {
   let divForImagesHeight = divForImages.getBoundingClientRect().height;
-  if (target.style.left === '' || target.style.top === '') {
+  if ('' in [target.style.left, target.style.top]) {
     target.style.left = 0 + 'px'; // место клика на экране
     target.style.top = -divForImagesHeight + 'px';
   }
@@ -364,18 +365,13 @@ const availableFonts = [
   "Playfair Display",
   "Roboto"
 ];
-
-// if (window.document.fonts && window.document.fonts.load) {
-//   availableFonts.forEach((font) => window.document.fonts.load(`16px ${font}`).then((res) => {
-//     document.fonts.add(res);
-//   }));
-// }
-if (window.document.fonts && window.document.fonts.load) {
+//if (window.document.fonts && window.document.fonts.load)
+if (window.document.fonts?.load) {
   availableFonts.forEach((font) => {
     let face = new FontFace(font, `url(/stylesheets/fonts/${font.replaceAll(' ', '-')}.ttf)`);
     face.load().then(face => {
       document.fonts.add(face);
-    })
+    });
   });
 }
 
@@ -398,7 +394,7 @@ let addCrossToButton = function(btn) {
   secondLine.classList.add('second-line');
   btn.appendChild(firstLine);
   btn.appendChild(secondLine);
-}
+};
 
 async function generateImage() {
   const text = textInput.value;
@@ -413,15 +409,13 @@ async function generateImage() {
     return;
   }
   const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
-  const imageUrl = URL.createObjectURL(imageBlob);
   const drag = document.createElement('div');
   drag.style.zIndex = textCounter.toString();
   drag.id = textCounter.toString();
-
   drag.classList.add('draggable');
-  memeContainer.appendChild(drag);
   drag.style.top = '0';
   drag.style.left = '0';
+  memeContainer.appendChild(drag);
 
   const dragger = document.createElement('div');
   drag.appendChild(dragger);
@@ -429,7 +423,7 @@ async function generateImage() {
   const img = document.createElement('img');
   dragger.appendChild(img);
   img.classList.add('text-img');
-  img.src = imageUrl;
+  img.src = URL.createObjectURL(imageBlob);
 
   const item = document.createElement('li');
   item.tabIndex = 8;
@@ -437,11 +431,10 @@ async function generateImage() {
   item.className = 'text-pointer';
   textList.appendChild(item);
 
-  //alert(textGeneratorForm.style.width);
   const content = document.createElement('p');
   item.appendChild(content);
   content.classList.add('text-content');
-  content.textContent = text; // `${textToOutput} ${font} ${size}px ${color}`
+  content.textContent = text;
   const rightContent = document.createElement('div');
   rightContent.style.display = 'inherit';
   const colorNum = document.createElement('p');
@@ -484,18 +477,14 @@ function getTextLineSize(ctx, textLine, widthAddition) {
 
 function adaptCanvasSize(canvas, size, heights, widths) {
   let memRect = memImage.getBoundingClientRect();
+  let dsk = 0;
   if (memRect.width < canvas.width) {
-    let dsk = memRect.width / canvas.width;
-    size *= dsk;
-    canvas.height *= dsk;
-    canvas.width *= dsk;
-    for (let i = 0; i < heights.length; i++) {
-      heights[i] *= dsk;
-      widths[i] *= dsk;
-    }
+    dsk = memRect.width / canvas.width;
   }
   if (memRect.height < canvas.height) {
-    let dsk = memRect.height / canvas.height;
+    dsk = memRect.height / canvas.height;
+  }
+  if (memRect.width < canvas.width || memRect.height < canvas.height) {
     size *= dsk;
     canvas.height *= dsk;
     canvas.width *= dsk;
@@ -504,7 +493,6 @@ function adaptCanvasSize(canvas, size, heights, widths) {
       widths[i] *= dsk;
     }
   }
-
   return size;
 }
 
@@ -513,9 +501,8 @@ function setCanvasSize(canvas, font, size, texts) {
   ctx.font = `${size * dpr}px "${font}"`;
   let heights = [];
   let widths = [];
-  let maxWidth = 0;
-  let totalHeight = 0;
-  let widthAddition = 0;
+  let maxWidth, totalHeight, widthAddition;
+  [maxWidth, totalHeight, widthAddition] = [0, 0, 0];
   if (font === 'Pattaya') {
     widthAddition = size / 2;
   } else if (font === 'Great Vibes') {
@@ -537,13 +524,8 @@ function setCanvasSize(canvas, font, size, texts) {
 }
 
 function getX(textAlign, lineWidth, canvasWidth, xPadding) {
-  if (textAlign === 'left') {
-    return xPadding;
-  } else if (textAlign === 'center') {
-    return (canvasWidth - lineWidth) / 2 + xPadding;
-  } else {
-    return canvasWidth - lineWidth + xPadding;
-  }
+  return textAlign === 'left' ? xPadding :
+         (textAlign === 'center' ? (canvasWidth - lineWidth) / 2 + xPadding : canvasWidth - lineWidth + xPadding);
 }
 
 function textToBitmap(texts, font, size, color) {
@@ -599,7 +581,7 @@ document.querySelectorAll('.page-button').forEach(el => {
     this.style.transform = 'translate('+ mx * 0.15 +'px, '+ my * 0.3 +'px)';
   };
   el.addEventListener('mousemove', buttonMover);
-  el.addEventListener('touchstart', function (e) {
+  el.addEventListener('touchstart', function () {
     this.removeEventListener('mousemove', buttonMover);
   }, { once: true });
 });
