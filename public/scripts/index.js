@@ -31,9 +31,7 @@ const memePhrases = ["было бы славно", "время начинать 
 
 /*#region Обработка нажатия кнопок*/
 
-let getRandomInt = function (max) {
-  return ~~(Math.random() * max);
-};
+const getRandomInt = max => ~~(Math.random() * max);
 
 let randomPressed = function () {
   fetch("https://api.imgflip.com/get_memes")
@@ -42,7 +40,8 @@ let randomPressed = function () {
         let randNumForMeme = getRandomInt(100);
         let randNumForText = getRandomInt(memePhrases.length - 1);
         textInput.value = memePhrases[randNumForText];
-        launchWithImageUrl(result.data.memes[randNumForMeme].url, generateImage);
+        let resulUrl = result.data.memes[randNumForMeme].url;
+        launchWithImageUrl(resulUrl, generateImage);
       })
       .catch(err => console.log(err));
 };
@@ -69,7 +68,7 @@ let cleanForm = function () {
   fontSelect.value = 'Tahoma';
   sizeInput.value = 100;
   align.value = 'center';
-  textColor.value = '#9f9393';
+  textColor.value = '#656464';
   memImage.scr = '';
 };
 
@@ -169,9 +168,7 @@ let launchWithImageUrl = function(url, callAfterLaunch=null) {
 };
 
 let isInputAllowable = function (file) {
-  if (!file) {
-    return false;
-  }
+  if (!file) return false;
   let type = file.type.split('/')[0];
   if (type !== 'image') {
     alert(`Please, upload an image file, ${type} is not an image.`);
@@ -181,9 +178,7 @@ let isInputAllowable = function (file) {
 };
 
 let uploadMeme = function (file) {
-  if (!isInputAllowable(file)) {
-    return;
-  }
+  if (!isInputAllowable(file)) return;
   let reader = new FileReader();
   reader.onloadend = async () => {
     let imageData = reader.result;
@@ -279,11 +274,11 @@ let x, y, target = null;
 let saveTextStart = function(e) {
   let divForImagesHeight = divForImages.getBoundingClientRect().height;
   if ('' in [target.style.left, target.style.top]) {
-    target.style.left = 0 + 'px'; // место клика на экране
+    target.style.left = 0 + 'px';
     target.style.top = -divForImagesHeight + 'px';
   }
   target.classList.add('dragging');
-  x = e.clientX - target.style.left.slice(0, -2); // место клика на экране
+  x = e.clientX - target.style.left.slice(0, -2);
   y = e.clientY - target.style.top.slice(0, -2);
 };
 
@@ -365,8 +360,8 @@ const availableFonts = [
   "Playfair Display",
   "Roboto"
 ];
-//if (window.document.fonts && window.document.fonts.load)
-if (window.document.fonts?.load) {
+
+if (window.document.fonts && window.document.fonts.load) {
   availableFonts.forEach((font) => {
     let face = new FontFace(font, `url(/stylesheets/fonts/${font.replaceAll(' ', '-')}.ttf)`);
     face.load().then(face => {
@@ -397,17 +392,14 @@ let addCrossToButton = function(btn) {
 };
 
 async function generateImage() {
-  const text = textInput.value;
-  const font = fontSelect.selectedOptions[0].textContent;
-  const size = sizeInput.value;
+  const text = textInput.value,
+      font = fontSelect.selectedOptions[0].textContent, size = sizeInput.value;
   if (size < 10 || size > 300) {
     alert("Размер текста не может быть меньше 10 и больше 300");
     return;
   }
   const color = textColor.value;
-  if (!text) {
-    return;
-  }
+  if (!text) return;
   const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
   const drag = document.createElement('div');
   drag.style.zIndex = textCounter.toString();
@@ -501,8 +493,7 @@ function setCanvasSize(canvas, font, size, texts) {
   ctx.font = `${size * dpr}px "${font}"`;
   let heights = [];
   let widths = [];
-  let maxWidth, totalHeight, widthAddition;
-  [maxWidth, totalHeight, widthAddition] = [0, 0, 0];
+  let maxWidth = 0, totalHeight = 0, widthAddition = 0;
   if (font === 'Pattaya') {
     widthAddition = size / 2;
   } else if (font === 'Great Vibes') {
@@ -515,31 +506,24 @@ function setCanvasSize(canvas, font, size, texts) {
     maxWidth = Math.max(maxWidth, lineWidth);
     totalHeight += lineHeight;
   }
-
   canvas.height = totalHeight;
-  console.log(canvas.height);
   canvas.width = maxWidth;
   size = adaptCanvasSize(canvas, size, heights, widths);
   return [widths, heights, size];
 }
 
-function getX(textAlign, lineWidth, canvasWidth, xPadding) {
-  return textAlign === 'left' ? xPadding :
-         (textAlign === 'center' ? (canvasWidth - lineWidth) / 2 + xPadding : canvasWidth - lineWidth + xPadding);
-}
+const getX = (textAlign, lineWidth, canvasWidth, xPadding) =>
+    textAlign === 'left' ? xPadding : (textAlign === 'center' ?
+        (canvasWidth - lineWidth) / 2 + xPadding : canvasWidth - lineWidth + xPadding);
 
 function textToBitmap(texts, font, size, color) {
   const canvas = window.document.createElement("canvas");
   let [lineWidths, lineHeights, newSize] = setCanvasSize(canvas, font, size, texts);
-
   const ctx = canvas.getContext("2d");
   ctx.font = `${newSize * dpr}px "${font}"`;
   ctx.fillStyle = color;
   ctx.textBaseline = "top";
-
-  let textAlign = align.selectedOptions[0].textContent;
-  let y = 0;
-  let xPadding = 0;
+  let textAlign = align.selectedOptions[0].textContent, y = 0, xPadding = 0;
   if (font === 'Great Vibes') {
     y = lineHeights[0] / 6;
     xPadding = size / 2;
@@ -547,10 +531,8 @@ function textToBitmap(texts, font, size, color) {
     y = lineHeights[0] / 10;
     xPadding = size / 4;
   }
-  let width = canvas.width;
-
   for (let i = 0; i < texts.length; i++) {
-    ctx.fillText(texts[i], getX(textAlign, lineWidths[i], width, xPadding), y);
+    ctx.fillText(texts[i], getX(textAlign, lineWidths[i], canvas.width, xPadding), y);
     y += lineHeights[i];
   }
   return new Promise((resolve) => {
