@@ -363,7 +363,8 @@ const availableFonts = [
 
 if (window.document.fonts && window.document.fonts.load) {
   availableFonts.forEach((font) => {
-    let face = new FontFace(font, `url(/stylesheets/fonts/${font.replaceAll(' ', '-')}.ttf)`);
+    font.replaceAll(' ', '-');
+    let face = new FontFace(font, `url(/stylesheets/fonts/${font}.ttf)`);
     face.load().then(face => {
       document.fonts.add(face);
     });
@@ -391,20 +392,27 @@ let addCrossToButton = function(btn) {
   btn.appendChild(secondLine);
 };
 
-async function generateImage() {
+let createAttrWithoutErrors = function () {
   const text = textInput.value,
-      font = fontSelect.selectedOptions[0].textContent, size = sizeInput.value;
+      font = fontSelect.selectedOptions[0].textContent,
+      size = sizeInput.value;
   if (size < 10 || size > 300) {
     alert("Размер текста не может быть меньше 10 и больше 300");
-    return;
+    return [undefined, undefined, undefined, undefined];
   }
   const color = textColor.value;
-  if (!text) return;
+  if (!text) return [undefined, undefined, undefined, undefined];
+  return [text, font, size, color];
+};
+
+async function generateImage() {
+  const [text, font, size, color] = createAttrWithoutErrors();
+  if (undefined in [text, font, size, color]) return;
   const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
   const drag = document.createElement('div');
-  drag.style.zIndex = textCounter.toString();
   drag.id = textCounter.toString();
   drag.classList.add('draggable');
+  drag.style.zIndex = textCounter.toString();
   drag.style.top = '0';
   drag.style.left = '0';
   memeContainer.appendChild(drag);
@@ -463,13 +471,14 @@ function getTextLineSize(ctx, textLine, widthAddition) {
   let lineHeight = Math.max(
       Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
       ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
-  let lineWidth = Math.max(width, Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight)) + widthAddition;
+  let lineWidth = Math.max(
+      width,
+      Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight)) + widthAddition;
   return [lineWidth, lineHeight];
 }
 
 function adaptCanvasSize(canvas, size, heights, widths) {
-  let memRect = memImage.getBoundingClientRect();
-  let dsk = 0;
+  let dsk, memRect = memImage.getBoundingClientRect();
   if (memRect.width < canvas.width) {
     dsk = memRect.width / canvas.width;
   }
