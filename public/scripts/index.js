@@ -4,7 +4,6 @@ const textGeneratorForm = document.getElementById('text-generator-form');
 const memeContainer = document.getElementById('meme-container');
 const divForImages = document.getElementById("div-for-images");
 const generateBtn = document.getElementById('generate-btn');
-const galleryCounter = document.getElementById('counter');
 const fontSelect = document.getElementById("font-select");
 const body = document.getElementsByTagName('body')[0];
 const textInput = document.getElementById("text-input");
@@ -31,6 +30,8 @@ const memePhrases = ["было бы славно", "время начинать 
   "сущность в виде гномика", "а кому щяс лехко", "девачки, я в шоке"];
 
 /*#region Обработка нажатия кнопок*/
+
+let galleryCounter = 0;
 
 const getRandomInt = max => ~~(Math.random() * max);
 
@@ -82,11 +83,11 @@ let downloadImgToGallery = function() {
   fetch("https://api.imgflip.com/get_memes")
       .then(res => res.json())
       .then(result => {
-        let counter = parseFloat(galleryCounter.textContent);
+        let counter = galleryCounter;
         for(let i = counter * 10; i < counter * 10 + 10; i++) {
           addImg(result.data.memes[i].url, launchWithImageUrl);
         }
-        galleryCounter.textContent = (counter + 1).toString();
+        galleryCounter += 1;
         if (counter === 9) {
           nextBtn.style.visibility = "hidden";
         }
@@ -101,32 +102,25 @@ let removeTextImage = function(textObject) {
 
 document.addEventListener('keydown', function (e) {
   if (e.code in ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"]) {
-    let textImg = document.getElementById(document.activeElement.id.split('-')[0]);
+    let textId = document.activeElement.id.split('-')[0];
+    let textImg = document.getElementById(textId);
     let pRect = textImg.parentElement.getBoundingClientRect();
     let tgtRect = textImg.getBoundingClientRect();
     if (e.code === "ArrowUp") {
       textImg.style.top = Number(textImg.style.top.slice(0, -2)) - 10 + 'px';
-      if (tgtRect.bottom <= pRect.top) {
-        removeTextImage(textImg);
-      }
+      if (tgtRect.bottom <= pRect.top) removeTextImage(textImg);
     }
     else if (e.code === "ArrowDown") {
       textImg.style.top = Number(textImg.style.top.slice(0, -2)) + 10 + 'px';
-      if (tgtRect.top >= pRect.bottom) {
-        removeTextImage(textImg);
-      }
+      if (tgtRect.top >= pRect.bottom) removeTextImage(textImg);
     }
     else if (e.code === "ArrowRight") {
       textImg.style.left = Number(textImg.style.left.slice(0, -2)) + 10 + 'px';
-      if (tgtRect.left >= pRect.right) {
-        removeTextImage(textImg);
-      }
+      if (tgtRect.left >= pRect.right) removeTextImage(textImg);
     }
     else {
       textImg.style.left = Number(textImg.style.left.slice(0, -2)) - 10 + 'px';
-      if (tgtRect.right <= pRect.left) {
-        removeTextImage(textImg);
-      }
+      if (tgtRect.right <= pRect.left) removeTextImage(textImg);
     }
   }
 });
@@ -210,44 +204,42 @@ let launchEditorPage = function () {
   });
 };
 
-let adaptImgSize = function(img) {
-  let memeWidth = img.width;
-  let memeHeight = img.height;
-  let minWidth = window.innerWidth * 0.3;
-  let minHeight = 75;
-  let maxWidth = window.innerWidth * 0.9;
-  let maxHeight = window.innerHeight * 0.9;
-
+let createWidthsHeights = function (img) {
+  let memWidth = img.width, memHeight = img.height;
+  let minWidth = window.innerWidth * 0.3, minHeight = 75;
+  let maxWidth = window.innerWidth * 0.9, maxHeight = window.innerHeight * 0.9;
   if(window.innerHeight > window.innerWidth){
     minWidth = window.innerWidth * 0.8;
     maxHeight = window.innerHeight * 2;
   }
+  return [memWidth, memHeight, minWidth, minHeight, maxWidth, maxHeight];
+};
 
-  if (memeWidth < minWidth) {
-    let newMemeHeight = minWidth * memeHeight / memeWidth;
-    if (newMemeHeight <= maxHeight) {
-      memeHeight = newMemeHeight;
-      memeWidth = minWidth;
+let adaptImgSize = function(img) {
+  let [memW, memH, minW, minH, maxW, maxH] = createWidthsHeights(img);
+  if (memW < minW) {
+    let newMemeHeight = minW * memH / memW;
+    if (newMemeHeight <= maxH) {
+      memH = newMemeHeight;
+      memW = minW;
     }
   }
-
-  if (memeHeight < minHeight) {
-    let newMemeWidth = minHeight * memeWidth / memeHeight;
-    if (newMemeWidth <= maxWidth) {
-      memeWidth = newMemeWidth;
-      memeHeight = minHeight;
+  if (memH < minH) {
+    let newMemeWidth = minH * memW / memH;
+    if (newMemeWidth <= maxW) {
+      memW = newMemeWidth;
+      memH = minH;
     }
   }
-
-  if (memeWidth > maxWidth) {
-    memeHeight = maxWidth * memeHeight / memeWidth;
-    memeWidth = maxWidth;
+  if (memW > maxW) {
+    memH = maxW * memH / memW;
+    memW = maxW;
   }
-  if (memeHeight > maxHeight) {
-    memeWidth = maxHeight * memeWidth / memeHeight;
-    memeHeight = maxHeight;
+  if (memH > maxH) {
+    memW = maxH * memW / memH;
+    memH = maxH;
   }
-  resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
+  resizeEditorWindows(String(memW) + 'px', String(memH) + 'px');
   launchEditorPage();
 };
 
@@ -332,8 +324,7 @@ document.addEventListener('touchend', releaseText);
 
 let openModalWindow = function() {
   modal.style.display = "block";
-  let counter = parseFloat(galleryCounter.textContent);
-  if (counter === 0) {
+  if (galleryCounter === 0) {
     downloadImgToGallery();
   }
 };
@@ -400,10 +391,7 @@ let createAttrWithoutErrors = function () {
   return [text, font, size, color];
 };
 
-async function generateImage() {
-  const [text, font, size, color] = createAttrWithoutErrors();
-  if (undefined in [text, font, size, color]) return;
-  const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
+let createDraggableObj = function () {
   const drag = document.createElement('div');
   drag.id = textCounter.toString();
   drag.classList.add('draggable');
@@ -411,21 +399,41 @@ async function generateImage() {
   drag.style.top = '0';
   drag.style.left = '0';
   memeContainer.appendChild(drag);
-
   const dragger = document.createElement('div');
   drag.appendChild(dragger);
   dragger.classList.add('dragger');
+  return [drag, dragger];
+};
+
+let createDelButton = function(rightContent, item, drag) {
+  const del = document.createElement('button');
+  addCrossToButton(del);
+  del.type = 'button';
+  del.tabIndex = 8;
+  rightContent.appendChild(del);
+  item.appendChild(rightContent);
+  del.classList.add('cross-btn');
+  textCounter++;
+  del.addEventListener('click', () => {
+    drag.remove();
+    item.remove();
+  });
+};
+
+async function generateImage() {
+  const [text, font, size, color] = createAttrWithoutErrors();
+  if (undefined in [text, font, size, color]) return;
+  const [drag, dragger] = createDraggableObj();
   const img = document.createElement('img');
   dragger.appendChild(img);
   img.classList.add('text-img');
+  const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
   img.src = URL.createObjectURL(imageBlob);
-
   const item = document.createElement('li');
   item.tabIndex = 8;
   item.id = textCounter.toString() + '-btn';
   item.className = 'text-pointer';
   textList.appendChild(item);
-
   const content = document.createElement('p');
   item.appendChild(content);
   content.classList.add('text-content');
@@ -437,19 +445,7 @@ async function generateImage() {
   colorNum.style.margin = '0';
   colorNum.style.display = 'inline';
   rightContent.appendChild(colorNum);
-  const del = document.createElement('button');
-  addCrossToButton(del);
-  del.type = 'button';
-  del.tabIndex = 8;
-  rightContent.appendChild(del);
-  item.appendChild(rightContent);
-  del.classList.add('cross-btn');
-
-  textCounter++;
-  del.addEventListener('click', () => {
-    drag.remove();
-    item.remove();
-  });
+  createDelButton(rightContent, item, drag);
 }
 
 function getTextLineSize(ctx, textLine, widthAddition) {
@@ -467,8 +463,10 @@ function getTextLineSize(ctx, textLine, widthAddition) {
       Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
       ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
   let lineWidth = Math.max(
-      width,
-      Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight)) + widthAddition;
+          width,
+          Math.abs(actualBoundingBoxLeft) +
+          Math.abs(actualBoundingBoxRight)) +
+      widthAddition;
   return [lineWidth, lineHeight];
 }
 
@@ -492,7 +490,7 @@ function adaptCanvasSize(canvas, size, heights, widths) {
   return size;
 }
 
-function setCanvasSize(canvas, font, size, texts) {
+function setCanvSize(canvas, font, size, texts) {
   let ctx = canvas.getContext("2d");
   ctx.font = `${size * dpr}px "${font}"`;
   let heights = [];
@@ -518,12 +516,13 @@ function setCanvasSize(canvas, font, size, texts) {
 
 const getX = (textAlign, lineWidth, canvasWidth, xPadding) =>
     textAlign === 'left' ? xPadding : (textAlign === 'center' ?
-        (canvasWidth - lineWidth) / 2 + xPadding : canvasWidth - lineWidth + xPadding);
+        (canvasWidth - lineWidth) / 2 +
+        xPadding : canvasWidth - lineWidth + xPadding);
 
-function textToBitmap(texts, font, size, color) {
+function textToBitmap(txt, font, size, color) {
   font = font.replace(' ', '-');
   const canvas = window.document.createElement("canvas");
-  let [lineWidths, lineHeights, newSize] = setCanvasSize(canvas, font, size, texts);
+  let [lineWidths, lineHeights, newSize] = setCanvSize(canvas, font, size, txt);
   const ctx = canvas.getContext("2d");
   ctx.font = `${newSize * dpr}px "${font}"`;
   ctx.fillStyle = color;
@@ -536,8 +535,9 @@ function textToBitmap(texts, font, size, color) {
     y = lineHeights[0] / 10;
     xPadding = size / 4;
   }
-  for (let i = 0; i < texts.length; i++) {
-    ctx.fillText(texts[i], getX(textAlign, lineWidths[i], canvas.width, xPadding), y);
+  for (let i = 0; i < txt.length; i++) {
+    ctx.fillText(txt[i],
+        getX(textAlign, lineWidths[i], canvas.width, xPadding), y);
     y += lineHeights[i];
   }
   return new Promise((resolve) => {
@@ -551,7 +551,7 @@ function textToBitmap(texts, font, size, color) {
 let scrollY = window.scrollY;
 
 function backgroundMove(evt) {
-  let x = evt.clientX / innerWidth;
+  let x = evt.clientX / window.innerWidth;
   body.style.backgroundPositionX = `${(1 - x) * 100}%`;
 }
 
@@ -581,9 +581,10 @@ document.querySelectorAll('.page-button').forEach(el => {
   }, { once: true });
 });
 
-document.querySelectorAll('.page-button').forEach(el => el.addEventListener('mouseleave', function() {
-  this.style.transform = 'translate(0px, 0px)';
-}));
+document.querySelectorAll('.page-button').forEach(el =>
+    el.addEventListener('mouseleave', function() {
+      this.style.transform = 'translate(0px, 0px)';
+    }));
 
 document.addEventListener('mousemove', function(e) {
   document.querySelectorAll('.cursor').forEach((cursor) => {
