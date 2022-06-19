@@ -475,13 +475,9 @@ function adaptCanvasSize(canvas, size, heights, widths) {
   let dsk = 1;
   if (memRect.width < canvas.width) {
     dsk *= memRect.width / canvas.width;
-    console.log(dsk)
   }
-  console.log(memRect.height)
-  console.log(canvas.height)
   if (memRect.height < canvas.height * dsk) {
     dsk *= memRect.height / (canvas.height * dsk);
-    console.log(dsk)
   }
   if (dsk < 1) {
     size *= dsk;
