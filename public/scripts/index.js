@@ -101,7 +101,7 @@ let removeTextImage = function(textObject) {
 };
 
 document.addEventListener('keydown', function (e) {
-  if (e.code in ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"]) {
+  if (e.code === "ArrowRight" || e.code === "ArrowLeft" || e.code ===  "ArrowUp" || e.code === "ArrowDown") {
     let textId = document.activeElement.id.split('-')[0];
     let textImg = document.getElementById(textId);
     let pRect = textImg.parentElement.getBoundingClientRect();
@@ -261,7 +261,7 @@ let x, y, target = null;
 
 let saveTextStart = function(e) {
   let divForImagesHeight = divForImages.getBoundingClientRect().height;
-  if ('' in [target.style.left, target.style.top]) {
+  if (target.style.left === '' || target.style.top === '') {
     target.style.left = 0 + 'px';
     target.style.top = -divForImagesHeight + 'px';
   }
@@ -422,7 +422,7 @@ let createDelButton = function(rightContent, item, drag) {
 
 async function generateImage() {
   const [text, font, size, color] = createAttrWithoutErrors();
-  if (undefined in [text, font, size, color]) return;
+  if (text === undefined || font === undefined || size === undefined || color === undefined) return;
   const [drag, dragger] = createDraggableObj();
   const img = document.createElement('img');
   dragger.appendChild(img);
