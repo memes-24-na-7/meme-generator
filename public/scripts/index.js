@@ -85,7 +85,7 @@ let downloadImgToGallery = function() {
       .then(result => {
         let counter = galleryCounter;
         for(let i = counter * 10; i < counter * 10 + 10; i++) {
-          addImg(result.data.memes[i].url, 'launchWithImageUrl');
+          addImg(result.data.memes[i].url, launchWithImageUrl);
         }
         galleryCounter += 1;
         if (counter === 9) {
@@ -102,7 +102,8 @@ let removeTextImage = function(textObject) {
 
 document.addEventListener('keydown', function (e) {
   if (e.code in ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"]) {
-    let textImg = document.getElementById(document.activeElement.id.split('-')[0]);
+    let textId = document.activeElement.id.split('-')[0];
+    let textImg = document.getElementById(textId);
     let pRect = textImg.parentElement.getBoundingClientRect();
     let tgtRect = textImg.getBoundingClientRect();
     if (e.code === "ArrowUp") {
@@ -125,24 +126,20 @@ document.addEventListener('keydown', function (e) {
 });
 
 const tabIndex = 4;
-let addImg = function(src, onclickFunctionName) {
+let addImg = function(src, onclickFunction) {
   let newImageDiv = document.createElement('div');
   newImageDiv.className = "image";
   let img = document.createElement('img');
   img.tabIndex = tabIndex;
   img.src = src;
-  img.setAttribute('onclick', `chooseImage(this, ${onclickFunctionName})`);
+  img.setAttribute('onclick', `chooseImage(this, ${onclickFunction.name})`);
   img.onkeydown = ev => {
-    if (ev.code === "Enter")
-      chooseImageByEnter(img);
+    if (ev.code === "Enter") {
+      chooseImage(img, onclickFunction);
+    }
   };
   newImageDiv.appendChild(img);
   document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
-};
-
-let chooseImageByEnter = function (imgs) {
-  modal.style.display = "none";
-  loadSrcToEdit(imgs.src);
 };
 
 let launchWithImageUrl = function(url, callAfterLaunch=null) {
@@ -208,41 +205,41 @@ let launchEditorPage = function () {
 };
 
 let createWidthsHeights = function (img) {
-  let memeWidth = img.width, memeHeight = img.height;
+  let memWidth = img.width, memHeight = img.height;
   let minWidth = window.innerWidth * 0.3, minHeight = 75;
   let maxWidth = window.innerWidth * 0.9, maxHeight = window.innerHeight * 0.9;
   if(window.innerHeight > window.innerWidth){
     minWidth = window.innerWidth * 0.8;
     maxHeight = window.innerHeight * 2;
   }
-  return [memeWidth, memeHeight, minWidth, minHeight, maxWidth, maxHeight];
+  return [memWidth, memHeight, minWidth, minHeight, maxWidth, maxHeight];
 };
 
 let adaptImgSize = function(img) {
-  let [memeWidth, memeHeight, minWidth, minHeight, maxWidth, maxHeight] = createWidthsHeights(img);
-  if (memeWidth < minWidth) {
-    let newMemeHeight = minWidth * memeHeight / memeWidth;
-    if (newMemeHeight <= maxHeight) {
-      memeHeight = newMemeHeight;
-      memeWidth = minWidth;
+  let [memW, memH, minW, minH, maxW, maxH] = createWidthsHeights(img);
+  if (memW < minW) {
+    let newMemeHeight = minW * memH / memW;
+    if (newMemeHeight <= maxH) {
+      memH = newMemeHeight;
+      memW = minW;
     }
   }
-  if (memeHeight < minHeight) {
-    let newMemeWidth = minHeight * memeWidth / memeHeight;
-    if (newMemeWidth <= maxWidth) {
-      memeWidth = newMemeWidth;
-      memeHeight = minHeight;
+  if (memH < minH) {
+    let newMemeWidth = minH * memW / memH;
+    if (newMemeWidth <= maxW) {
+      memW = newMemeWidth;
+      memH = minH;
     }
   }
-  if (memeWidth > maxWidth) {
-    memeHeight = maxWidth * memeHeight / memeWidth;
-    memeWidth = maxWidth;
+  if (memW > maxW) {
+    memH = maxW * memH / memW;
+    memW = maxW;
   }
-  if (memeHeight > maxHeight) {
-    memeWidth = maxHeight * memeWidth / memeHeight;
-    memeHeight = maxHeight;
+  if (memH > maxH) {
+    memW = maxH * memW / memH;
+    memH = maxH;
   }
-  resizeEditorWindows(String(memeWidth) + 'px', String(memeHeight) + 'px');
+  resizeEditorWindows(String(memW) + 'px', String(memH) + 'px');
   launchEditorPage();
 };
 
@@ -342,18 +339,17 @@ let closeModalWindow = function() {
 
 const availableFonts = [
   "Tahoma",
-  "Great Vibes",
+  "Great-Vibes",
   "Georgia",
-  "EB Garamond",
+  "EB-Garamond",
   "Jost",
   "Pattaya",
-  "Playfair Display",
+  "Playfair-Display",
   "Roboto"
 ];
 
 if (window.document.fonts && window.document.fonts.load) {
   availableFonts.forEach((font) => {
-    font.replaceAll(' ', '-');
     let face = new FontFace(font, `url(/stylesheets/fonts/${font}.ttf)`);
     face.load().then(face => {
       document.fonts.add(face);
@@ -431,7 +427,8 @@ async function generateImage() {
   const img = document.createElement('img');
   dragger.appendChild(img);
   img.classList.add('text-img');
-  img.src = URL.createObjectURL(await textToBitmap(text.split('\n'), font, size, color));
+  const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
+  img.src = URL.createObjectURL(imageBlob);
   const item = document.createElement('li');
   item.tabIndex = 8;
   item.id = textCounter.toString() + '-btn';
@@ -466,8 +463,10 @@ function getTextLineSize(ctx, textLine, widthAddition) {
       Math.abs(actualBoundingBoxAscent) + Math.abs(actualBoundingBoxDescent),
       ((fontBoundingBoxAscent) || 0) + ((fontBoundingBoxDescent) || 0));
   let lineWidth = Math.max(
-      width,
-      Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight)) + widthAddition;
+          width,
+          Math.abs(actualBoundingBoxLeft) +
+          Math.abs(actualBoundingBoxRight)) +
+      widthAddition;
   return [lineWidth, lineHeight];
 }
 
@@ -491,7 +490,7 @@ function adaptCanvasSize(canvas, size, heights, widths) {
   return size;
 }
 
-function setCanvasSize(canvas, font, size, texts) {
+function setCanvSize(canvas, font, size, texts) {
   let ctx = canvas.getContext("2d");
   ctx.font = `${size * dpr}px "${font}"`;
   let heights = [];
@@ -499,7 +498,7 @@ function setCanvasSize(canvas, font, size, texts) {
   let maxWidth = 0, totalHeight = 0, widthAddition = 0;
   if (font === 'Pattaya') {
     widthAddition = size / 2;
-  } else if (font === 'Great Vibes') {
+  } else if (font === 'Great-Vibes') {
     widthAddition = getTextLineSize(ctx, 'jP')[1];
   }
   for (let textLine of texts) {
@@ -517,25 +516,28 @@ function setCanvasSize(canvas, font, size, texts) {
 
 const getX = (textAlign, lineWidth, canvasWidth, xPadding) =>
     textAlign === 'left' ? xPadding : (textAlign === 'center' ?
-        (canvasWidth - lineWidth) / 2 + xPadding : canvasWidth - lineWidth + xPadding);
+        (canvasWidth - lineWidth) / 2 +
+        xPadding : canvasWidth - lineWidth + xPadding);
 
-function textToBitmap(texts, font, size, color) {
+function textToBitmap(txt, font, size, color) {
+  font = font.replace(' ', '-');
   const canvas = window.document.createElement("canvas");
-  let [lineWidths, lineHeights, newSize] = setCanvasSize(canvas, font, size, texts);
+  let [lineWidths, lineHeights, newSize] = setCanvSize(canvas, font, size, txt);
   const ctx = canvas.getContext("2d");
   ctx.font = `${newSize * dpr}px "${font}"`;
   ctx.fillStyle = color;
   ctx.textBaseline = "top";
   let textAlign = align.selectedOptions[0].textContent, y = 0, xPadding = 0;
-  if (font === 'Great Vibes') {
+  if (font === 'Great-Vibes') {
     y = lineHeights[0] / 6;
     xPadding = size / 2;
   } else if (font === 'Pattaya') {
     y = lineHeights[0] / 10;
     xPadding = size / 4;
   }
-  for (let i = 0; i < texts.length; i++) {
-    ctx.fillText(texts[i], getX(textAlign, lineWidths[i], canvas.width, xPadding), y);
+  for (let i = 0; i < txt.length; i++) {
+    ctx.fillText(txt[i],
+        getX(textAlign, lineWidths[i], canvas.width, xPadding), y);
     y += lineHeights[i];
   }
   return new Promise((resolve) => {
@@ -549,7 +551,7 @@ function textToBitmap(texts, font, size, color) {
 let scrollY = window.scrollY;
 
 function backgroundMove(evt) {
-  let x = evt.clientX / innerWidth;
+  let x = evt.clientX / window.innerWidth;
   body.style.backgroundPositionX = `${(1 - x) * 100}%`;
 }
 
@@ -579,9 +581,10 @@ document.querySelectorAll('.page-button').forEach(el => {
   }, { once: true });
 });
 
-document.querySelectorAll('.page-button').forEach(el => el.addEventListener('mouseleave', function() {
-  this.style.transform = 'translate(0px, 0px)';
-}));
+document.querySelectorAll('.page-button').forEach(el =>
+    el.addEventListener('mouseleave', function() {
+      this.style.transform = 'translate(0px, 0px)';
+    }));
 
 document.addEventListener('mousemove', function(e) {
   document.querySelectorAll('.cursor').forEach((cursor) => {
