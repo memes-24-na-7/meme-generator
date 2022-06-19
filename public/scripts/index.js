@@ -106,27 +106,19 @@ document.addEventListener('keydown', function (e) {
     let tgtRect = textImg.getBoundingClientRect();
     if (e.code === "ArrowUp") {
       textImg.style.top = Number(textImg.style.top.slice(0, -2)) - 10 + 'px';
-      if (tgtRect.bottom <= pRect.top) {
-        removeTextImage(textImg);
-      }
+      if (tgtRect.bottom <= pRect.top) removeTextImage(textImg);
     }
     else if (e.code === "ArrowDown") {
       textImg.style.top = Number(textImg.style.top.slice(0, -2)) + 10 + 'px';
-      if (tgtRect.top >= pRect.bottom) {
-        removeTextImage(textImg);
-      }
+      if (tgtRect.top >= pRect.bottom) removeTextImage(textImg);
     }
     else if (e.code === "ArrowRight") {
       textImg.style.left = Number(textImg.style.left.slice(0, -2)) + 10 + 'px';
-      if (tgtRect.left >= pRect.right) {
-        removeTextImage(textImg);
-      }
+      if (tgtRect.left >= pRect.right) removeTextImage(textImg);
     }
     else {
       textImg.style.left = Number(textImg.style.left.slice(0, -2)) - 10 + 'px';
-      if (tgtRect.right <= pRect.left) {
-        removeTextImage(textImg);
-      }
+      if (tgtRect.right <= pRect.left) removeTextImage(textImg);
     }
   }
 });
@@ -140,9 +132,8 @@ let addImg = function(src, onclickFunctionName) {
   img.src = src;
   img.setAttribute('onclick', `chooseImage(this, ${onclickFunctionName})`);
   img.onkeydown = ev => {
-    if (ev.code === "Enter") {
+    if (ev.code === "Enter")
       chooseImageByEnter(img);
-    }
   };
   newImageDiv.appendChild(img);
   document.getElementsByClassName('modal-body')[0].appendChild(newImageDiv);
@@ -215,19 +206,19 @@ let launchEditorPage = function () {
   });
 };
 
-let adaptImgSize = function(img) {
-  let memeWidth = img.width;
-  let memeHeight = img.height;
-  let minWidth = window.innerWidth * 0.3;
-  let minHeight = 75;
-  let maxWidth = window.innerWidth * 0.9;
-  let maxHeight = window.innerHeight * 0.9;
-
+let createWidthsHeights = function (img) {
+  let memeWidth = img.width, memeHeight = img.height;
+  let minWidth = window.innerWidth * 0.3, minHeight = 75;
+  let maxWidth = window.innerWidth * 0.9, maxHeight = window.innerHeight * 0.9;
   if(window.innerHeight > window.innerWidth){
     minWidth = window.innerWidth * 0.8;
     maxHeight = window.innerHeight * 2;
   }
+  return [memeWidth, memeHeight, minWidth, minHeight, maxWidth, maxHeight];
+};
 
+let adaptImgSize = function(img) {
+  let [memeWidth, memeHeight, minWidth, minHeight, maxWidth, maxHeight] = createWidthsHeights(img);
   if (memeWidth < minWidth) {
     let newMemeHeight = minWidth * memeHeight / memeWidth;
     if (newMemeHeight <= maxHeight) {
@@ -235,7 +226,6 @@ let adaptImgSize = function(img) {
       memeWidth = minWidth;
     }
   }
-
   if (memeHeight < minHeight) {
     let newMemeWidth = minHeight * memeWidth / memeHeight;
     if (newMemeWidth <= maxWidth) {
@@ -243,7 +233,6 @@ let adaptImgSize = function(img) {
       memeHeight = minHeight;
     }
   }
-
   if (memeWidth > maxWidth) {
     memeHeight = maxWidth * memeHeight / memeWidth;
     memeWidth = maxWidth;
