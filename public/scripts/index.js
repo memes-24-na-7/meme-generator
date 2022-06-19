@@ -4,6 +4,7 @@ const textGeneratorForm = document.getElementById('text-generator-form');
 const memeContainer = document.getElementById('meme-container');
 const divForImages = document.getElementById("div-for-images");
 const generateBtn = document.getElementById('generate-btn');
+const strokeColor = document.getElementById("stroke-color");
 const fontSelect = document.getElementById("font-select");
 const body = document.getElementsByTagName('body')[0];
 const textInput = document.getElementById("text-input");
@@ -67,10 +68,11 @@ let cleanForm = function () {
     e.remove();
   });
   textInput.value = '';
-  fontSelect.value = 'Tahoma';
+  fontSelect.value = 'Impact';
   sizeInput.value = 100;
   align.value = 'center';
-  textColor.value = '#656464';
+  textColor.value = '#FFFFFF';
+  strokeColor.value = '#000000';
   memImage.src = '';
 };
 
@@ -338,6 +340,7 @@ let closeModalWindow = function() {
 /*#region aaa*/
 
 const availableFonts = [
+  "Impact",
   "Tahoma",
   "Great-Vibes",
   "Georgia",
@@ -387,8 +390,9 @@ let createAttrWithoutErrors = function () {
     return [undefined, undefined, undefined, undefined];
   }
   const color = textColor.value;
+  const stroke = strokeColor.value;
   if (!text) return [undefined, undefined, undefined, undefined];
-  return [text, font, size, color];
+  return [text, font, size, color, stroke];
 };
 
 let createDraggableObj = function () {
@@ -409,7 +413,7 @@ let createDelButton = function(rightContent, item, drag) {
   const del = document.createElement('button');
   addCrossToButton(del);
   del.type = 'button';
-  del.tabIndex = 8;
+  del.tabIndex = 9;
   rightContent.appendChild(del);
   item.appendChild(rightContent);
   del.classList.add('cross-btn');
@@ -421,16 +425,20 @@ let createDelButton = function(rightContent, item, drag) {
 };
 
 async function generateImage() {
-  const [text, font, size, color] = createAttrWithoutErrors();
-  if (text === undefined || font === undefined || size === undefined || color === undefined) return;
+  const [text, font, size, color, stroke] = createAttrWithoutErrors();
+  if (text === undefined
+    || font === undefined
+    || size === undefined
+    || color === undefined
+    || stroke === undefined) return;
   const [drag, dragger] = createDraggableObj();
   const img = document.createElement('img');
   dragger.appendChild(img);
   img.classList.add('text-img');
-  const imageBlob = await textToBitmap(text.split('\n'), font, size, color);
+  const imageBlob = await textToBitmap(text.split('\n'), font, size, color, stroke);
   img.src = URL.createObjectURL(imageBlob);
   const item = document.createElement('li');
-  item.tabIndex = 8;
+  item.tabIndex = 9;
   item.id = `${textCounter}-btn`;
   item.className = 'text-pointer';
   textList.appendChild(item);
@@ -520,13 +528,15 @@ const getX = (textAlign, lineWidth, canvasWidth, xPadding) =>
         (canvasWidth - lineWidth) / 2 +
         xPadding : canvasWidth - lineWidth + xPadding);
 
-function textToBitmap(txt, font, size, color) {
+function textToBitmap(txt, font, size, color, stroke) {
   font = font.replace(' ', '-');
   const canvas = window.document.createElement("canvas");
   let [lineWidths, lineHeights, newSize] = setCanvSize(canvas, font, size, txt);
   const ctx = canvas.getContext("2d");
-  ctx.font = `${newSize * dpr}px "${font}"`;
   ctx.fillStyle = color;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = 3;
+  ctx.font = `${newSize * dpr}px "${font}"`;
   ctx.textBaseline = "top";
   let textAlign = align.selectedOptions[0].textContent, y = 0, xPadding = 0;
   if (font === 'Great-Vibes') {
@@ -537,8 +547,9 @@ function textToBitmap(txt, font, size, color) {
     xPadding = size / 4;
   }
   for (let i = 0; i < txt.length; i++) {
-    ctx.fillText(txt[i],
-        getX(textAlign, lineWidths[i], canvas.width, xPadding), y);
+    let lineX = getX(textAlign, lineWidths[i], canvas.width, xPadding);
+    ctx.fillText(txt[i], lineX, y);
+    ctx.strokeText(txt[i], lineX, y);
     y += lineHeights[i];
   }
   return new Promise((resolve) => {

@@ -166,9 +166,9 @@ li {
 }
 
 .text-pointer {
+  padding: 10px;
   display: flex;
   justify-content: space-between;
-  padding-left: 10px;
 }
 
 .cross-btn {
@@ -229,7 +229,7 @@ li {
   background: var(--form-light-color);
 }
 
-#text-color {
+input[type="color"] {
   height: 50px;
   padding: 0;
 }
